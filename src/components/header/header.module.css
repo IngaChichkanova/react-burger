@@ -1,3 +1,20 @@
 .header{
-    
+    margin: 0 auto;
+    display: flex;
+    flex-direction: row;
+    box-sizing: border-box;
+    align-items: center;
+}
+
+.header_item_wrapper_item{
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    background: #1C1C21;
+    border: 1px dashed #4C4CFF;
+    border-radius: 40px;
+    flex: none;
+    order: 0;
+    flex-grow: 0;
 }
