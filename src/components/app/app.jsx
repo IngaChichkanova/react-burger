@@ -223,7 +223,7 @@ function App() {
       <AppHeader />
       <main className={appStyles.main}>
         <BurgerIngredients data={data} />
-        <BurgerConstructor />
+        <BurgerConstructor data={data} />
       </main>
     </div>
   );

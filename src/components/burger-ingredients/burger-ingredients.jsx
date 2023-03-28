@@ -20,7 +20,7 @@ class BurgerIngredients extends React.Component {
         const { data } = this.props;
 
         return (
-            <section className={`mt-10 `}>
+            <section className={`mt-10 mr-5`}>
                 <section>
                     <h1 className="text text_type_main-large">Соберите бургер</h1>
                     <div className={`${ingredientsStyles.tabs} mt-5s`}>
