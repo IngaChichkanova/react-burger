@@ -16,6 +16,8 @@
     display: block;
     word-break: break-word;
     width: 272px;
+    position: relative;
+
 }
 
 .ingredient:nth-child(odd){
