@@ -1,6 +1,5 @@
 import React from 'react';
 import headerStyles from '././header.module.css';
-//import PropTypes from 'prop-types';
 import { Logo, BurgerIcon, ListIcon, ProfileIcon } from '@ya.praktikum/react-developer-burger-ui-components'
 
 class AppHeader extends React.Component {
@@ -43,7 +42,3 @@ class AppHeader extends React.Component {
 }
 
 export default AppHeader;
-
-/*AppHeader.propTypes = {
-    orderId: PropTypes.number
-};*/
