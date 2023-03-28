@@ -9,10 +9,15 @@ class BurgerIngredients extends React.Component {
         this.state = {
             currentTab: "bun"
         }
+
+        this.bunRef = React.createRef();
+        this.sauceRef = React.createRef();
+        this.mainRef = React.createRef();
     }
 
     setCurrent = (value) => {
         this.setState({ currentTab: value });
+        this[`${value}Ref`].current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
     }
 
     render() {
@@ -20,10 +25,10 @@ class BurgerIngredients extends React.Component {
         const { data } = this.props;
 
         return (
-            <section className={`mt-10 mr-5`}>
-                <section>
+            <section className={` mr-5`}>
+                <section className={`mt-10`}>
                     <h1 className="text text_type_main-large">Соберите бургер</h1>
-                    <div className={`${ingredientsStyles.tabs} mt-5s`}>
+                    <div className={`${ingredientsStyles.tabs} mt-5`}>
                         <Tab value="bun" active={currentTab === 'bun'} onClick={this.setCurrent}>
                             Булки
                         </Tab>
@@ -36,10 +41,10 @@ class BurgerIngredients extends React.Component {
                     </div>
                 </section>
 
-                <div className={ingredientsStyles.scroll}>
-                    {currentTab === "bun" && (<section className={`${ingredientsStyles.ingredientsSection} ml-1 mr-1`}>
+                <section className={`${ingredientsStyles.scroll} custom-scroll`}>
+                    <section ref={this.bunRef} className={`${ingredientsStyles.ingredientsSection} ml-1 mr-1`}>
                         <p className="text text_type_main-medium mt-10 mb-6">Булки</p>
-                        {data.filter(ingredient => ingredient.type === currentTab).map((ingredient, key) => (<div className={`${ingredientsStyles.ingredient} text text_type_main-small mt-6 ml-3 mr-3`} key={key}>
+                        {data.filter(ingredient => ingredient.type === "bun").map((ingredient, key) => (<div className={`${ingredientsStyles.ingredient} text text_type_main-small mt-6 ml-3 mr-3`} key={key}>
                             <Counter count={1} size="default" extraClass="m-1" />
                             <img className="pl-4 pr-4" src={ingredient.image} alt={ingredient.name} />
                             <p className={`${ingredientsStyles.ingredientDetail} mt-1 mb-1`}>
@@ -48,11 +53,11 @@ class BurgerIngredients extends React.Component {
                             </p>
                             <p className={`${ingredientsStyles.ingredientDetail}`}>{ingredient.name}</p>
                         </div>))}
-                    </section>)}
+                    </section>
 
-                    {currentTab === "sauce" && (<section className={`${ingredientsStyles.ingredientsSection} ml-1 mr-1`}>
+                    <section ref={this.sauceRef} className={`${ingredientsStyles.ingredientsSection} ml-1 mr-1`}>
                         <p className="text text_type_main-medium mt-10 mb-6">Соусы</p>
-                        {data.filter(ingredient => ingredient.type === currentTab).map((ingredient, key) => (<div className={`${ingredientsStyles.ingredient} text text_type_main-small mt-6 ml-3 mr-3`} key={key}>
+                        {data.filter(ingredient => ingredient.type === "sauce").map((ingredient, key) => (<div className={`${ingredientsStyles.ingredient} text text_type_main-small mt-6 ml-3 mr-3`} key={key}>
                             <Counter count={1} size="default" extraClass="m-1" />
                             <img className="pl-4 pr-4" src={ingredient.image} alt={ingredient.name} />
                             <p className={`${ingredientsStyles.ingredientDetail} mt-1 mb-1`}>
@@ -60,11 +65,11 @@ class BurgerIngredients extends React.Component {
                             </p>
                             <p className={`${ingredientsStyles.ingredientDetail}`}>{ingredient.name}</p>
                         </div>))}
-                    </section>)}
+                    </section>
 
-                    {currentTab === "main" && (<section className={`${ingredientsStyles.ingredientsSection} ml-1 mr-1`}>
+                    <section ref={this.mainRef} className={`${ingredientsStyles.ingredientsSection} ml-1 mr-1`}>
                         <p className="text text_type_main-medium mt-10 mb-6">Начинки</p>
-                        {data.filter(ingredient => ingredient.type === currentTab).map((ingredient, key) => (<div className={`${ingredientsStyles.ingredient} text text_type_main-small mt-6 ml-3 mr-3`} key={key}>
+                        {data.filter(ingredient => ingredient.type === "main").map((ingredient, key) => (<div className={`${ingredientsStyles.ingredient} text text_type_main-small mt-6 ml-3 mr-3`} key={key}>
                             <Counter count={1} size="default" extraClass="m-1" />
                             <img className="pl-4 pr-4" src={ingredient.image} alt={ingredient.name} />
                             <p className={`${ingredientsStyles.ingredientDetail} mt-1 mb-1`}>
@@ -72,8 +77,8 @@ class BurgerIngredients extends React.Component {
                             </p>
                             <p className={`${ingredientsStyles.ingredientDetail}`}>{ingredient.name}</p>
                         </div>))}
-                    </section>)}
-                </div>
+                    </section>
+                </section>
             </section>
         );
     }

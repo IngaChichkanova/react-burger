@@ -3,12 +3,24 @@
     flex-direction: column;
 }
 
-.sectionIngredient{
-
+.sectionIngredients{
+    height: calc(100vh - (108px));
+    overflow: hidden;
 }
 
 .sectionFooter{
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    justify-content: flex-end;
+}
 
+.sectionIngredient{
+    height: 80px;
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    justify-content: flex-end;
 }
 
 .ingredient{
@@ -16,7 +28,29 @@
     flex-direction: row;
     justify-content: flex-start;
     align-items: center;
-    height: 80px;
+    height: 48px;
     background: #1C1C21;
     border-radius: 40px;
+    width: calc(100% - 48px);
+    word-break: break-word;
+    white-space: nowrap;
+}
+
+.sectionIngredient:first-child .ingredient{
+    border-radius: 88px 88px 40px 40px;
+}
+
+.sectionIngredient:last-child .ingredient{
+    border-radius: 40px 40px 88px 88px;
+}
+
+.price{
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.scroll{
+     height: calc(100% - 180px);
+     overflow-x: auto;
 }
