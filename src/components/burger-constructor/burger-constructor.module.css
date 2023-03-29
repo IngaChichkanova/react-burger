@@ -4,7 +4,6 @@
 }
 
 .sectionIngredients{
-    height: calc(100vh - (108px));
     overflow: hidden;
 }
 
@@ -36,12 +35,27 @@
     white-space: nowrap;
 }
 
-.sectionIngredient:first-child .ingredient{
+.ingredientTop{
     border-radius: 88px 88px 40px 40px;
 }
 
-.sectionIngredient:last-child .ingredient{
+.ingredientBottom{
     border-radius: 40px 40px 88px 88px;
+}
+
+.ingredientFirstBlock{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.ingredientSecondBlock{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+    width: 100%;
 }
 
 .price{
@@ -51,6 +65,6 @@
 }
 
 .scroll{
-     height: calc(100% - 180px);
+     height: calc(100% - 200px);
      overflow-x: auto;
 }
