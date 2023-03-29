@@ -1,5 +1,5 @@
 import React from 'react';
-//import PropTypes from 'prop-types';
+import PropTypes, { number, string } from 'prop-types';
 import ingredientsStyles from './burger-ingredients.module.css';
 import { Tab, CurrencyIcon, Counter } from '@ya.praktikum/react-developer-burger-ui-components';
 
@@ -22,7 +22,7 @@ class BurgerIngredients extends React.Component {
 
     render() {
         const { currentTab } = this.state;
-        const { data } = this.props;
+        const { ingredientList } = this.props;
 
         return (
             <section className={` mr-5`}>
@@ -44,7 +44,7 @@ class BurgerIngredients extends React.Component {
                 <section className={`${ingredientsStyles.scroll} custom-scroll`}>
                     <section ref={this.bunRef} className={`${ingredientsStyles.ingredientsSection} ml-1 mr-1`}>
                         <p className="text text_type_main-medium mt-10 mb-6">Булки</p>
-                        {data.filter(ingredient => ingredient.type === "bun").map((ingredient, key) => (<div className={`${ingredientsStyles.ingredient} text text_type_main-small mt-6 ml-3 mr-3`} key={key}>
+                        {ingredientList.filter(ingredient => ingredient.type === "bun").map((ingredient, key) => (<div className={`${ingredientsStyles.ingredient} text text_type_main-small mt-6 ml-3 mr-3`} key={key}>
                             <Counter count={1} size="default" extraClass="m-1" />
                             <img className="pl-4 pr-4" src={ingredient.image} alt={ingredient.name} />
                             <p className={`${ingredientsStyles.ingredientDetail} mt-1 mb-1`}>
@@ -57,7 +57,7 @@ class BurgerIngredients extends React.Component {
 
                     <section ref={this.sauceRef} className={`${ingredientsStyles.ingredientsSection} ml-1 mr-1`}>
                         <p className="text text_type_main-medium mt-10 mb-6">Соусы</p>
-                        {data.filter(ingredient => ingredient.type === "sauce").map((ingredient, key) => (<div className={`${ingredientsStyles.ingredient} text text_type_main-small mt-6 ml-3 mr-3`} key={key}>
+                        {ingredientList.filter(ingredient => ingredient.type === "sauce").map((ingredient, key) => (<div className={`${ingredientsStyles.ingredient} text text_type_main-small mt-6 ml-3 mr-3`} key={key}>
                             <Counter count={1} size="default" extraClass="m-1" />
                             <img className="pl-4 pr-4" src={ingredient.image} alt={ingredient.name} />
                             <p className={`${ingredientsStyles.ingredientDetail} mt-1 mb-1`}>
@@ -69,7 +69,7 @@ class BurgerIngredients extends React.Component {
 
                     <section ref={this.mainRef} className={`${ingredientsStyles.ingredientsSection} ml-1 mr-1`}>
                         <p className="text text_type_main-medium mt-10 mb-6">Начинки</p>
-                        {data.filter(ingredient => ingredient.type === "main").map((ingredient, key) => (<div className={`${ingredientsStyles.ingredient} text text_type_main-small mt-6 ml-3 mr-3`} key={key}>
+                        {ingredientList.filter(ingredient => ingredient.type === "main").map((ingredient, key) => (<div className={`${ingredientsStyles.ingredient} text text_type_main-small mt-6 ml-3 mr-3`} key={key}>
                             <Counter count={1} size="default" extraClass="m-1" />
                             <img className="pl-4 pr-4" src={ingredient.image} alt={ingredient.name} />
                             <p className={`${ingredientsStyles.ingredientDetail} mt-1 mb-1`}>
@@ -87,6 +87,19 @@ class BurgerIngredients extends React.Component {
 export default BurgerIngredients;
 
 
-/*BurgerIngredients.propTypes = {
-    orderId: PropTypes.number
-};*/
+BurgerIngredients.propTypes = {
+    ingredientList: PropTypes.shape({
+        _id: string,
+        name: string.isRequired,
+        type: string.isRequired,
+        proteins: number,
+        fat: number,
+        carbohydrates: number,
+        calories: number,
+        price: number.isRequired,
+        image: string.isRequired,
+        image_mobile: string,
+        image_large: string,
+        __v: number
+    })
+};

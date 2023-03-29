@@ -22,49 +22,15 @@
     justify-content: flex-end;
 }
 
-.ingredient{
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-start;
-    align-items: center;
-    height: 48px;
-    background: #1C1C21;
-    border-radius: 40px;
-    width: calc(100% - 48px);
-    word-break: break-word;
-    white-space: nowrap;
-}
-
-.ingredientTop{
-    border-radius: 88px 88px 40px 40px;
-}
-
-.ingredientBottom{
-    border-radius: 40px 40px 88px 88px;
-}
-
-.ingredientFirstBlock{
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-start;
-    align-items: center;
-}
-
-.ingredientSecondBlock{
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-end;
-    align-items: center;
-    width: 100%;
-}
-
-.price{
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-}
-
 .scroll{
      height: calc(100% - 200px);
-     overflow-x: auto;
+     overflow: hidden scroll;
+}
+
+.scroll .sectionIngredient:first-child{
+    margin-top: 0;
+}
+
+.scroll .sectionIngredient:last-child{
+    margin-bottom: 0;
 }
