@@ -1,3 +1,27 @@
-.modal{
-    
+.modal {
+    background: #1C1C21;
+    border: 1px solid rgba(76, 76, 255, 0.2);
+    box-shadow: 0px 24px 32px rgba(0, 0, 0, 0.04), 0px 16px 24px rgba(0, 0, 0, 0.04), 0px 4px 8px rgba(0, 0, 0, 0.04), 0px 0px 1px rgba(0, 0, 0, 0.04);
+    border-radius: 40px;
+    width: 720px;
+    min-height: 539px;
+    margin: auto;
+}
+
+.header{
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: flex-end;
+}
+
+.title{
+    width: 100%;
+    display: flex;
+    align-self: center;
+}
+
+.close{
+   
 }

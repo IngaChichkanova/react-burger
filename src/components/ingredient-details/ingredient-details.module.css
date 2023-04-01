@@ -1,3 +1,16 @@
 .ingredient{
-    
+    text-align: center;
+    width: 100%;
+    align-items: center;
+}
+
+.property{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    text-align: center;
+}
+
+.info{
+    color: #8585AD;
 }
