@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import PropTypes from 'prop-types';
 import * as ReactDOM from 'react-dom';
 import modalOverlayStyles from '././modal-overlay.module.css';
 
@@ -13,6 +14,7 @@ const ModalOverlay = ({ children, onClose }) => {
         }
         window.addEventListener('keydown', closeOnEsc)
         return () => window.removeEventListener('keydown', closeOnEsc)
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return ReactDOM.createPortal(
@@ -25,3 +27,8 @@ const ModalOverlay = ({ children, onClose }) => {
     );
 }
 export default ModalOverlay;
+
+ModalOverlay.propTypes = {
+    children: PropTypes.node.isRequired,
+    onClose: PropTypes.func.isRequired
+}
