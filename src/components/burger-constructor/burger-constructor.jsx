@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import { ingredientListPropTypes } from '../../utils/prop-types';
 import burgerStyles from './burger-constructor.module.css';
 import { DragIcon, CurrencyIcon, Button, ConstructorElement } from '@ya.praktikum/react-developer-burger-ui-components';
@@ -64,5 +65,9 @@ const BurgerConstructor = ({ ingredientList }) => {
 
 export default BurgerConstructor;
 
-ingredientListPropTypes(BurgerConstructor);
+BurgerConstructor.propTypes = {
+    ingredientList: PropTypes.arrayOf(ingredientListPropTypes).isRequired
+};
+
+
 

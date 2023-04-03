@@ -3,7 +3,7 @@ import appStyles from './app.module.css';
 import AppHeader from '../header/header';
 import BurgerIngredients from '../burger-ingredients/burger-ingredients';
 import BurgerConstructor from '../burger-constructor/burger-constructor';
-import { INGREDIENTS_LIST } from '../../utils/constants';
+import { getIngedients } from '../../utils/burger-api';
 
 const App = () => {
   const [ingredientList, setIngredientList] = useState([]);
@@ -11,27 +11,20 @@ const App = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    getIngedients();
+    getIngedientsAsync();
   }, []);
 
-  const getIngedients = async () => {
-    await fetch(INGREDIENTS_LIST)
-      .then(response => response.json()
-        .then(json => {
-          setIsLoading(false);
-          if (json.success) {
-            setHasError(false);
-            setIngredientList(json.data);
-          } else {
-            setHasError(true);
-          }
-        })
-      )
-      .catch(e => {
+  const getIngedientsAsync = async () => {
+    await getIngedients().then(response => {
+      if (response.errors) {
         setHasError(true);
         setIsLoading(false);
-      })
-      ;
+      } else {
+        setIsLoading(false);
+        setHasError(false);
+        setIngredientList(response.data);
+      }
+    });
   }
 
   return (

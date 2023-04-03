@@ -1,4 +1,5 @@
 import React, { useState, createRef, useMemo } from 'react';
+import PropTypes from 'prop-types';
 import { ingredientListPropTypes } from '../../utils/prop-types';
 import ingredientsStyles from './burger-ingredients.module.css';
 import { Tab, CurrencyIcon, Counter } from '@ya.praktikum/react-developer-burger-ui-components';
@@ -103,4 +104,6 @@ const BurgerIngredients = ({ ingredientList }) => {
 
 export default BurgerIngredients;
 
-ingredientListPropTypes(BurgerIngredients);
+BurgerIngredients.propTypes = {
+    ingredientList: PropTypes.arrayOf(ingredientListPropTypes).isRequired
+};

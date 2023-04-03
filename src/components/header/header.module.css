@@ -1,4 +1,4 @@
-.header{
+.header {
     margin: 0 auto;
     display: flex;
     flex-direction: row;
@@ -6,7 +6,7 @@
     align-items: center;
 }
 
-.header_item_wrapper_item{
+.header_item_wrapper_item {
     box-sizing: border-box;
     display: flex;
     flex-direction: row;
@@ -17,5 +17,13 @@
     flex: none;
     order: 0;
     flex-grow: 0;
+    text-decoration: none;
 }
 
+.header_item_wrapper_item,
+.header_item_wrapper_item:hover,
+.header_item_wrapper_item:visited,
+.header_item_wrapper_item:active {
+    color: inherit;
+    text-decoration: none;
+}
