@@ -1,2 +1,2 @@
-export const INGREDIENTS_LIST = "https://norma.nomoreparties.space/api/ingredients";
-export const ECK_KEYCODE = 27
+export const NORMA_API = "https://norma.nomoreparties.space/api";
+export const ECK_KEYCODE = 27;

@@ -15,16 +15,17 @@ const App = () => {
   }, []);
 
   const getIngedientsAsync = async () => {
-    await getIngedients().then(response => {
-      if (response.errors) {
-        setHasError(true);
-        setIsLoading(false);
-      } else {
+    await getIngedients()
+      .then(response => {
         setIsLoading(false);
         setHasError(false);
         setIngredientList(response.data);
-      }
-    });
+      })
+      .catch((e) => {
+        console.error(e);
+        setHasError(true);
+        setIsLoading(false);
+      });
   }
 
   return (
