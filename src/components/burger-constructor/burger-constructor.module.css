@@ -1,0 +1,36 @@
+.section{
+    display: flex;
+    flex-direction: column;
+}
+
+.sectionIngredients{
+    overflow: hidden;
+}
+
+.sectionFooter{
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    justify-content: flex-end;
+}
+
+.sectionIngredient{
+    height: 80px;
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    justify-content: flex-end;
+}
+
+.scroll{
+     height: calc(100% - 200px);
+     overflow: hidden scroll;
+}
+
+.scroll .sectionIngredient:first-child{
+    margin-top: 0;
+}
+
+.scroll .sectionIngredient:last-child{
+    margin-bottom: 0;
+}

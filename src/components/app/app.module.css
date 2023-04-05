@@ -1,0 +1,15 @@
+.app{
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: auto;
+    z-index: 1;
+}
+
+.main{
+    display: flex;
+    flex-direction: row;
+    margin: 0 auto;
+    height: calc(100vh - 58px);
+    overflow: hidden;
+}
