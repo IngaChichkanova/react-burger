@@ -6,3 +6,14 @@ export function getIngedients() {
     return fetch(`${NORMA_API}/ingredients`)
         .then(response => checkReponse(response));
 };
+
+export function doOrder(ingredientsId) {
+    return fetch(`${NORMA_API}/orders`, {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json;charset=utf-8'
+        },
+        body: `{"ingredients": ${JSON.stringify(ingredientsId)}}`
+    })
+        .then(response => checkReponse(response));
+};

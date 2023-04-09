@@ -1,12 +1,15 @@
-import React from 'react';
+import React, { useContext, useEffect } from 'react';
 import orderDetailsStyles from '././order-details.module.css';
 import orderChecked from '../../icons/orderChecked.svg';
+import { OrderDetailsContext } from '../../services/burgerConstructorContext.js';
+import PropTypes from 'prop-types';
 
 const OrderDetails = () => {
+    const { orderNumber } = useContext(OrderDetailsContext);
 
     return (
         <section className={`${orderDetailsStyles.order}  mb-30`}>
-            <p className={`${orderDetailsStyles.total} text text_type_digits-large`}>0534536</p>
+            <p className={`${orderDetailsStyles.total} text text_type_digits-large`}>{orderNumber}</p>
             <p className={`text text_type_main-medium mt-8`}>идентификатор заказа</p>
             <p className={`mt-15 mb-15`}>
                 <img src={orderChecked} alt="orderChecked" />
@@ -18,3 +21,7 @@ const OrderDetails = () => {
 }
 
 export default OrderDetails;
+
+OrderDetails.propTypes = {
+    orderNumber: PropTypes.number.isRequired
+};
