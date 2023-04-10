@@ -16,9 +16,9 @@ const BurgerIngredients = ({ ingredientList }) => {
     const sauceRef = createRef();
     const mainRef = createRef();
 
-    const setCurrent = (value) => {
+    const setCurrent = (valueRef, value) => {
         setCurrentTab(value);
-        value.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+        valueRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
     }
 
     const handleCloseModal = () => {
@@ -45,13 +45,13 @@ const BurgerIngredients = ({ ingredientList }) => {
                 <section className={`mt-10`}>
                     <h1 className="text text_type_main-large">Соберите бургер</h1>
                     <div className={`${ingredientsStyles.tabs} mt-5`}>
-                        <Tab value={bunRef} active={currentTab === 'bunRef'} onClick={setCurrent}>
+                        <Tab value={bunRef} active={currentTab === 'bun'} onClick={() => setCurrent(bunRef, 'bun')}>
                             Булки
                         </Tab>
-                        <Tab value={sauceRef} active={currentTab === 'sauceRef'} onClick={setCurrent}>
+                        <Tab value={sauceRef} active={currentTab === 'sauce'} onClick={() => setCurrent(sauceRef, 'sauce')}>
                             Соусы
                         </Tab>
-                        <Tab value={mainRef} active={currentTab === 'mainRef'} onClick={setCurrent}>
+                        <Tab value={mainRef} active={currentTab === 'main'} onClick={() => setCurrent(mainRef, 'main')}>
                             Начинки
                         </Tab>
                     </div>

@@ -13,11 +13,7 @@ const initialState = { totalPrice: 0 };
 function reducer(state, action) {
     switch (action.type) {
         case "price":
-            let count = 0;
-            action.payload.forEach(price => {
-                count = count + price;
-            })
-            return { totalPrice: count };
+            return { totalPrice: action.payload };
         default:
             throw new Error(`Wrong type of action: ${action.type}`);
     }
@@ -32,8 +28,9 @@ const BurgerConstructor = ({ ingredientList }) => {
     const handleOrder = () => {
         doOrder(ingredientList.map(item => item._id))
             .then(response => {
+                setHasError(false);
                 setOrderNumber(response.order.number);
-                setOpenModal(!openModal);
+                handleClose(!openModal);
             })
             .catch((e) => {
                 console.error(e);
@@ -41,16 +38,16 @@ const BurgerConstructor = ({ ingredientList }) => {
             });
     }
 
+    const handleClose = () => {
+        setOpenModal(!openModal);
+    }
+
     const bun = useMemo(() => ingredientList.find((item) => item.type === 'bun'), [ingredientList]);
     const mainIngredients = useMemo(() => ingredientList.filter((item) => item.type !== 'bun'), [ingredientList]);
 
     useEffect(() => {
-        let prices = ingredientList.map(item => item.price);
-        if (ingredientList.find((item) => item.type === 'bun')) {
-            prices.push(ingredientList.find((item) => item.type === 'bun').price);
-        }
-        dispatch({ type: "price", payload: prices });
-    }, [ingredientList]);
+        dispatch({ type: "price", payload: ingredientList.reduce((acc, item) => acc + item.price * (bun && bun._id === item._id ? 2 : 1), 0) });
+    }, [ingredientList, bun]);
 
     useEffect(() => {
         if (!openModal) setOrderNumber(null);
@@ -104,7 +101,7 @@ const BurgerConstructor = ({ ingredientList }) => {
                     </section>
                 </section>
 
-                {openModal && orderNumber && <Modal onClose={handleOrder} component={<OrderDetails />} />}
+                {!hasError && openModal && orderNumber && <Modal onClose={handleClose} component={<OrderDetails />} />}
             </OrderDetailsContext.Provider>
         </>
     );
