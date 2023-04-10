@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useReducer, useEffect } from 'react';
+import React, { useState, useMemo, useReducer } from 'react';
 import PropTypes from 'prop-types';
 import { ingredientListPropTypes } from '../../utils/prop-types';
 import burgerStyles from './burger-constructor.module.css';
@@ -21,7 +21,6 @@ function reducer(state, action) {
 
 const BurgerConstructor = ({ ingredientList }) => {
     const [state, dispatch] = useReducer(reducer, initialState);
-    const [openModal, setOpenModal] = useState(false);
     const [orderNumber, setOrderNumber] = useState(null);
     const [hasError, setHasError] = useState(false);
 
@@ -30,28 +29,20 @@ const BurgerConstructor = ({ ingredientList }) => {
             .then(response => {
                 setHasError(false);
                 setOrderNumber(response.order.number);
-                handleClose(!openModal);
             })
             .catch((e) => {
-                console.error(e);
                 setHasError(true);
             });
     }
 
     const handleClose = () => {
-        setOpenModal(!openModal);
+        setOrderNumber(null);
     }
 
     const bun = useMemo(() => ingredientList.find((item) => item.type === 'bun'), [ingredientList]);
     const mainIngredients = useMemo(() => ingredientList.filter((item) => item.type !== 'bun'), [ingredientList]);
 
-    useEffect(() => {
-        dispatch({ type: "price", payload: ingredientList.reduce((acc, item) => acc + item.price * (bun && bun._id === item._id ? 2 : 1), 0) });
-    }, [ingredientList, bun]);
-
-    useEffect(() => {
-        if (!openModal) setOrderNumber(null);
-    }, [openModal]);
+    useMemo(() => dispatch({ type: "price", payload: ingredientList.reduce((acc, item) => acc + item.price * (bun && bun._id === item._id ? 2 : 1), 0) }), [ingredientList, bun]);
 
     return (
         <>
@@ -61,7 +52,7 @@ const BurgerConstructor = ({ ingredientList }) => {
                         {bun && <section className={`${burgerStyles.sectionIngredient} mb-4 mr-4`}>
                             <ConstructorElement
                                 type="top"
-                                isLocked={true}
+                                isLocked
                                 text={`${bun.name} (верх)`}
                                 price={bun.price}
                                 thumbnail={bun.image_mobile}
@@ -82,7 +73,7 @@ const BurgerConstructor = ({ ingredientList }) => {
                         {bun && <section className={`${burgerStyles.sectionIngredient} mt-4 mr-4`}>
                             <ConstructorElement
                                 type="bottom"
-                                isLocked={true}
+                                isLocked
                                 text={`${bun.name} (низ)`}
                                 price={bun.price}
                                 thumbnail={bun.image_mobile}
@@ -101,7 +92,7 @@ const BurgerConstructor = ({ ingredientList }) => {
                     </section>
                 </section>
 
-                {!hasError && openModal && orderNumber && <Modal onClose={handleClose} component={<OrderDetails />} />}
+                {!hasError && orderNumber && <Modal onClose={handleClose} component={<OrderDetails />} />}
             </OrderDetailsContext.Provider>
         </>
     );

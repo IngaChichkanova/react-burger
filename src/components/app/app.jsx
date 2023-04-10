@@ -22,7 +22,6 @@ const App = () => {
         setIngredientList(response.data);
       })
       .catch((e) => {
-        console.error(e);
         setHasError(true);
         setIsLoading(false);
       });
