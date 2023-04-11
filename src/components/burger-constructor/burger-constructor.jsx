@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useReducer } from 'react';
+import React, { useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { ingredientListPropTypes } from '../../utils/prop-types';
 import burgerStyles from './burger-constructor.module.css';
@@ -8,19 +8,7 @@ import OrderDetails from '../order-details/order-details';
 import { OrderDetailsContext } from '../../services/burgerConstructorContext.js';
 import { doOrder } from '../../utils/burger-api';
 
-const initialState = { totalPrice: 0 };
-
-function reducer(state, action) {
-    switch (action.type) {
-        case "price":
-            return { totalPrice: action.payload };
-        default:
-            throw new Error(`Wrong type of action: ${action.type}`);
-    }
-}
-
 const BurgerConstructor = ({ ingredientList }) => {
-    const [state, dispatch] = useReducer(reducer, initialState);
     const [orderNumber, setOrderNumber] = useState(null);
     const [hasError, setHasError] = useState(false);
 
@@ -42,7 +30,7 @@ const BurgerConstructor = ({ ingredientList }) => {
     const bun = useMemo(() => ingredientList.find((item) => item.type === 'bun'), [ingredientList]);
     const mainIngredients = useMemo(() => ingredientList.filter((item) => item.type !== 'bun'), [ingredientList]);
 
-    useMemo(() => dispatch({ type: "price", payload: ingredientList.reduce((acc, item) => acc + item.price * (bun && bun._id === item._id ? 2 : 1), 0) }), [ingredientList, bun]);
+    const totalPrice = useMemo(() => ingredientList.reduce((acc, item) => acc + item.price * (bun && bun._id === item._id ? 2 : 1), 0), [ingredientList, bun]);
 
     return (
         <>
@@ -83,7 +71,7 @@ const BurgerConstructor = ({ ingredientList }) => {
 
                     <section className={`${burgerStyles.sectionFooter} mt-10`}>
                         <p className={`text text_type_main-large mr-10`}>
-                            <span className="mr-2">{state.totalPrice}</span>
+                            <span className="mr-2">{totalPrice}</span>
                             <CurrencyIcon type="primary" />
                         </p>
                         <Button onClick={handleOrder} htmlType="button" type="primary" size="large">
