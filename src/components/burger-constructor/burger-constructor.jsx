@@ -6,11 +6,12 @@ import { DragIcon, CurrencyIcon, Button, ConstructorElement } from '@ya.praktiku
 import Modal from '../modal/modal';
 import OrderDetails from '../order-details/order-details';
 import { useSelector, useDispatch } from 'react-redux';
-import { GET_ORDER_SUCCESS } from '../../services/actions/ingredients';
+import { GET_ORDER_SUCCESS, CURRENT_INGREDIENTS_LIST } from '../../services/actions/ingredients';
+import DropTarget from './drop-target';
 
-const BurgerConstructor = ({ ingredientList }) => {
+const BurgerConstructor = () => {
     const dispatch = useDispatch();
-    const { currentIngredientsList } = useSelector(state => state.ingredients);
+    const { currentIngredientsList, ingredientsList } = useSelector(state => state.ingredients);
 
     const [openModal, setOpenModal] = useState(false);
 
@@ -30,12 +31,22 @@ const BurgerConstructor = ({ ingredientList }) => {
 
     const totalPrice = useMemo(() => currentIngredientsList.reduce((acc, item) => acc + item.price * (bun && bun._id === item._id ? 2 : 1), 0), [currentIngredientsList, bun]);
 
+    const handleDrop = (itemId) => {
+        dispatch({
+            type: CURRENT_INGREDIENTS_LIST, payload: [
+                ...currentIngredientsList,
+                ...ingredientsList.filter(element => element.id === itemId.id)
+            ]
+        });
+    };
+
     return (
         <>
             <section className={`${burgerStyles.section} mt-25 mb-5 ml-5 pl-4 pr-4`}>
 
 
                 <section className={`${burgerStyles.sectionIngredients} `}>
+
                     <section className={`${burgerStyles.sectionIngredient} mb-4 mr-4`}>
                         <ConstructorElement
                             type="top"
@@ -99,7 +110,7 @@ const BurgerConstructor = ({ ingredientList }) => {
 export default BurgerConstructor;
 
 //BurgerConstructor.propTypes = {
-//    ingredientList: PropTypes.arrayOf(ingredientListPropTypes).isRequired
+//    currentIngredientsList: PropTypes.arrayOf(ingredientListPropTypes).isRequired
 //};
 
 

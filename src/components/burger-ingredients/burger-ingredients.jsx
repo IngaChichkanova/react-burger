@@ -8,6 +8,7 @@ import IngredientDetails from '../ingredient-details/ingredient-details';
 import { getIngedients } from '../../services/actions/ingredients';
 import { useDispatch, useSelector } from 'react-redux';
 import { CURRENT_INGREDIENT } from '../../services/actions/ingredients';
+import DraggableItem from './draggable-items';
 
 const BurgerIngredients = () => {
     const dispatch = useDispatch();
@@ -92,15 +93,26 @@ const BurgerIngredients = () => {
                 >
                     <section ref={bunRef} className={`${ingredientsStyles.ingredientsSection} ml-1 mr-1`}>
                         <p className="text text_type_main-medium mt-10 mb-6">Булки</p>
-                        {buns.map(ingredient => (<div onClick={() => handlerOpenDetails(ingredient)} className={`${ingredientsStyles.ingredient} text text_type_main-small mt-6 ml-3 mr-3`} key={ingredient._id}>
-                            <Counter count={currentIngredientsList.filter(item => item._id === ingredient._id).length} size="default" extraClass="m-1" />
-                            <img className="pl-4 pr-4" src={ingredient.image} alt={ingredient.name} />
-                            <p className={`${ingredientsStyles.ingredientDetail} mt-1 mb-1`}>
-                                <span className="mr-1">{ingredient.price}</span>
-                                <CurrencyIcon type="primary" />
-                            </p>
-                            <p className={`${ingredientsStyles.ingredientDetail}`}>{ingredient.name}</p>
-                        </div>))}
+
+                        {buns.map(ingredient => (
+                            <DraggableItem
+                                key={ingredient._id}
+                                item={ingredient}
+                                type='bun'
+                                clickHandler={() => handlerOpenDetails(ingredient)}
+                            >
+                                <>
+                                    <Counter count={currentIngredientsList.filter(item => item._id === ingredient._id).length} size="default" extraClass="m-1" />
+                                    <img className="pl-4 pr-4" src={ingredient.image} alt={ingredient.name} />
+                                    <p className={`${ingredientsStyles.ingredientDetail} mt-1 mb-1`}>
+                                        <span className="mr-1">{ingredient.price}</span>
+                                        <CurrencyIcon type="primary" />
+                                    </p>
+                                    <p className={`${ingredientsStyles.ingredientDetail}`}>{ingredient.name}</p>
+                                </>
+                            </DraggableItem>
+                        ))}
+
                     </section>
 
                     <section ref={sauceRef} className={`${ingredientsStyles.ingredientsSection} ml-1 mr-1`}>

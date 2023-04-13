@@ -12,22 +12,6 @@
     width: calc((272px + 32px) * 2);
 }
 
-.ingredient{
-    display: block;
-    word-break: break-word;
-    width: 272px;
-    position: relative;
-
-}
-
-.ingredient:nth-child(odd){
-    float: left;
-}
-
-.ingredient:nth-child(even){
-    float: right;
-}
-
 .ingredientDetail{
     display: flex;
     flex-direction: row;
