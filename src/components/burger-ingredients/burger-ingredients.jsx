@@ -1,20 +1,29 @@
-import React, { useState, createRef, useMemo } from 'react';
+import React, { useState, createRef, useMemo, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { ingredientListPropTypes } from '../../utils/prop-types';
 import ingredientsStyles from './burger-ingredients.module.css';
 import { Tab, CurrencyIcon, Counter } from '@ya.praktikum/react-developer-burger-ui-components';
 import Modal from '../modal/modal';
 import IngredientDetails from '../ingredient-details/ingredient-details';
+import { getIngedients } from '../../services/actions/ingredients';
+import { useDispatch, useSelector } from 'react-redux';
+import { CURRENT_INGREDIENT } from '../../services/actions/ingredients';
 
-const BurgerIngredients = ({ ingredientList }) => {
+const BurgerIngredients = () => {
+    const dispatch = useDispatch();
+    const { ingredientsList, ingredientsListRequest, ingredientsListFailed } = useSelector(state => state.ingredients);
 
     const [currentTab, setCurrentTab] = useState("bun");
     const [openModal, setOpenModal] = useState(false);
-    const [details, setDetails] = useState({});
 
     const bunRef = createRef();
     const sauceRef = createRef();
     const mainRef = createRef();
+
+    useEffect(() => {
+        dispatch(getIngedients());
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
 
     const setCurrent = (valueRef, value) => {
         setCurrentTab(value);
@@ -27,17 +36,37 @@ const BurgerIngredients = ({ ingredientList }) => {
 
     const handleCloseDetails = () => {
         handleCloseModal();
-        setDetails({});
+        dispatch({ type: CURRENT_INGREDIENT, payload: {} });
     }
 
     const handlerOpenDetails = async (ingredient) => {
-        await setDetails(ingredient);
+        await dispatch({ type: CURRENT_INGREDIENT, payload: ingredient });
         handleCloseModal();
     }
 
-    const buns = useMemo(() => ingredientList.filter((item) => item.type === 'bun'), [ingredientList]);
-    const sauces = useMemo(() => ingredientList.filter((item) => item.type === 'sauce'), [ingredientList]);
-    const mains = useMemo(() => ingredientList.filter((item) => item.type === 'main'), [ingredientList]);
+    const scrollObserve = () => {
+        function obCallback(payload) {
+            for (let i = 0; payload.length > i; i++) {
+                if ((payload[i].target === bunRef.current) && (payload[i].isIntersecting && payload[i].intersectionRatio > 0.7)) {
+                    setCurrentTab("bun");
+                } else if ((payload[i].target === sauceRef.current) && (payload[i].isIntersecting && payload[i].intersectionRatio > 0.7)) {
+                    setCurrentTab("sauce");
+                } else if ((payload[i].target === mainRef.current) && (payload[i].isIntersecting && payload[i].intersectionRatio > 0.3)) {
+                    setCurrentTab("main");
+                }
+            }
+        }
+
+        const ob = new IntersectionObserver(obCallback);
+
+        ob.observe(bunRef.current);
+        ob.observe(sauceRef.current);
+        ob.observe(mainRef.current);
+    }
+
+    const buns = useMemo(() => ingredientsList.filter((item) => item.type === 'bun'), [ingredientsList]);
+    const sauces = useMemo(() => ingredientsList.filter((item) => item.type === 'sauce'), [ingredientsList]);
+    const mains = useMemo(() => ingredientsList.filter((item) => item.type === 'main'), [ingredientsList]);
 
     return (
         <>
@@ -57,7 +86,10 @@ const BurgerIngredients = ({ ingredientList }) => {
                     </div>
                 </section>
 
-                <section className={`${ingredientsStyles.scroll} custom-scroll`}>
+                <section
+                    onScroll={scrollObserve}
+                    className={`${ingredientsStyles.scroll} custom-scroll`}
+                >
                     <section ref={bunRef} className={`${ingredientsStyles.ingredientsSection} ml-1 mr-1`}>
                         <p className="text text_type_main-medium mt-10 mb-6">Булки</p>
                         {buns.map((ingredient, key) => (<div onClick={() => handlerOpenDetails(ingredient)} className={`${ingredientsStyles.ingredient} text text_type_main-small mt-6 ml-3 mr-3`} key={key}>
@@ -97,7 +129,7 @@ const BurgerIngredients = ({ ingredientList }) => {
                 </section>
             </section>
 
-            {openModal && <Modal header={"Детали ингредиента"} component={<IngredientDetails details={details} />} onClose={handleCloseDetails} />}
+            {openModal && <Modal header={"Детали ингредиента"} component={<IngredientDetails />} onClose={handleCloseDetails} />}
         </>
     );
 }
@@ -105,5 +137,5 @@ const BurgerIngredients = ({ ingredientList }) => {
 export default BurgerIngredients;
 
 BurgerIngredients.propTypes = {
-    ingredientList: PropTypes.arrayOf(ingredientListPropTypes).isRequired
+    //ingredientsList: PropTypes.arrayOf(ingredientListPropTypes).isRequired
 };

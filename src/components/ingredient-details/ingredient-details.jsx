@@ -1,29 +1,31 @@
 import React from 'react';
 import { ingredientListPropTypes } from '../../utils/prop-types';
 import ingredientDetailsStyles from '././ingredient-details.module.css';
+import { useSelector } from 'react-redux';
 
-const IngredientDetails = ({ details }) => {
+const IngredientDetails = () => {
+    const { currentIngredient } = useSelector(state => state.ingredients);
 
     return (
         <section className={`${ingredientDetailsStyles.ingredient} mb-15`}>
-            <p className={`mt-1 mb-1`}><img src={details.image_large} alt={details.name} /></p>
-            <p className={`text text_type_main-medium mt-4 mb-8`}>{details.name}</p>
+            <p className={`mt-1 mb-1`}><img src={currentIngredient.image_large} alt={currentIngredient.name} /></p>
+            <p className={`text text_type_main-medium mt-4 mb-8`}>{currentIngredient.name}</p>
             <div className={`${ingredientDetailsStyles.property}`}>
                 <div className={`${ingredientDetailsStyles.info} text text_type_main-default mr-5`}>
                     <p>Калории,ккал</p>
-                    <p>{details.calories}</p>
+                    <p>{currentIngredient.calories}</p>
                 </div>
                 <div className={`${ingredientDetailsStyles.info} text text_type_main-default mr-5`}>
                     <p>Белки, г</p>
-                    <p>{details.proteins}</p>
+                    <p>{currentIngredient.proteins}</p>
                 </div>
                 <div className={`${ingredientDetailsStyles.info} text text_type_main-default mr-5`}>
                     <p>Жиры, г</p>
-                    <p>{details.fat}</p>
+                    <p>{currentIngredient.fat}</p>
                 </div>
                 <div className={`${ingredientDetailsStyles.info} text text_type_main-default`}>
                     <p>Углеводы, г</p>
-                    <p>{details.carbohydrates}</p>
+                    <p>{currentIngredient.carbohydrates}</p>
                 </div>
             </div>
         </section>
@@ -33,5 +35,5 @@ const IngredientDetails = ({ details }) => {
 export default IngredientDetails;
 
 IngredientDetails.propTypes = {
-    details: ingredientListPropTypes.isRequired,
+    //currentIngredient: ingredientListPropTypes.isRequired,
 }
