@@ -1,6 +1,6 @@
 import React, { useState, createRef, useMemo, useEffect } from 'react';
-import PropTypes from 'prop-types';
-import { ingredientListPropTypes } from '../../utils/prop-types';
+//import PropTypes from 'prop-types';
+//import { ingredientListPropTypes } from '../../utils/prop-types';
 import ingredientsStyles from './burger-ingredients.module.css';
 import { Tab, CurrencyIcon, Counter } from '@ya.praktikum/react-developer-burger-ui-components';
 import Modal from '../modal/modal';
@@ -11,7 +11,7 @@ import { CURRENT_INGREDIENT } from '../../services/actions/ingredients';
 
 const BurgerIngredients = () => {
     const dispatch = useDispatch();
-    const { ingredientsList, ingredientsListRequest, ingredientsListFailed } = useSelector(state => state.ingredients);
+    const { ingredientsList, currentIngredientsList } = useSelector(state => state.ingredients);
 
     const [currentTab, setCurrentTab] = useState("bun");
     const [openModal, setOpenModal] = useState(false);
@@ -92,8 +92,8 @@ const BurgerIngredients = () => {
                 >
                     <section ref={bunRef} className={`${ingredientsStyles.ingredientsSection} ml-1 mr-1`}>
                         <p className="text text_type_main-medium mt-10 mb-6">Булки</p>
-                        {buns.map((ingredient, key) => (<div onClick={() => handlerOpenDetails(ingredient)} className={`${ingredientsStyles.ingredient} text text_type_main-small mt-6 ml-3 mr-3`} key={key}>
-                            <Counter count={1} size="default" extraClass="m-1" />
+                        {buns.map(ingredient => (<div onClick={() => handlerOpenDetails(ingredient)} className={`${ingredientsStyles.ingredient} text text_type_main-small mt-6 ml-3 mr-3`} key={ingredient._id}>
+                            <Counter count={currentIngredientsList.filter(item => item._id === ingredient._id).length} size="default" extraClass="m-1" />
                             <img className="pl-4 pr-4" src={ingredient.image} alt={ingredient.name} />
                             <p className={`${ingredientsStyles.ingredientDetail} mt-1 mb-1`}>
                                 <span className="mr-1">{ingredient.price}</span>
@@ -105,8 +105,8 @@ const BurgerIngredients = () => {
 
                     <section ref={sauceRef} className={`${ingredientsStyles.ingredientsSection} ml-1 mr-1`}>
                         <p className="text text_type_main-medium mt-10 mb-6">Соусы</p>
-                        {sauces.map((ingredient, key) => (<div onClick={() => handlerOpenDetails(ingredient)} className={`${ingredientsStyles.ingredient} text text_type_main-small mt-6 ml-3 mr-3`} key={key}>
-                            <Counter count={1} size="default" extraClass="m-1" />
+                        {sauces.map(ingredient => (<div onClick={() => handlerOpenDetails(ingredient)} className={`${ingredientsStyles.ingredient} text text_type_main-small mt-6 ml-3 mr-3`} key={ingredient._id}>
+                            <Counter count={currentIngredientsList.filter(item => item._id === ingredient._id).length} size="default" extraClass="m-1" />
                             <img className="pl-4 pr-4" src={ingredient.image} alt={ingredient.name} />
                             <p className={`${ingredientsStyles.ingredientDetail} mt-1 mb-1`}>
                                 <span className="mr-1">{ingredient.price}</span><CurrencyIcon type="primary" />
@@ -117,8 +117,8 @@ const BurgerIngredients = () => {
 
                     <section ref={mainRef} className={`${ingredientsStyles.ingredientsSection} ml-1 mr-1`}>
                         <p className="text text_type_main-medium mt-10 mb-6">Начинки</p>
-                        {mains.map((ingredient, key) => (<div onClick={() => handlerOpenDetails(ingredient)} className={`${ingredientsStyles.ingredient} text text_type_main-small mt-6 ml-3 mr-3`} key={key}>
-                            <Counter count={1} size="default" extraClass="m-1" />
+                        {mains.map(ingredient => (<div onClick={() => handlerOpenDetails(ingredient)} className={`${ingredientsStyles.ingredient} text text_type_main-small mt-6 ml-3 mr-3`} key={ingredient._id}>
+                            <Counter count={currentIngredientsList.filter(item => item._id === ingredient._id).length} size="default" extraClass="m-1" />
                             <img className="pl-4 pr-4" src={ingredient.image} alt={ingredient.name} />
                             <p className={`${ingredientsStyles.ingredientDetail} mt-1 mb-1`}>
                                 <span className="mr-1">{ingredient.price}</span><CurrencyIcon type="primary" />
@@ -136,6 +136,6 @@ const BurgerIngredients = () => {
 
 export default BurgerIngredients;
 
-BurgerIngredients.propTypes = {
-    //ingredientsList: PropTypes.arrayOf(ingredientListPropTypes).isRequired
-};
+//BurgerIngredients.propTypes = {
+   // ingredientsList: PropTypes.arrayOf(ingredientListPropTypes).isRequired
+//};

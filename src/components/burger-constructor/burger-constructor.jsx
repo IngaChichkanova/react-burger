@@ -1,52 +1,53 @@
 import React, { useState, useMemo } from 'react';
-import PropTypes from 'prop-types';
-import { ingredientListPropTypes } from '../../utils/prop-types';
+//import PropTypes from 'prop-types';
+//import { ingredientListPropTypes } from '../../utils/prop-types';
 import burgerStyles from './burger-constructor.module.css';
 import { DragIcon, CurrencyIcon, Button, ConstructorElement } from '@ya.praktikum/react-developer-burger-ui-components';
 import Modal from '../modal/modal';
 import OrderDetails from '../order-details/order-details';
-import { OrderDetailsContext } from '../../services/burgerConstructorContext.js';
-import { doOrder } from '../../utils/burger-api';
+import { useSelector, useDispatch } from 'react-redux';
+import { GET_ORDER_SUCCESS } from '../../services/actions/ingredients';
 
 const BurgerConstructor = ({ ingredientList }) => {
-    const [orderNumber, setOrderNumber] = useState(null);
-    const [hasError, setHasError] = useState(false);
+    const dispatch = useDispatch();
+    const { currentIngredientsList } = useSelector(state => state.ingredients);
+
+    const [openModal, setOpenModal] = useState(false);
 
     const handleOrder = () => {
-        doOrder(ingredientList.map(item => item._id))
-            .then(response => {
-                setHasError(false);
-                setOrderNumber(response.order.number);
-            })
-            .catch((e) => {
-                setHasError(true);
-            });
+        if (currentIngredientsList.length > 0) {
+            setOpenModal(true);
+        }
     }
 
     const handleClose = () => {
-        setOrderNumber(null);
+        setOpenModal(false);
+        dispatch({ type: GET_ORDER_SUCCESS, payload: {} });
     }
 
-    const bun = useMemo(() => ingredientList.find((item) => item.type === 'bun'), [ingredientList]);
-    const mainIngredients = useMemo(() => ingredientList.filter((item) => item.type !== 'bun'), [ingredientList]);
+    const bun = useMemo(() => currentIngredientsList.find((item) => item.type === 'bun'), [currentIngredientsList]);
+    const mainIngredients = useMemo(() => currentIngredientsList.filter((item) => item.type !== 'bun'), [currentIngredientsList]);
 
-    const totalPrice = useMemo(() => ingredientList.reduce((acc, item) => acc + item.price * (bun && bun._id === item._id ? 2 : 1), 0), [ingredientList, bun]);
+    const totalPrice = useMemo(() => currentIngredientsList.reduce((acc, item) => acc + item.price * (bun && bun._id === item._id ? 2 : 1), 0), [currentIngredientsList, bun]);
 
     return (
         <>
-            <OrderDetailsContext.Provider value={{ orderNumber, setOrderNumber }}>
-                <section className={`${burgerStyles.section} mt-25 mb-5 ml-5 pl-4 pr-4`}>
-                    <section className={`${burgerStyles.sectionIngredients} `}>
-                        {bun && <section className={`${burgerStyles.sectionIngredient} mb-4 mr-4`}>
-                            <ConstructorElement
-                                type="top"
-                                isLocked
-                                text={`${bun.name} (верх)`}
-                                price={bun.price}
-                                thumbnail={bun.image_mobile}
-                            />
-                        </section>}
+            <section className={`${burgerStyles.section} mt-25 mb-5 ml-5 pl-4 pr-4`}>
 
+
+                <section className={`${burgerStyles.sectionIngredients} `}>
+                    <section className={`${burgerStyles.sectionIngredient} mb-4 mr-4`}>
+                        <ConstructorElement
+                            type="top"
+                            isLocked
+                            extraClass={bun ? '' : burgerStyles.empty}
+                            text={bun ? `${bun.name} (верх)` : ''}
+                            price={bun ? bun.price : ''}
+                            thumbnail={bun ? bun.image_mobile : ''}
+                        />
+                    </section>
+
+                    {mainIngredients.length > 0 ?
                         <section className={`${burgerStyles.scroll} custom-scroll`}>
                             {mainIngredients.map((ingredient, key) => (<section key={key} className={`${burgerStyles.sectionIngredient} mt-4`}>
                                 <DragIcon type="primary" />
@@ -57,40 +58,49 @@ const BurgerConstructor = ({ ingredientList }) => {
                                 />
                             </section>))}
                         </section>
-
-                        {bun && <section className={`${burgerStyles.sectionIngredient} mt-4 mr-4`}>
+                        :
+                        <section className={`${burgerStyles.sectionIngredient} mb-4 mr-4`}>
                             <ConstructorElement
-                                type="bottom"
                                 isLocked
-                                text={`${bun.name} (низ)`}
-                                price={bun.price}
-                                thumbnail={bun.image_mobile}
+                                extraClass={burgerStyles.empty}
                             />
-                        </section>}
+                        </section>
+                    }
+
+                    <section className={`${burgerStyles.sectionIngredient} mt-4 mr-4`}>
+                        <ConstructorElement
+                            type="bottom"
+                            isLocked
+                            extraClass={bun ? '' : burgerStyles.empty}
+                            text={bun ? `${bun.name} (низ)` : ''}
+                            price={bun ? bun.price : ''}
+                            thumbnail={bun ? bun.image_mobile : ''}
+                        />
                     </section>
 
-                    <section className={`${burgerStyles.sectionFooter} mt-10`}>
-                        <p className={`text text_type_main-large mr-10`}>
-                            <span className="mr-2">{totalPrice}</span>
-                            <CurrencyIcon type="primary" />
-                        </p>
-                        <Button onClick={handleOrder} htmlType="button" type="primary" size="large">
-                            Оформить заказ
-                        </Button>
-                    </section>
                 </section>
 
-                {!hasError && orderNumber && <Modal onClose={handleClose} component={<OrderDetails />} />}
-            </OrderDetailsContext.Provider>
+                <section className={`${burgerStyles.sectionFooter} mt-10`}>
+                    <p className={`text text_type_main-large mr-10`}>
+                        <span className="mr-2">{totalPrice}</span>
+                        <CurrencyIcon type="primary" />
+                    </p>
+                    <Button onClick={handleOrder} htmlType="button" type="primary" size="large">
+                        Оформить заказ
+                    </Button>
+                </section>
+            </section>
+
+            {openModal && <Modal onClose={handleClose} component={<OrderDetails />} />}
         </>
     );
 }
 
 export default BurgerConstructor;
 
-BurgerConstructor.propTypes = {
-    ingredientList: PropTypes.arrayOf(ingredientListPropTypes).isRequired
-};
+//BurgerConstructor.propTypes = {
+//    ingredientList: PropTypes.arrayOf(ingredientListPropTypes).isRequired
+//};
 
 
 

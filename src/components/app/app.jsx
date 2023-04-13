@@ -11,7 +11,7 @@ const App = () => {
       <AppHeader />
       <main className={appStyles.main}>
         <BurgerIngredients />
-        {/*<BurgerConstructor />*/}
+        <BurgerConstructor />
       </main>
     </div>
   );

@@ -2,7 +2,11 @@ import {
     GET_INGREDIENTS_FAILED,
     GET_INGREDIENTS_REQUEST,
     GET_INGREDIENTS_SUCCESS,
-    CURRENT_INGREDIENT
+    CURRENT_INGREDIENTS_LIST,
+    CURRENT_INGREDIENT,
+    GET_ORDER_REQUEST,
+    GET_ORDER_SUCCESS,
+    GET_ORDER_FAILED
 } from '../actions/ingredients';
 
 const initialState = {
@@ -10,7 +14,13 @@ const initialState = {
     ingredientsListRequest: false,
     ingredientsListFailed: false,
 
-    currentIngredient: {}
+    currentIngredientsList: [],
+
+    currentIngredient: {},
+
+    order: {},
+    orderRequest: false,
+    orderFailed: false
 };
 
 export const ingredientsReducer = (state = initialState, action) => {
@@ -40,6 +50,33 @@ export const ingredientsReducer = (state = initialState, action) => {
             return {
                 ...state,
                 currentIngredient: action.payload
+            };
+        }
+        case CURRENT_INGREDIENTS_LIST: {
+            return {
+                ...state,
+                currentIngredientsList: action.payload
+            }
+        }
+        case GET_ORDER_REQUEST: {
+            return {
+                ...state,
+                orderRequest: true
+            };
+        }
+        case GET_ORDER_SUCCESS: {
+            return {
+                ...state,
+                orderFailed: false,
+                order: action.payload,
+                orderRequest: false
+            };
+        }
+        case GET_ORDER_FAILED: {
+            return {
+                ...state,
+                orderFailed: true,
+                orderRequest: false
             };
         }
         default: {
