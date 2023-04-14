@@ -4,6 +4,7 @@ import orderChecked from '../../icons/orderChecked.svg';
 //import PropTypes from 'prop-types';
 import { useSelector, useDispatch } from 'react-redux';
 import { doOrder } from '../../services/actions/ingredients';
+import { GET_ORDER_SUCCESS } from '../../services/actions/ingredients';
 
 const OrderDetails = () => {
     const dispatch = useDispatch();
@@ -14,10 +15,15 @@ const OrderDetails = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
+    useEffect(() => {
+        dispatch({ type: GET_ORDER_SUCCESS, payload: {} });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [orderFailed])
+
     return (
         <section className={`${orderDetailsStyles.order}  mb-30`}>
-            {!orderRequest && !orderFailed && <>
-                <p className={`${orderDetailsStyles.total} text text_type_digits-large`}>{order}</p>
+            {order.number && !orderRequest && !orderFailed && <>
+                <p className={`${orderDetailsStyles.total} text text_type_digits-large`}>{order.number}</p>
                 <p className={`text text_type_main-medium mt-8`}>идентификатор заказа</p>
                 <p className={`mt-15 mb-15`}>
                     <img src={orderChecked} alt="orderChecked" />

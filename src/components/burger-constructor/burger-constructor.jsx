@@ -7,7 +7,7 @@ import Modal from '../modal/modal';
 import OrderDetails from '../order-details/order-details';
 import { useSelector, useDispatch } from 'react-redux';
 import { GET_ORDER_SUCCESS, CURRENT_INGREDIENTS_LIST } from '../../services/actions/ingredients';
-import DropTarget from './drop-target';
+import { useDrop } from "react-dnd";
 
 const BurgerConstructor = () => {
     const dispatch = useDispatch();
@@ -31,23 +31,60 @@ const BurgerConstructor = () => {
 
     const totalPrice = useMemo(() => currentIngredientsList.reduce((acc, item) => acc + item.price * (bun && bun._id === item._id ? 2 : 1), 0), [currentIngredientsList, bun]);
 
-    const handleDrop = (itemId) => {
+    const onDropHandler = (item) => {
+        if (item.type === "bun" && currentIngredientsList.some(item => item.type === "bun")) {
+            dispatch({
+                type: CURRENT_INGREDIENTS_LIST, payload: [
+                    ...currentIngredientsList.filter(item => item.type !== "bun"),
+                    item
+                ]
+            });
+        } else {
+            dispatch({
+                type: CURRENT_INGREDIENTS_LIST, payload: [
+                    ...currentIngredientsList,
+                    item
+                ]
+            });
+        }
+    };
+
+    const [{ }, dropTargetBun] = useDrop({
+        accept: ["bun", "sauce", "main"],
+        drop(item) {
+            onDropHandler(item);
+        },
+        collect: monitor => ({
+
+        }),
+        hover: (item, monitor) => {
+            // works fine and prints the correct data
+            // console.log(item);
+            //console.log(monitor.canDrop()) // true
+        },
+    }, [currentIngredientsList]);
+
+    const removeIngredient = (ingredient, key) => {
         dispatch({
             type: CURRENT_INGREDIENTS_LIST, payload: [
-                ...currentIngredientsList,
-                ...ingredientsList.filter(element => element.id === itemId.id)
+                ...[bun],
+                ...mainIngredients.filter((item, itemKey) => !(ingredient._id === item._id && itemKey === key))
             ]
         });
-    };
+    }
 
     return (
         <>
-            <section className={`${burgerStyles.section} mt-25 mb-5 ml-5 pl-4 pr-4`}>
+            <section className={`${burgerStyles.section} mt-25 mb-5 ml-5 pl-4 pr-4`}
+                ref={dropTargetBun}
+            >
 
 
                 <section className={`${burgerStyles.sectionIngredients} `}>
 
-                    <section className={`${burgerStyles.sectionIngredient} mb-4 mr-4`}>
+                    <section
+
+                        className={`${burgerStyles.sectionIngredient} mb-4 mr-4`}>
                         <ConstructorElement
                             type="top"
                             isLocked
@@ -66,6 +103,7 @@ const BurgerConstructor = () => {
                                     text={ingredient.name}
                                     price={ingredient.price}
                                     thumbnail={ingredient.image_mobile}
+                                    handleClose={() => removeIngredient(ingredient, key)}
                                 />
                             </section>))}
                         </section>
