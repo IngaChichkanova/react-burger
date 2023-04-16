@@ -8,7 +8,6 @@ const DraggableItem = ({ type, children, item, clickHandler }) => {
     const [{ }, dragRef] = useDrag({
         type: type,
         item: () => {
-            console.log('useDrag', item)
             return item
         },
         collect: monitor => ({

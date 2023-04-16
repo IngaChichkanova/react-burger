@@ -8,6 +8,7 @@ import OrderDetails from '../order-details/order-details';
 import { useSelector, useDispatch } from 'react-redux';
 import { GET_ORDER_SUCCESS, CURRENT_INGREDIENTS_LIST } from '../../services/actions/ingredients';
 import { useDrop } from "react-dnd";
+import DraggableItem from './draggable-items';
 
 const BurgerConstructor = () => {
     const dispatch = useDispatch();
@@ -51,7 +52,7 @@ const BurgerConstructor = () => {
 
     const [{ }, dropTargetBun] = useDrop({
         accept: ["bun", "sauce", "main"],
-        drop(item) {
+        drop(item, monitor) {
             onDropHandler(item);
         },
         collect: monitor => ({
@@ -62,7 +63,7 @@ const BurgerConstructor = () => {
             // console.log(item);
             //console.log(monitor.canDrop()) // true
         },
-    }, [currentIngredientsList]);
+    });
 
     const removeIngredient = (ingredient, key) => {
         dispatch({
@@ -70,6 +71,16 @@ const BurgerConstructor = () => {
                 ...[bun],
                 ...mainIngredients.filter((item, itemKey) => !(ingredient._id === item._id && itemKey === key))
             ]
+        });
+    }
+
+    const moveItem = (dragIndex, hoverIndex) => {
+        let currentIngredients = mainIngredients;
+        let movingItem = currentIngredients[dragIndex];
+        currentIngredients.splice(dragIndex, 1);
+        currentIngredients.splice(hoverIndex, 0, movingItem);
+        dispatch({
+            type: CURRENT_INGREDIENTS_LIST, payload: currentIngredients
         });
     }
 
@@ -95,17 +106,27 @@ const BurgerConstructor = () => {
                         />
                     </section>
 
+
                     {mainIngredients.length > 0 ?
                         <section className={`${burgerStyles.scroll} custom-scroll`}>
-                            {mainIngredients.map((ingredient, key) => (<section key={key} className={`${burgerStyles.sectionIngredient} mt-4`}>
-                                <DragIcon type="primary" />
-                                <ConstructorElement
-                                    text={ingredient.name}
-                                    price={ingredient.price}
-                                    thumbnail={ingredient.image_mobile}
-                                    handleClose={() => removeIngredient(ingredient, key)}
-                                />
-                            </section>))}
+                            {mainIngredients.map((ingredient, key) => (
+                                <DraggableItem
+                                    key={key}
+                                    className={`${burgerStyles.sectionIngredient} mt-4`}
+                                    item={ingredient}
+                                    index={key}
+                                    id={ingredient._id}
+                                    moveItem={moveItem}
+                                >
+                                    <>
+                                        <DragIcon type="primary" />
+                                        <ConstructorElement
+                                            text={ingredient.name}
+                                            price={ingredient.price}
+                                            thumbnail={ingredient.image_mobile}
+                                            handleClose={() => removeIngredient(ingredient, key)}
+                                        /></>
+                                </DraggableItem>))}
                         </section>
                         :
                         <section className={`${burgerStyles.sectionIngredient} mb-4 mr-4`}>
@@ -127,7 +148,7 @@ const BurgerConstructor = () => {
                         />
                     </section>
 
-                </section>
+                </section >
 
                 <section className={`${burgerStyles.sectionFooter} mt-10`}>
                     <p className={`text text_type_main-large mr-10`}>
@@ -138,7 +159,7 @@ const BurgerConstructor = () => {
                         Оформить заказ
                     </Button>
                 </section>
-            </section>
+            </section >
 
             {openModal && <Modal onClose={handleClose} component={<OrderDetails />} />}
         </>
