@@ -1,6 +1,4 @@
 import React, { useState, createRef, useMemo, useEffect } from 'react';
-//import PropTypes from 'prop-types';
-//import { ingredientListPropTypes } from '../../utils/prop-types';
 import ingredientsStyles from './burger-ingredients.module.css';
 import { Tab, CurrencyIcon, Counter } from '@ya.praktikum/react-developer-burger-ui-components';
 import Modal from '../modal/modal';
@@ -104,6 +102,7 @@ const BurgerIngredients = () => {
                                 item={ingredient}
                                 type={ingredient.type}
                                 clickHandler={() => handlerOpenDetails(ingredient)}
+                                className={`${ingredientsStyles.ingredient} text text_type_main-small mt-6 ml-3 mr-3`}
                             >
                                 <>
                                     <Counter count={currentIngredientsList.filter(item => item._id === ingredient._id).length} size="default" extraClass="m-1" />
@@ -128,6 +127,7 @@ const BurgerIngredients = () => {
                                 item={ingredient}
                                 type={ingredient.type}
                                 clickHandler={() => handlerOpenDetails(ingredient)}
+                                className={`${ingredientsStyles.ingredient} text text_type_main-small mt-6 ml-3 mr-3`}
                             >
                                 <>
                                     <Counter count={currentIngredientsList.filter(item => item._id === ingredient._id).length} size="default" extraClass="m-1" />
@@ -150,6 +150,7 @@ const BurgerIngredients = () => {
                                 item={ingredient}
                                 type={ingredient.type}
                                 clickHandler={() => handlerOpenDetails(ingredient)}
+                                className={`${ingredientsStyles.ingredient} text text_type_main-small mt-6 ml-3 mr-3`}
                             >
                                 <>
                                     <Counter count={currentIngredientsList.filter(item => item._id === ingredient._id).length} size="default" extraClass="m-1" />
@@ -172,7 +173,3 @@ const BurgerIngredients = () => {
 }
 
 export default BurgerIngredients;
-
-//BurgerIngredients.propTypes = {
-   // ingredientsList: PropTypes.arrayOf(ingredientListPropTypes).isRequired
-//};

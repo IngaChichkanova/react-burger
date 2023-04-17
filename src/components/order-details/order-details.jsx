@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import orderDetailsStyles from '././order-details.module.css';
 import orderChecked from '../../icons/orderChecked.svg';
-//import PropTypes from 'prop-types';
 import { useSelector, useDispatch } from 'react-redux';
 import { doOrder } from '../../services/actions/ingredients';
 import { GET_ORDER_SUCCESS } from '../../services/actions/ingredients';
@@ -36,7 +35,3 @@ const OrderDetails = () => {
 }
 
 export default OrderDetails;
-
-//OrderDetails.propTypes = {
-    //orderNumber: PropTypes.number.isRequired
-//};

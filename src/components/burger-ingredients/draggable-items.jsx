@@ -1,25 +1,25 @@
 import React from 'react';
-//import PropTypes from 'prop-types';
-//import { ingredientListPropTypes } from '../../utils/prop-types';
+import PropTypes from 'prop-types';
+import { ingredientListPropTypes } from '../../utils/prop-types';
 import { useDrag } from "react-dnd";
-import draggableItemsStyles from './draggable-items.module.css';
 
-const DraggableItem = ({ type, children, item, clickHandler }) => {
-    const [{ }, dragRef] = useDrag({
+const DraggableItem = ({ type, children, item, clickHandler, className }) => {
+    const [{ isDrag }, dragRef] = useDrag({
         type: type,
-        item: () => {
-            return item
-        },
+        item: () => item,
         collect: monitor => ({
-
-        })
+            isDrag: monitor.isDragging(),
+        }),
     });
+
+    const opacity = isDrag ? 0.7 : 1;
 
     return (
         <div
             ref={dragRef}
-            className={`${draggableItemsStyles.ingredient} text text_type_main-small mt-6 ml-3 mr-3`}
+            className={className}
             onClick={clickHandler}
+            style={{ opacity }}
         >
             {children}
         </div>
@@ -28,6 +28,10 @@ const DraggableItem = ({ type, children, item, clickHandler }) => {
 
 export default DraggableItem;
 
-//DraggableItem.propTypes = {
-   // ingredientsList: PropTypes.arrayOf(ingredientListPropTypes).isRequired
-//};
+DraggableItem.propTypes = {
+    children: PropTypes.node.isRequired,
+    item: ingredientListPropTypes.isRequired,
+    className: PropTypes.string.isRequired,
+    clickHandler: PropTypes.func.isRequired,
+    type: PropTypes.string.isRequired
+};

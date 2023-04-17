@@ -1,19 +1,16 @@
 import React from 'react';
-//import PropTypes from 'prop-types';
-//import { ingredientListPropTypes } from '../../utils/prop-types';
+import PropTypes from 'prop-types';
+import { ingredientListPropTypes } from '../../utils/prop-types';
 import { useDrag, useDrop } from "react-dnd";
 
-const DraggableItem = ({ children, item, className, index, moveItem, id }) => {
+const DraggableItem = ({ children, item, className, index, moveItem }) => {
     const ref = React.useRef(null);
 
-
-    const [{ handlerId }, drop] = useDrop({
+    const [{ isHover }, drop] = useDrop({
         accept: 'sort',
-        collect(monitor) {
-            return {
-                handlerId: monitor.getHandlerId()
-            };
-        },
+        collect: monitor => ({
+            isHover: monitor.isOver(),
+        }),
         hover(item, monitor) {
             if (!ref.current) {
                 return;
@@ -56,20 +53,22 @@ const DraggableItem = ({ children, item, className, index, moveItem, id }) => {
     });
 
 
-    const [{ }, drag] = useDrag({
+    const [{ isDrag }, drag] = useDrag({
         type: 'sort',
         item: () => {
             return { item, index }
         },
         collect: monitor => ({
-
+            isDrag: monitor.isDragging()
         })
     });
 
     drag(drop(ref));
 
-    return (
-        <section className={className} ref={ref} >
+    const opacity = isHover ? 0.7 : 1;
+
+    return (!isDrag &&
+        <section className={className} ref={ref} style={{ opacity }} >
             {children}
         </section>
     );
@@ -77,6 +76,10 @@ const DraggableItem = ({ children, item, className, index, moveItem, id }) => {
 
 export default DraggableItem;
 
-//DraggableItem.propTypes = {
-   // ingredientsList: PropTypes.arrayOf(ingredientListPropTypes).isRequired
-//};
+DraggableItem.propTypes = {
+    children: PropTypes.node.isRequired,
+    item: ingredientListPropTypes.isRequired,
+    className: PropTypes.string.isRequired,
+    index: PropTypes.number.isRequired,
+    moveItem: PropTypes.func.isRequired
+};

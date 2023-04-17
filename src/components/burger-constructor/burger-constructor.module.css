@@ -35,6 +35,10 @@
     margin-bottom: 0;
 }
 
+.empty{
+    min-width: 370px;
+}
+
 .empty *{
     display: none;
 }
