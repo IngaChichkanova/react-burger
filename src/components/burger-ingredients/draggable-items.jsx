@@ -12,7 +12,7 @@ const DraggableItem = ({ type, children, item, clickHandler, className }) => {
         }),
     });
 
-    const opacity = isDrag ? 0.7 : 1;
+    const opacity = isDrag ? 0.3 : 1;
 
     return (
         <div

@@ -16,7 +16,7 @@ const BurgerConstructor = () => {
 
     const handleOrder = () => {
         if (currentIngredientsList.length > 0) {
-            setOpenModal(true); 
+            setOpenModal(true);
         }
     }
 
@@ -25,10 +25,7 @@ const BurgerConstructor = () => {
         dispatch({ type: GET_ORDER_SUCCESS, payload: {} });
     }
 
-    const bun = useMemo(() => currentIngredientsList.find((item) => item.type === 'bun'), [currentIngredientsList]);
-    const mainIngredients = useMemo(() => currentIngredientsList.filter((item) => item.type !== 'bun'), [currentIngredientsList]);
-
-    const totalPrice = useMemo(() => currentIngredientsList.reduce((acc, item) => acc + item.price * (bun && bun._id === item._id ? 2 : 1), 0), [currentIngredientsList, bun]);
+    const totalPrice = useMemo(() => currentIngredientsList.reduce((acc, item) => acc + item.price * (item.type === 'bun' ? 2 : 1), 0), [currentIngredientsList]);
 
     const onDropHandler = (item) => {
         if (item.type === "bun" && currentIngredientsList.some(item => item.type === "bun")) {
@@ -60,20 +57,19 @@ const BurgerConstructor = () => {
 
     const removeIngredient = (ingredient, key) => {
         dispatch({
-            type: CURRENT_INGREDIENTS_LIST, payload: [
-                ...[bun],
-                ...mainIngredients.filter((item, itemKey) => !(ingredient._id === item._id && itemKey === key))
-            ]
+            type: CURRENT_INGREDIENTS_LIST,
+            payload: currentIngredientsList.filter((item, itemKey) => !(ingredient._id === item._id && itemKey === key))
         });
     }
 
     const moveItem = (dragIndex, hoverIndex) => {
-        let currentIngredients = mainIngredients;
+
+        let currentIngredients = currentIngredientsList;
         let movingItem = currentIngredients[dragIndex];
         currentIngredients.splice(dragIndex, 1);
         currentIngredients.splice(hoverIndex, 0, movingItem);
         dispatch({
-            type: CURRENT_INGREDIENTS_LIST, payload: currentIngredients.concat(bun ? [bun] : [])
+            type: CURRENT_INGREDIENTS_LIST, payload: currentIngredients
         });
     }
 
@@ -81,28 +77,35 @@ const BurgerConstructor = () => {
 
     return (
         <>
-            <section className={`${burgerStyles.section} mt-25 mb-5 ml-5 pl-4 pr-4`} style={{border}}
+            <section className={`${burgerStyles.section} mt-25 mb-5 ml-5 pl-4 pr-4`} style={{ border }}
                 ref={dropTargetBun}
             >
                 <section className={`${burgerStyles.sectionIngredients} `}>
 
-                    <section
 
-                        className={`${burgerStyles.sectionIngredient} mb-4 mr-4`}>
+
+                    {currentIngredientsList.filter(item => item.type === 'bun').length > 0 ? currentIngredientsList.filter(item => item.type === 'bun').map((ingredient, key) => (<section key={key} className={`${burgerStyles.sectionIngredient} mb-4 mr-4`}>
                         <ConstructorElement
                             type="top"
                             isLocked
-                            extraClass={bun ? '' : burgerStyles.empty}
-                            text={bun ? `${bun.name} (верх)` : ''}
-                            price={bun ? bun.price : ''}
-                            thumbnail={bun ? bun.image_mobile : ''}
+                            text={`${ingredient.name} (верх)`}
+                            price={ingredient.price}
+                            thumbnail={ingredient.image_mobile}
                         />
-                    </section>
+                    </section>)) :
+                        <section className={`${burgerStyles.sectionIngredient} mb-4 mr-4`}>
+                            <ConstructorElement
+                                type="top"
+                                isLocked
+                                extraClass={burgerStyles.empty}
+                            />
+                        </section>
+                    }
 
 
-                    {mainIngredients.length > 0 ?
+                    {currentIngredientsList.filter(item => item.type !== 'bun').length > 0 ?
                         <section className={`${burgerStyles.scroll} custom-scroll`}>
-                            {mainIngredients.map((ingredient, key) => (
+                            {currentIngredientsList.filter(item => item.type !== 'bun').map((ingredient, key) => (
                                 <DraggableItem
                                     key={key}
                                     className={`${burgerStyles.sectionIngredient} mt-4`}
@@ -117,7 +120,10 @@ const BurgerConstructor = () => {
                                             text={ingredient.name}
                                             price={ingredient.price}
                                             thumbnail={ingredient.image_mobile}
-                                            handleClose={() => removeIngredient(ingredient, key)}
+                                            handleClose={() => {
+                                                console.log(key)
+                                                removeIngredient(ingredient, key + currentIngredientsList.filter(item => item.type === 'bun').length)
+                                            }}
                                         /></>
                                 </DraggableItem>))}
                         </section>
@@ -130,16 +136,24 @@ const BurgerConstructor = () => {
                         </section>
                     }
 
-                    <section className={`${burgerStyles.sectionIngredient} mt-4 mr-4`}>
+
+                    {currentIngredientsList.filter(item => item.type === 'bun').length > 0 ? currentIngredientsList.filter(item => item.type === 'bun').map((ingredient, key) => (<section key={key} className={`${burgerStyles.sectionIngredient} mt-4 mr-4`}>
                         <ConstructorElement
                             type="bottom"
                             isLocked
-                            extraClass={bun ? '' : burgerStyles.empty}
-                            text={bun ? `${bun.name} (низ)` : ''}
-                            price={bun ? bun.price : ''}
-                            thumbnail={bun ? bun.image_mobile : ''}
+                            text={`${ingredient.name} (низ)`}
+                            price={ingredient.price}
+                            thumbnail={ingredient.image_mobile}
                         />
-                    </section>
+                    </section>)) :
+                        <section className={`${burgerStyles.sectionIngredient} mb-4 mr-4`}>
+                            <ConstructorElement
+                                type="bottom"
+                                isLocked
+                                extraClass={burgerStyles.empty}
+                            />
+                        </section>
+                    }
 
                 </section >
 

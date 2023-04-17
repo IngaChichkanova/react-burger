@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { ingredientListPropTypes } from '../../utils/prop-types';
 import { useDrag, useDrop } from "react-dnd";
 
-const DraggableItem = ({ children, item, className, index, moveItem }) => {
+const DraggableItem = ({ children, item, className, index, moveItem, id }) => {
     const ref = React.useRef(null);
 
     const [{ isHover }, drop] = useDrop({
@@ -11,7 +11,8 @@ const DraggableItem = ({ children, item, className, index, moveItem }) => {
         collect: monitor => ({
             isHover: monitor.isOver(),
         }),
-        hover(item, monitor) {
+       /* hover(item, monitor) {
+            console.log()
             if (!ref.current) {
                 return;
             }
@@ -49,8 +50,8 @@ const DraggableItem = ({ children, item, className, index, moveItem }) => {
             // but it's good here for the sake of performance
             // to avoid expensive index searches.
             item.index = hoverIndex;
-        }
-    });
+        }*/
+    }, [id, moveItem]);
 
 
     const [{ isDrag }, drag] = useDrag({
@@ -61,7 +62,7 @@ const DraggableItem = ({ children, item, className, index, moveItem }) => {
         collect: monitor => ({
             isDrag: monitor.isDragging()
         })
-    });
+    }, [moveItem, id]);
 
     drag(drop(ref));
 
@@ -80,6 +81,7 @@ DraggableItem.propTypes = {
     children: PropTypes.node.isRequired,
     item: ingredientListPropTypes.isRequired,
     className: PropTypes.string.isRequired,
+    id: PropTypes.string.isRequired,
     index: PropTypes.number.isRequired,
     moveItem: PropTypes.func.isRequired
 };

@@ -43,6 +43,7 @@ export const ingredientsReducer = (state = initialState, action) => {
             return {
                 ...state,
                 ingredientsListFailed: true,
+                ingredientsList: [],
                 ingredientsListRequest: false
             };
         }
@@ -76,7 +77,8 @@ export const ingredientsReducer = (state = initialState, action) => {
             return {
                 ...state,
                 orderFailed: true,
-                orderRequest: false
+                order: {},
+                orderRequest: false,
             };
         }
         default: {

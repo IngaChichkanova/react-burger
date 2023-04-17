@@ -10,7 +10,7 @@ import DraggableItem from './draggable-items';
 
 const BurgerIngredients = () => {
     const dispatch = useDispatch();
-    const { ingredientsList, currentIngredientsList } = useSelector(state => state.ingredients);
+    const { ingredientsList, currentIngredientsList, ingredientsListFailed, ingredientsListRequest } = useSelector(state => state.ingredients);
 
     const [currentTab, setCurrentTab] = useState("bun");
     const [openModal, setOpenModal] = useState(false);
@@ -25,31 +25,25 @@ const BurgerIngredients = () => {
     }, [])
 
     const setCurrent = (valueRef, value) => {
-        setCurrentTab(value);
-        valueRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
-    }
-
-    const handleCloseModal = () => {
-        setOpenModal(!openModal);
+        if (!ingredientsListFailed) {
+            setCurrentTab(value);
+            valueRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+        }
     }
 
     const handleCloseDetails = () => {
-        handleCloseModal();
+        setOpenModal(false);
         dispatch({ type: CURRENT_INGREDIENT, payload: {} });
     }
 
     const handlerOpenDetails = async (ingredient) => {
         await dispatch({ type: CURRENT_INGREDIENT, payload: ingredient });
-        handleCloseModal();
+        setOpenModal(true);
     }
 
     const scrollObserve = () => {
         function obCallback(payload) {
             for (let i = 0; payload.length > i; i++) {
-
-                if (payload[i].target === sauceRef.current) {
-                    //console.log(payload[i].intersectionRatio)
-                }
                 if ((payload[i].target === bunRef.current) && (payload[i].isIntersecting && payload[i].intersectionRatio > 0.7)) {
                     setCurrentTab("bun");
                 } else if ((payload[i].target === sauceRef.current) && (payload[i].isIntersecting && payload[i].intersectionRatio > 0.7)) {
@@ -89,82 +83,89 @@ const BurgerIngredients = () => {
                     </div>
                 </section>
 
-                <section
-                    onScroll={scrollObserve}
-                    className={`${ingredientsStyles.scroll} custom-scroll`}
-                >
-                    <section ref={bunRef} className={`${ingredientsStyles.ingredientsSection} ml-1 mr-1`}>
-                        <p className="text text_type_main-medium mt-10 mb-6">Булки</p>
+                {ingredientsListRequest
+                    ?
+                    <p className="text text_type_main-medium mt-10 mb-6">Загрузка...</p>
+                    :
+                    ingredientsListFailed ?
+                        <p className="text text_type_main-medium mt-10 mb-6">Ошибка</p>
+                        :
+                        <section
+                            onScroll={scrollObserve}
+                            className={`${ingredientsStyles.scroll} custom-scroll`}
+                        >
+                            <section ref={bunRef} className={`${ingredientsStyles.ingredientsSection} ml-1 mr-1`}>
+                                <p className="text text_type_main-medium mt-10 mb-6">Булки</p>
 
-                        {buns.map(ingredient => (
-                            <DraggableItem
-                                key={ingredient._id}
-                                item={ingredient}
-                                type={ingredient.type}
-                                clickHandler={() => handlerOpenDetails(ingredient)}
-                                className={`${ingredientsStyles.ingredient} text text_type_main-small mt-6 ml-3 mr-3`}
-                            >
-                                <>
-                                    <Counter count={currentIngredientsList.filter(item => item._id === ingredient._id).length} size="default" extraClass="m-1" />
-                                    <img className="pl-4 pr-4" src={ingredient.image} alt={ingredient.name} />
-                                    <p className={`${ingredientsStyles.ingredientDetail} mt-1 mb-1`}>
-                                        <span className="mr-1">{ingredient.price}</span>
-                                        <CurrencyIcon type="primary" />
-                                    </p>
-                                    <p className={`${ingredientsStyles.ingredientDetail}`}>{ingredient.name}</p>
-                                </>
-                            </DraggableItem>
-                        ))}
+                                {buns.map(ingredient => (
+                                    <DraggableItem
+                                        key={ingredient._id}
+                                        item={ingredient}
+                                        type={ingredient.type}
+                                        clickHandler={() => handlerOpenDetails(ingredient)}
+                                        className={`${ingredientsStyles.ingredient} text text_type_main-small mt-6 ml-3 mr-3`}
+                                    >
+                                        <>
+                                            <Counter count={currentIngredientsList.filter(item => item._id === ingredient._id).length} size="default" extraClass="m-1" />
+                                            <img className="pl-4 pr-4" src={ingredient.image} alt={ingredient.name} />
+                                            <p className={`${ingredientsStyles.ingredientDetail} mt-1 mb-1`}>
+                                                <span className="mr-1">{ingredient.price}</span>
+                                                <CurrencyIcon type="primary" />
+                                            </p>
+                                            <p className={`${ingredientsStyles.ingredientDetail}`}>{ingredient.name}</p>
+                                        </>
+                                    </DraggableItem>
+                                ))}
 
-                    </section>
+                            </section>
 
-                    <section ref={sauceRef} className={`${ingredientsStyles.ingredientsSection} ml-1 mr-1`}>
-                        <p className="text text_type_main-medium mt-10 mb-6">Соусы</p>
+                            <section ref={sauceRef} className={`${ingredientsStyles.ingredientsSection} ml-1 mr-1`}>
+                                <p className="text text_type_main-medium mt-10 mb-6">Соусы</p>
 
-                        {sauces.map(ingredient => (
-                            <DraggableItem
-                                key={ingredient._id}
-                                item={ingredient}
-                                type={ingredient.type}
-                                clickHandler={() => handlerOpenDetails(ingredient)}
-                                className={`${ingredientsStyles.ingredient} text text_type_main-small mt-6 ml-3 mr-3`}
-                            >
-                                <>
-                                    <Counter count={currentIngredientsList.filter(item => item._id === ingredient._id).length} size="default" extraClass="m-1" />
-                                    <img className="pl-4 pr-4" src={ingredient.image} alt={ingredient.name} />
-                                    <p className={`${ingredientsStyles.ingredientDetail} mt-1 mb-1`}>
-                                        <span className="mr-1">{ingredient.price}</span><CurrencyIcon type="primary" />
-                                    </p>
-                                    <p className={`${ingredientsStyles.ingredientDetail}`}>{ingredient.name}</p>
-                                </>
-                            </DraggableItem>))}
+                                {sauces.map(ingredient => (
+                                    <DraggableItem
+                                        key={ingredient._id}
+                                        item={ingredient}
+                                        type={ingredient.type}
+                                        clickHandler={() => handlerOpenDetails(ingredient)}
+                                        className={`${ingredientsStyles.ingredient} text text_type_main-small mt-6 ml-3 mr-3`}
+                                    >
+                                        <>
+                                            <Counter count={currentIngredientsList.filter(item => item._id === ingredient._id).length} size="default" extraClass="m-1" />
+                                            <img className="pl-4 pr-4" src={ingredient.image} alt={ingredient.name} />
+                                            <p className={`${ingredientsStyles.ingredientDetail} mt-1 mb-1`}>
+                                                <span className="mr-1">{ingredient.price}</span><CurrencyIcon type="primary" />
+                                            </p>
+                                            <p className={`${ingredientsStyles.ingredientDetail}`}>{ingredient.name}</p>
+                                        </>
+                                    </DraggableItem>))}
 
-                    </section>
+                            </section>
 
-                    <section ref={mainRef} className={`${ingredientsStyles.ingredientsSection} ml-1 mr-1`}>
-                        <p className="text text_type_main-medium mt-10 mb-6">Начинки</p>
+                            <section ref={mainRef} className={`${ingredientsStyles.ingredientsSection} ml-1 mr-1`}>
+                                <p className="text text_type_main-medium mt-10 mb-6">Начинки</p>
 
-                        {mains.map(ingredient => (
-                            <DraggableItem
-                                key={ingredient._id}
-                                item={ingredient}
-                                type={ingredient.type}
-                                clickHandler={() => handlerOpenDetails(ingredient)}
-                                className={`${ingredientsStyles.ingredient} text text_type_main-small mt-6 ml-3 mr-3`}
-                            >
-                                <>
-                                    <Counter count={currentIngredientsList.filter(item => item._id === ingredient._id).length} size="default" extraClass="m-1" />
-                                    <img className="pl-4 pr-4" src={ingredient.image} alt={ingredient.name} />
-                                    <p className={`${ingredientsStyles.ingredientDetail} mt-1 mb-1`}>
-                                        <span className="mr-1">{ingredient.price}</span><CurrencyIcon type="primary" />
-                                    </p>
-                                    <p className={`${ingredientsStyles.ingredientDetail}`}>{ingredient.name}</p>
-                                </>
-                            </DraggableItem>
-                        ))}
+                                {mains.map(ingredient => (
+                                    <DraggableItem
+                                        key={ingredient._id}
+                                        item={ingredient}
+                                        type={ingredient.type}
+                                        clickHandler={() => handlerOpenDetails(ingredient)}
+                                        className={`${ingredientsStyles.ingredient} text text_type_main-small mt-6 ml-3 mr-3`}
+                                    >
+                                        <>
+                                            <Counter count={currentIngredientsList.filter(item => item._id === ingredient._id).length} size="default" extraClass="m-1" />
+                                            <img className="pl-4 pr-4" src={ingredient.image} alt={ingredient.name} />
+                                            <p className={`${ingredientsStyles.ingredientDetail} mt-1 mb-1`}>
+                                                <span className="mr-1">{ingredient.price}</span><CurrencyIcon type="primary" />
+                                            </p>
+                                            <p className={`${ingredientsStyles.ingredientDetail}`}>{ingredient.name}</p>
+                                        </>
+                                    </DraggableItem>
+                                ))}
 
-                    </section>
-                </section>
+                            </section>
+                        </section>}
             </section>
 
             {openModal && <Modal header={"Детали ингредиента"} component={<IngredientDetails />} onClose={handleCloseDetails} />}
