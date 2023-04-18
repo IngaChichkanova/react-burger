@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 import burgerStyles from './burger-constructor.module.css';
 import { DragIcon, CurrencyIcon, Button, ConstructorElement } from '@ya.praktikum/react-developer-burger-ui-components';
 import Modal from '../modal/modal';
@@ -24,6 +24,9 @@ const BurgerConstructor = () => {
         setOpenModal(false);
         dispatch({ type: GET_ORDER_SUCCESS, payload: {} });
     }
+
+    const bun = useMemo(() => currentIngredientsList.filter((item) => item.type === 'bun'), [currentIngredientsList]);
+    const mainIngredients = useMemo(() => currentIngredientsList.filter((item) => item.type !== 'bun'), [currentIngredientsList]);
 
     const totalPrice = useMemo(() => currentIngredientsList.reduce((acc, item) => acc + item.price * (item.type === 'bun' ? 2 : 1), 0), [currentIngredientsList]);
 
@@ -58,20 +61,19 @@ const BurgerConstructor = () => {
     const removeIngredient = (ingredient, key) => {
         dispatch({
             type: CURRENT_INGREDIENTS_LIST,
-            payload: currentIngredientsList.filter((item, itemKey) => !(ingredient._id === item._id && itemKey === key))
+            payload: mainIngredients.filter((item, itemKey) => !(ingredient._id === item._id && itemKey === key)).concat(bun)
         });
     }
 
     const moveItem = (draggedId, hoveredId, originalItem) => {
-        let currentIngredients = [...currentIngredientsList];
+        let currentIngredients = [...mainIngredients];
         currentIngredients.splice(draggedId, 1);
         currentIngredients.splice(hoveredId, 0, originalItem);
 
         dispatch({
-            type: CURRENT_INGREDIENTS_LIST, payload: currentIngredients
+            type: CURRENT_INGREDIENTS_LIST, payload: currentIngredients.concat(bun)
         });
     }
-
 
     const border = isHover ? '1px solid #8585AD' : 'none';
 
@@ -84,7 +86,7 @@ const BurgerConstructor = () => {
 
 
 
-                    {currentIngredientsList.filter(item => item.type === 'bun').length > 0 ? currentIngredientsList.filter(item => item.type === 'bun').map((ingredient, key) => (<section key={key} className={`${burgerStyles.sectionIngredient} mb-4 mr-4`}>
+                    {bun.length > 0 ? bun.map((ingredient, key) => (<section key={key} className={`${burgerStyles.sectionIngredient} mb-4 mr-4`}>
                         <ConstructorElement
                             type="top"
                             isLocked
@@ -103,18 +105,13 @@ const BurgerConstructor = () => {
                     }
 
 
-                    {currentIngredientsList.filter(item => item.type !== 'bun').length > 0 ?
+                    {mainIngredients.length > 0 ?
                         <section className={`${burgerStyles.scroll} custom-scroll`}>
-                            {currentIngredientsList.filter(item => item.type !== 'bun').map((ingredient, key) => (
+                            {mainIngredients.map((ingredient, key) => (
                                 <DraggableItem
                                     key={key}
                                     className={`${burgerStyles.sectionIngredient} mt-4`}
-
-
-                                    currentItem={({ it: ingredient, in: key })}
-                                    //id={`${ingredient._id}-keyIndex-${key}`}
-                                    curentId={ingredient._id}
-                                    currentIndex={key}
+                                    currentItem={({ ingredient: ingredient, indexIngredient: key })}
                                     moveItem={moveItem}
                                 >
                                     <>
@@ -124,7 +121,7 @@ const BurgerConstructor = () => {
                                             price={ingredient.price}
                                             thumbnail={ingredient.image_mobile}
                                             handleClose={() => {
-                                                removeIngredient(ingredient, key + currentIngredientsList.filter(item => item.type === 'bun').length)
+                                                removeIngredient(ingredient, key)
                                             }}
                                         /></>
                                 </DraggableItem>))}
@@ -139,7 +136,7 @@ const BurgerConstructor = () => {
                     }
 
 
-                    {currentIngredientsList.filter(item => item.type === 'bun').length > 0 ? currentIngredientsList.filter(item => item.type === 'bun').map((ingredient, key) => (<section key={key} className={`${burgerStyles.sectionIngredient} mt-4 mr-4`}>
+                    {bun.length > 0 ? bun.map((ingredient, key) => (<section key={key} className={`${burgerStyles.sectionIngredient} mt-4 mr-4`}>
                         <ConstructorElement
                             type="bottom"
                             isLocked
