@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import burgerStyles from './burger-constructor.module.css';
 import { DragIcon, CurrencyIcon, Button, ConstructorElement } from '@ya.praktikum/react-developer-burger-ui-components';
 import Modal from '../modal/modal';
@@ -62,16 +62,16 @@ const BurgerConstructor = () => {
         });
     }
 
-    const moveItem = (dragIndex, hoverIndex) => {
+    const moveItem = (draggedId, hoveredId, originalItem) => {
+        let currentIngredients = [...currentIngredientsList];
+        currentIngredients.splice(draggedId, 1);
+        currentIngredients.splice(hoveredId, 0, originalItem);
 
-        let currentIngredients = currentIngredientsList;
-        let movingItem = currentIngredients[dragIndex];
-        currentIngredients.splice(dragIndex, 1);
-        currentIngredients.splice(hoverIndex, 0, movingItem);
         dispatch({
             type: CURRENT_INGREDIENTS_LIST, payload: currentIngredients
         });
     }
+
 
     const border = isHover ? '1px solid #8585AD' : 'none';
 
@@ -109,9 +109,12 @@ const BurgerConstructor = () => {
                                 <DraggableItem
                                     key={key}
                                     className={`${burgerStyles.sectionIngredient} mt-4`}
-                                    item={ingredient}
-                                    index={key}
-                                    id={ingredient._id}
+
+
+                                    currentItem={({ it: ingredient, in: key })}
+                                    //id={`${ingredient._id}-keyIndex-${key}`}
+                                    curentId={ingredient._id}
+                                    currentIndex={key}
                                     moveItem={moveItem}
                                 >
                                     <>
@@ -121,7 +124,6 @@ const BurgerConstructor = () => {
                                             price={ingredient.price}
                                             thumbnail={ingredient.image_mobile}
                                             handleClose={() => {
-                                                console.log(key)
                                                 removeIngredient(ingredient, key + currentIngredientsList.filter(item => item.type === 'bun').length)
                                             }}
                                         /></>

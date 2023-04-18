@@ -3,73 +3,90 @@ import PropTypes from 'prop-types';
 import { ingredientListPropTypes } from '../../utils/prop-types';
 import { useDrag, useDrop } from "react-dnd";
 
-const DraggableItem = ({ children, item, className, index, moveItem, id }) => {
-    const ref = React.useRef(null);
+const DraggableItem = ({ children, currentItem, className, moveItem, curentId, currentIndex }) => {
 
-    const [{ isHover }, drop] = useDrop({
-        accept: 'sort',
-        collect: monitor => ({
-            isHover: monitor.isOver(),
+   // const originalIndex = findItem(index1).index
+   // const originalItem = findItem(index1).item
+   // console.log('originalIndex: ', originalIndex)
+  //  console.log('id: ', id)
+
+    const [{ isDragging }, drag] = useDrag(
+        () => ({
+            type: 'sort',
+            item: (item) => {
+               // console.log('useDrag',currentItem, curentId, currentIndex, item)
+                return ({currentItem})
+            },
+            collect: (monitor) => ({
+                isDragging: monitor.isDragging(),
+            }),
+            end: (item) => {
+                console.log('useDrag end', item, curentId, currentIndex,  currentItem)
+            },
         }),
-       /* hover(item, monitor) {
-            console.log()
-            if (!ref.current) {
-                return;
-            }
-            const dragIndex = item.index;
-            const hoverIndex = index;
-            // Don't replace items with themselves
-            if (dragIndex === hoverIndex) {
-                return;
-            }
-            // Determine rectangle on screen
-            const hoverBoundingRect = ref.current?.getBoundingClientRect();
-            // Get vertical middle
-            const hoverMiddleY =
-                (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2;
-            // Determine mouse position
-            const clientOffset = monitor.getClientOffset();
-            // Get pixels to the top
-            const hoverClientY = clientOffset.y - hoverBoundingRect.top;
-            // Only perform the move when the mouse has crossed half of the items height
-            // When dragging downwards, only move when the cursor is below 50%
-            // When dragging upwards, only move when the cursor is above 50%
-            // Dragging downwards
-            if (dragIndex < hoverIndex && hoverClientY < hoverMiddleY) {
-                return;
-            }
-            // Dragging upwards
-            if (dragIndex > hoverIndex && hoverClientY > hoverMiddleY) {
-                return;
-            }
-            // Time to actually perform the action
-            console.log(item)
-            moveItem(dragIndex, hoverIndex);
-            // Note: we're mutating the monitor item here!
-            // Generally it's better to avoid mutations,
-            // but it's good here for the sake of performance
-            // to avoid expensive index searches.
-            item.index = hoverIndex;
-        }*/
-    }, [id, moveItem]);
+        [curentId, currentIndex, moveItem],
+    )
+
+    const [, drop] = useDrop(
+        () => ({
+            accept: 'sort',
+            drop: (item, monitor) => {
+                console.log(item.currentItem.in, currentItem.in)
+                if (item.currentItem.in !== currentItem.in && monitor.isOver({ shallow: true })) {
+                   moveItem(item.currentItem.in, currentIndex, item.currentItem.it, currentItem.it)
+                } 
+            },
+        }),
+        [moveItem],
+    )
+
+    /*const [{ isDragging }, drag] = useDrag(
+         () => ({
+             type: 'sort',
+             item: { id, originalIndex },
+             collect: (monitor) => ({
+                 isDragging: monitor.isDragging(),
+             }),
+             end: (item, monitor) => {
+                 const { id: droppedId, originalIndex } = item;
+                 const didDrop = monitor.didDrop();
+                 //moveItem(droppedId, originalIndex, findItem(id, index).item)
+                 if (!didDrop) {
+                     moveItem(droppedId, originalIndex, originalItem)
+                     // console.log('11111', droppedId, originalIndex)
+                    // moveItem(droppedId, originalIndex)
+                 }
+             },
+         }),
+         [id, originalIndex, moveItem],
+     )
+ 
+     const [, drop] = useDrop(
+         () => ({
+             accept: 'sort',
+             hover( { id: draggedId }) {
+                 if (draggedId !== id) {
+                   const { index: overIndex } = findItem(index1)
+                 //  console.log(findItem(index1 + 1))
+               //  console.log(index1, findItem(index1 + 1, findItem(index1 - 1)))
+               console.log( item, item1)
+                   moveItem(draggedId, overIndex, item1)
+                 }
+               },
+         }),
+         [findItem, moveItem],
+     )*/
 
 
-    const [{ isDrag }, drag] = useDrag({
-        type: 'sort',
-        item: () => {
-            return { item, index }
-        },
-        collect: monitor => ({
-            isDrag: monitor.isDragging()
-        })
-    }, [moveItem, id]);
-
-    drag(drop(ref));
-
-    const opacity = isHover ? 0.7 : 1;
+    // const opacity = isHover ? 0.7 : 1;
+    const isDrag = false
 
     return (!isDrag &&
-        <section className={className} ref={ref} style={{ opacity }} >
+        <section
+            className={className}
+            ref={(node) => drag(drop(node))}
+        // style={{ opacity }}
+        >
             {children}
         </section>
     );
@@ -79,9 +96,9 @@ export default DraggableItem;
 
 DraggableItem.propTypes = {
     children: PropTypes.node.isRequired,
-    item: ingredientListPropTypes.isRequired,
+   // item: ingredientListPropTypes.isRequired,
     className: PropTypes.string.isRequired,
-    id: PropTypes.string.isRequired,
-    index: PropTypes.number.isRequired,
+    // id: PropTypes.string.isRequired,
+    //index: PropTypes.number.isRequired,
     moveItem: PropTypes.func.isRequired
 };
