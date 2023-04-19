@@ -6,16 +6,8 @@
     width: 720px;
     min-height: 539px;
     margin: auto;
-}
-
-.header{
     position: relative;
-    display: flex;
-    flex-direction: row;
-    width: 100%;
-    justify-content: flex-end;
 }
-
 .title{
     width: 100%;
     display: flex;
@@ -23,5 +15,8 @@
 }
 
 .close{
-   
+    position: absolute;
+    right: 0;
+    z-index: 1;
+    top: 10px;
 }

@@ -14,7 +14,7 @@ const OrderDetails = () => {
     }, [])
 
     return (
-        <section className={`${orderDetailsStyles.order}  mb-30`}>
+        <div className={`${orderDetailsStyles.order} mt-30  mb-30`}>
             {!orderRequest && !orderFailed && <>
                 <p className={`${orderDetailsStyles.total} text text_type_digits-large`}>{order.number}</p>
                 <p className={`text text_type_main-medium mt-8`}>идентификатор заказа</p>
@@ -25,10 +25,9 @@ const OrderDetails = () => {
                 <p className={`${orderDetailsStyles.info} text text_type_main-default`}>Дождитесь готовности на орбитальной станции</p>
             </>}
 
-            {!orderRequest && orderFailed && <>
-                <p className={`text text_type_main-medium mt-8`}>Ошибка заказа</p>
-            </>}
-        </section>
+            {!orderRequest && orderFailed && <p className={`text text_type_main-medium mt-8`}>Ошибка заказа</p>}
+            {orderRequest && <p className={`text text_type_main-medium mt-8`}>Загрузка...</p>}
+        </div>
     );
 }
 

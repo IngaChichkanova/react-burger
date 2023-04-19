@@ -1,3 +1,12 @@
+.header{
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: flex-start;
+}
+
+
 .ingredient{
     text-align: center;
     width: 100%;

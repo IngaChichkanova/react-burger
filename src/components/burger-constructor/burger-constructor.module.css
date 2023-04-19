@@ -23,6 +23,7 @@
 }
 
 .scroll{
+    min-height: 80px;
      height: calc(100% - 200px);
      overflow: hidden scroll;
 }
@@ -36,7 +37,7 @@
 }
 
 .empty{
-    min-width: 370px;
+    min-width: 555px;
 }
 
 .empty *{

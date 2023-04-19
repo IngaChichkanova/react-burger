@@ -5,7 +5,7 @@ import Modal from '../modal/modal';
 import IngredientDetails from '../ingredient-details/ingredient-details';
 import { getIngedients } from '../../services/actions/ingredients';
 import { useDispatch, useSelector } from 'react-redux';
-import { CURRENT_INGREDIENT } from '../../services/actions/ingredients';
+import { updateCurrentIngredient } from '../../services/actions/ingredients';
 import DraggableItem from './draggable-items';
 
 const BurgerIngredients = () => {
@@ -33,11 +33,11 @@ const BurgerIngredients = () => {
 
     const handleCloseDetails = () => {
         setOpenModal(false);
-        dispatch({ type: CURRENT_INGREDIENT, payload: {} });
+        dispatch(updateCurrentIngredient({}));
     }
 
     const handlerOpenDetails = async (ingredient) => {
-        await dispatch({ type: CURRENT_INGREDIENT, payload: ingredient });
+        await dispatch(updateCurrentIngredient(ingredient));
         setOpenModal(true);
     }
 
@@ -168,7 +168,7 @@ const BurgerIngredients = () => {
                         </section>}
             </section>
 
-            {openModal && <Modal header={"Детали ингредиента"} onClose={handleCloseDetails}>
+            {openModal && <Modal onClose={handleCloseDetails}>
                 <IngredientDetails />
             </Modal>}
         </>

@@ -54,7 +54,7 @@ export const ingredientsReducer = (state = initialState, action) => {
             };
         }
         case CURRENT_INGREDIENTS_LIST: {
-            return {
+             return {
                 ...state,
                 currentIngredientsList: action.payload
             }
@@ -70,7 +70,7 @@ export const ingredientsReducer = (state = initialState, action) => {
                 ...state,
                 orderFailed: false,
                 order: action.payload,
-                orderRequest: false
+                orderRequest: false,
             };
         }
         case GET_ORDER_FAILED: {

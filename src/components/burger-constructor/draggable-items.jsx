@@ -22,8 +22,8 @@ const DraggableItem = ({ children, currentItem, className, moveItem }) => {
                 isHover: monitor.isOver(),
             }),
             drop: (item, monitor) => {
-                if (item.currentItem.indexIngredient !== currentItem.indexIngredient && monitor.isOver({ shallow: true })) {
-                    moveItem(item.currentItem.indexIngredient, currentItem.indexIngredient, item.currentItem.ingredient, currentItem.ingredient)
+                if (item.currentItem.uniqueKey !== currentItem.uniqueKey && monitor.isOver({ shallow: true })) {
+                    moveItem(item.currentItem.uniqueKey, currentItem.uniqueKey)
                 }
             },
         }),
@@ -48,10 +48,7 @@ export default DraggableItem;
 
 DraggableItem.propTypes = {
     children: PropTypes.node.isRequired,
-    currentItem: PropTypes.shape({
-        indexIngredient: PropTypes.string.isRequired,
-        ingredient: ingredientListPropTypes.isRequired
-    }).isRequired,
+    currentItem: ingredientListPropTypes.isRequired,
     className: PropTypes.string.isRequired,
     moveItem: PropTypes.func.isRequired
 };

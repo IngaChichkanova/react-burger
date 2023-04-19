@@ -12,6 +12,16 @@
 
 .headerBlock{
     display: flex;
+    min-width: calc(100% / 3);
+    justify-content: center;
+}
+
+.headerBlock:first-child{
+    justify-content: flex-start;
+}
+
+.headerBlock:last-child{
+    justify-content: flex-end;
 }
 
 .header_item_wrapper_item {

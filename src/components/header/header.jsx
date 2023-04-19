@@ -25,7 +25,10 @@ const AppHeader = () => {
                         Лента заказов
                     </p>
                 </a>
-                <a className="ml-10 mr-10" onClick={(e) => e.preventDefault()} href="/">
+            
+            </div>
+            <div className={`${headerStyles.headerBlock}`}>
+            <a className="" onClick={(e) => e.preventDefault()} href="/">
                     <Logo />
                 </a>
             </div>

@@ -4,9 +4,11 @@ import { DragIcon, CurrencyIcon, Button, ConstructorElement } from '@ya.praktiku
 import Modal from '../modal/modal';
 import OrderDetails from '../order-details/order-details';
 import { useSelector, useDispatch } from 'react-redux';
-import { GET_ORDER_SUCCESS, updateCurrentIngredientsList } from '../../services/actions/ingredients';
+import { doOrder, updateCurrentIngredientsList } from '../../services/actions/ingredients';
 import { useDrop } from "react-dnd";
 import DraggableItem from './draggable-items';
+
+import { v4 as uuidv4 } from 'uuid';
 
 const BurgerConstructor = () => {
     const dispatch = useDispatch();
@@ -15,14 +17,14 @@ const BurgerConstructor = () => {
     const [openModal, setOpenModal] = useState(false);
 
     const handleOrder = () => {
-        if (currentIngredientsList.length > 0) {
+        if (currentIngredientsList.length > 0 && currentIngredientsList.filter((item) => item.type === 'bun').length > 0) {
             setOpenModal(true);
         }
     }
 
     const handleClose = () => {
         setOpenModal(false);
-        dispatch({ type: GET_ORDER_SUCCESS, payload: {} });
+        dispatch(doOrder([]));
     }
 
     const bun = useMemo(() => currentIngredientsList.filter((item) => item.type === 'bun'), [currentIngredientsList]);
@@ -30,13 +32,13 @@ const BurgerConstructor = () => {
 
     const totalPrice = useMemo(() => currentIngredientsList.reduce((acc, item) => acc + item.price * (item.type === 'bun' ? 2 : 1), 0), [currentIngredientsList]);
 
-    const onDropHandler = (item) => {
-        let itemModificated = { ...item.item }
-        itemModificated.uniqueKey = item.uuid
+    const onDropHandler = (item, u) => {
+        let itemModificated = { ...item }
+        itemModificated.uniqueKey = u
         if (item.type === "bun" && currentIngredientsList.some(item => item.type === "bun")) {
             dispatch(updateCurrentIngredientsList([
                 ...currentIngredientsList.filter(item => item.type !== "bun"),
-                item
+                itemModificated
             ]));
         } else {
             dispatch(updateCurrentIngredientsList([
@@ -49,8 +51,7 @@ const BurgerConstructor = () => {
     const [{ isHover }, dropTargetBun] = useDrop({
         accept: ["bun", "sauce", "main"],
         drop(item) {
-            console.log('useDrop', item)
-            onDropHandler(item);
+            onDropHandler(item, uuidv4());
         },
         collect: monitor => ({
             isHover: monitor.isOver(),
@@ -61,14 +62,17 @@ const BurgerConstructor = () => {
         dispatch(updateCurrentIngredientsList(currentIngredientsList.filter((item) => ingredient.uniqueKey !== item.uniqueKey)));
     }
 
-    const moveItem = (draggedId, hoveredId, originalItem, hoveredItem) => {
-        console.log(draggedId, hoveredId, originalItem, hoveredItem)
+    const moveItem = (draggedId, hoveredId) => {
+        const draggedItemKey = currentIngredientsList.indexOf(currentIngredientsList.filter(el => el.uniqueKey === draggedId)[0]);
+        const draggedItem = currentIngredientsList.filter(el => el.uniqueKey === draggedId)[0];
+        const hoveredItemKey = currentIngredientsList.indexOf(currentIngredientsList.filter(el => el.uniqueKey === hoveredId)[0]);
+
         let currentIngredients = [...currentIngredientsList];
 
-        currentIngredients.splice(currentIngredients.indexOf(currentIngredients.filter(el=>el.uniqueKey===draggedId)[0]), 1);
-        currentIngredients.splice(currentIngredients.indexOf(currentIngredients.filter(el=>el.uniqueKey===hoveredId)[0]), 0, originalItem);
+        currentIngredients.splice(draggedItemKey, 1);
+        currentIngredients.splice(hoveredItemKey, 0, draggedItem);
 
-         dispatch(updateCurrentIngredientsList(currentIngredients));
+        dispatch(updateCurrentIngredientsList(currentIngredients));
     }
 
     const border = isHover ? '1px solid #8585AD' : 'none';
@@ -107,7 +111,7 @@ const BurgerConstructor = () => {
                                 <DraggableItem
                                     key={ingredient.uniqueKey}
                                     className={`${burgerStyles.sectionIngredient} mt-4`}
-                                    currentItem={{ ingredient: ingredient, indexIngredient: ingredient.uniqueKey }}
+                                    currentItem={ingredient}
                                     moveItem={moveItem}
                                 >
                                     <>
@@ -141,7 +145,7 @@ const BurgerConstructor = () => {
                             thumbnail={ingredient.image_mobile}
                         />
                     </section>)) :
-                        <section className={`${burgerStyles.sectionIngredient} mb-4 mr-4`}>
+                        <section className={`${burgerStyles.sectionIngredient} mt-4 mr-4`}>
                             <ConstructorElement
                                 type="bottom"
                                 isLocked

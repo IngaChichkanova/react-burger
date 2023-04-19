@@ -5,7 +5,7 @@ import modalStyles from '././modal.module.css';
 import { CloseIcon } from '@ya.praktikum/react-developer-burger-ui-components';
 import { ECK_KEYCODE } from '../../utils/constants';
 
-const Modal = ({ header, children, onClose }) => {
+const Modal = ({ children, onClose }) => {
 
     const handleClose = () => {
         onClose();
@@ -25,10 +25,7 @@ const Modal = ({ header, children, onClose }) => {
     return (
         <ModalOverlay onClose={onClose}>
             <div onClick={e => e.stopPropagation()} className={`${modalStyles.modal}`}>
-                <section className={`${modalStyles.header}`}>
-                    {header.length > 0 && <p className={`${modalStyles.title} pt-2 pb-2 ml-10 mt-10 text text_type_main-large`}>{header}</p>}
-                    <div className={`${modalStyles.close} mt-15 mr-10 ${header.length > 0 ? "" : "mb-9"}`}><CloseIcon onClick={handleClose} type="primary" /></div>
-                </section>
+                <div className={`${modalStyles.close} mt-10 mr-10`}><CloseIcon onClick={handleClose} type="primary" /></div>
                 {children}
             </div>
         </ModalOverlay>
@@ -37,12 +34,7 @@ const Modal = ({ header, children, onClose }) => {
 
 export default Modal;
 
-Modal.defaultProps = {
-    header: ""
-}
-
 Modal.propTypes = {
-    header: PropTypes.string.isRequired,
     children: PropTypes.node.isRequired,
     onClose: PropTypes.func.isRequired
 }

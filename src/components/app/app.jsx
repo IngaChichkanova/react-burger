@@ -9,7 +9,7 @@ import { HTML5Backend } from "react-dnd-html5-backend";
 const App = () => {
 
   return (
-    <div className={appStyles.app}>
+    <div className={`${appStyles.app}`}>
       <AppHeader />
       <DndProvider backend={HTML5Backend}>
         <main className={`${appStyles.main}`}>
