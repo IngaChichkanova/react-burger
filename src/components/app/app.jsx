@@ -12,7 +12,7 @@ const App = () => {
     <div className={appStyles.app}>
       <AppHeader />
       <DndProvider backend={HTML5Backend}>
-        <main className={appStyles.main}>
+        <main className={`${appStyles.main}`}>
           <BurgerIngredients />
           <BurgerConstructor />
         </main>

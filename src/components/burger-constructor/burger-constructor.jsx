@@ -4,7 +4,7 @@ import { DragIcon, CurrencyIcon, Button, ConstructorElement } from '@ya.praktiku
 import Modal from '../modal/modal';
 import OrderDetails from '../order-details/order-details';
 import { useSelector, useDispatch } from 'react-redux';
-import { GET_ORDER_SUCCESS, CURRENT_INGREDIENTS_LIST } from '../../services/actions/ingredients';
+import { GET_ORDER_SUCCESS, updateCurrentIngredientsList } from '../../services/actions/ingredients';
 import { useDrop } from "react-dnd";
 import DraggableItem from './draggable-items';
 
@@ -31,26 +31,25 @@ const BurgerConstructor = () => {
     const totalPrice = useMemo(() => currentIngredientsList.reduce((acc, item) => acc + item.price * (item.type === 'bun' ? 2 : 1), 0), [currentIngredientsList]);
 
     const onDropHandler = (item) => {
+        let itemModificated = { ...item.item }
+        itemModificated.uniqueKey = item.uuid
         if (item.type === "bun" && currentIngredientsList.some(item => item.type === "bun")) {
-            dispatch({
-                type: CURRENT_INGREDIENTS_LIST, payload: [
-                    ...currentIngredientsList.filter(item => item.type !== "bun"),
-                    item
-                ]
-            });
+            dispatch(updateCurrentIngredientsList([
+                ...currentIngredientsList.filter(item => item.type !== "bun"),
+                item
+            ]));
         } else {
-            dispatch({
-                type: CURRENT_INGREDIENTS_LIST, payload: [
-                    ...currentIngredientsList,
-                    item
-                ]
-            });
+            dispatch(updateCurrentIngredientsList([
+                ...currentIngredientsList,
+                itemModificated
+            ]));
         }
     };
 
     const [{ isHover }, dropTargetBun] = useDrop({
         accept: ["bun", "sauce", "main"],
         drop(item) {
+            console.log('useDrop', item)
             onDropHandler(item);
         },
         collect: monitor => ({
@@ -58,21 +57,18 @@ const BurgerConstructor = () => {
         })
     });
 
-    const removeIngredient = (ingredient, key) => {
-        dispatch({
-            type: CURRENT_INGREDIENTS_LIST,
-            payload: mainIngredients.filter((item, itemKey) => !(ingredient._id === item._id && itemKey === key)).concat(bun)
-        });
+    const removeIngredient = (ingredient) => {
+        dispatch(updateCurrentIngredientsList(currentIngredientsList.filter((item) => ingredient.uniqueKey !== item.uniqueKey)));
     }
 
-    const moveItem = (draggedId, hoveredId, originalItem) => {
-        let currentIngredients = [...mainIngredients];
-        currentIngredients.splice(draggedId, 1);
-        currentIngredients.splice(hoveredId, 0, originalItem);
+    const moveItem = (draggedId, hoveredId, originalItem, hoveredItem) => {
+        console.log(draggedId, hoveredId, originalItem, hoveredItem)
+        let currentIngredients = [...currentIngredientsList];
 
-        dispatch({
-            type: CURRENT_INGREDIENTS_LIST, payload: currentIngredients.concat(bun)
-        });
+        currentIngredients.splice(currentIngredients.indexOf(currentIngredients.filter(el=>el.uniqueKey===draggedId)[0]), 1);
+        currentIngredients.splice(currentIngredients.indexOf(currentIngredients.filter(el=>el.uniqueKey===hoveredId)[0]), 0, originalItem);
+
+         dispatch(updateCurrentIngredientsList(currentIngredients));
     }
 
     const border = isHover ? '1px solid #8585AD' : 'none';
@@ -86,7 +82,7 @@ const BurgerConstructor = () => {
 
 
 
-                    {bun.length > 0 ? bun.map((ingredient, key) => (<section key={key} className={`${burgerStyles.sectionIngredient} mb-4 mr-4`}>
+                    {bun.length > 0 ? bun.map((ingredient) => (<section key={ingredient.uniqueKey} className={`${burgerStyles.sectionIngredient} mb-4 mr-4`}>
                         <ConstructorElement
                             type="top"
                             isLocked
@@ -107,11 +103,11 @@ const BurgerConstructor = () => {
 
                     {mainIngredients.length > 0 ?
                         <section className={`${burgerStyles.scroll} custom-scroll`}>
-                            {mainIngredients.map((ingredient, key) => (
+                            {mainIngredients.map((ingredient) => (
                                 <DraggableItem
-                                    key={key}
+                                    key={ingredient.uniqueKey}
                                     className={`${burgerStyles.sectionIngredient} mt-4`}
-                                    currentItem={({ ingredient: ingredient, indexIngredient: key })}
+                                    currentItem={{ ingredient: ingredient, indexIngredient: ingredient.uniqueKey }}
                                     moveItem={moveItem}
                                 >
                                     <>
@@ -121,7 +117,7 @@ const BurgerConstructor = () => {
                                             price={ingredient.price}
                                             thumbnail={ingredient.image_mobile}
                                             handleClose={() => {
-                                                removeIngredient(ingredient, key)
+                                                removeIngredient(ingredient)
                                             }}
                                         /></>
                                 </DraggableItem>))}
@@ -136,7 +132,7 @@ const BurgerConstructor = () => {
                     }
 
 
-                    {bun.length > 0 ? bun.map((ingredient, key) => (<section key={key} className={`${burgerStyles.sectionIngredient} mt-4 mr-4`}>
+                    {bun.length > 0 ? bun.map((ingredient) => (<section key={ingredient.uniqueKey} className={`${burgerStyles.sectionIngredient} mt-4 mr-4`}>
                         <ConstructorElement
                             type="bottom"
                             isLocked
@@ -167,7 +163,9 @@ const BurgerConstructor = () => {
                 </section>
             </section >
 
-            {openModal && <Modal onClose={handleClose} component={<OrderDetails />} />}
+            {openModal && <Modal onClose={handleClose}>
+                <OrderDetails />
+            </Modal>}
         </>
     );
 }

@@ -60,3 +60,8 @@ export function doOrder(ingredientsId) {
             });
     };
 }
+
+export const updateCurrentIngredientsList = (items) => ({
+    type: CURRENT_INGREDIENTS_LIST,
+    payload: items,
+})

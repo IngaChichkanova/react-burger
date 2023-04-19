@@ -168,7 +168,9 @@ const BurgerIngredients = () => {
                         </section>}
             </section>
 
-            {openModal && <Modal header={"Детали ингредиента"} component={<IngredientDetails />} onClose={handleCloseDetails} />}
+            {openModal && <Modal header={"Детали ингредиента"} onClose={handleCloseDetails}>
+                <IngredientDetails />
+            </Modal>}
         </>
     );
 }
