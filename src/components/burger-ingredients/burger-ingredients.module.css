@@ -12,6 +12,14 @@
     width: calc((272px + 32px) * 2);
 }
 
+.ingredientDetail{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
 .ingredient{
     display: block;
     word-break: break-word;
@@ -26,12 +34,4 @@
 
 .ingredient:nth-child(even){
     float: right;
-}
-
-.ingredientDetail{
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
 }

@@ -23,6 +23,7 @@
 }
 
 .scroll{
+    min-height: 80px;
      height: calc(100% - 200px);
      overflow: hidden scroll;
 }
@@ -33,4 +34,12 @@
 
 .scroll .sectionIngredient:last-child{
     margin-bottom: 0;
+}
+
+.empty{
+    min-width: 555px;
+}
+
+.empty *{
+    display: none;
 }
