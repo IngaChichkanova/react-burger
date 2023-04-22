@@ -1,0 +1,7 @@
+.main{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    height: calc(100vh - 58px);
+    overflow: scroll hidden;
+}

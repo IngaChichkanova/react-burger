@@ -1,4 +1,4 @@
-import { NORMA_API } from '../../utils/constants';
+import { request } from './index';
 
 export const GET_INGREDIENTS_FAILED = 'GET_INGREDIENTS_FAILED';
 export const GET_INGREDIENTS_REQUEST = 'GET_INGREDIENTS_REQUEST';
@@ -8,10 +8,6 @@ export const CURRENT_INGREDIENTS_LIST = 'CURRENT_INGREDIENTS_LIST';
 export const GET_ORDER_REQUEST = 'GET_ORDER_REQUEST';
 export const GET_ORDER_SUCCESS = 'GET_ORDER_SUCCESS';
 export const GET_ORDER_FAILED = 'GET_ORDER_FAILED';
-
-const checkResponse = (res) => res.ok ? res.json() : res.json().then((err) => Promise.reject(err));
-
-const request = (endpoint, options) => fetch(`${NORMA_API}/${endpoint}`, options).then(checkResponse);
 
 export function getIngedients() {
     return function (dispatch) {

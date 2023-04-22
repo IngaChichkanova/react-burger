@@ -12,7 +12,8 @@
 
 .headerBlock{
     display: flex;
-    min-width: calc(100% / 3);
+    /*min-width: calc(100% / 3);*/
+    min-width: fit-content;
     justify-content: center;
 }
 
