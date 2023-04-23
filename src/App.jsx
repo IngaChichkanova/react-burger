@@ -3,6 +3,7 @@ import AppHeader from './components/header/header';
 import styles from './app.module.css';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { LoginPage, HomePage, RegisterPage, ForgotPasswordPage, ResetPasswordPage, ProfilePage, IngredientsPage } from './pages';
+import IngredientDetails from './components/ingredient-details/ingredient-details'
 
 const App = () => {
 
@@ -17,7 +18,12 @@ const App = () => {
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
           <Route path="/reset-password" element={<ResetPasswordPage />} />
           <Route path="/profile" element={<ProfilePage />} />
-          <Route path="/ingredients/:id " element={<IngredientsPage />} />
+          {/*<Route path="/ingredients " element={<IngredientsPage />} />*/}
+
+          {<Route path="/ingredients" element={<IngredientsPage />}>
+            {/* добавим роут для просмотра чата */}
+            <Route path="/ingredients/:id" element={<IngredientDetails />} />
+          </Route>}
         </Routes>
       </BrowserRouter>
     </div>

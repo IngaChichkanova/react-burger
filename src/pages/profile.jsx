@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useCallback } from 'react';
-import { useParams, useLocation, useNavigate, NavLink } from 'react-router-dom';
+import React from 'react';
+import { NavLink } from 'react-router-dom';
 import profileStyles from './profile.module.css';
 import ProfileInfo from '../components/profile-info/profile-info';
 

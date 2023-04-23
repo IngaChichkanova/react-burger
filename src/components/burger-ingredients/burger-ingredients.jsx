@@ -7,8 +7,12 @@ import { getIngedients } from '../../services/actions/ingredients';
 import { useDispatch, useSelector } from 'react-redux';
 import { updateCurrentIngredient } from '../../services/actions/ingredients';
 import DraggableItem from './draggable-items';
+import { Link, useNavigate,useLocation} from 'react-router-dom';
+
 
 const BurgerIngredients = () => {
+    const location = useLocation()
+    const navigate = useNavigate()
     const dispatch = useDispatch();
     const { ingredientsList, currentIngredientsList, ingredientsListFailed, ingredientsListRequest } = useSelector(state => state.ingredients);
 
@@ -38,6 +42,8 @@ const BurgerIngredients = () => {
 
     const handlerOpenDetails = async (ingredient) => {
         await dispatch(updateCurrentIngredient(ingredient));
+        navigate(`/ingredients/${ingredient._id}`)
+
         setOpenModal(true);
     }
 
@@ -130,14 +136,14 @@ const BurgerIngredients = () => {
                                         clickHandler={() => handlerOpenDetails(ingredient)}
                                         className={`${ingredientsStyles.ingredient} text text_type_main-small mt-6 ml-3 mr-3`}
                                     >
-                                        <>
+                                        <Link className={`${ingredientsStyles.ingredientLink}`} to={`ingredients/${ingredient._id}`}>
                                             <Counter count={currentIngredientsList.filter(item => item._id === ingredient._id).length} size="default" extraClass="m-1" />
                                             <img className="pl-4 pr-4" src={ingredient.image} alt={ingredient.name} />
                                             <p className={`${ingredientsStyles.ingredientDetail} mt-1 mb-1`}>
                                                 <span className="mr-1">{ingredient.price}</span><CurrencyIcon type="primary" />
                                             </p>
                                             <p className={`${ingredientsStyles.ingredientDetail}`}>{ingredient.name}</p>
-                                        </>
+                                        </Link>
                                     </DraggableItem>))}
 
                             </section>
@@ -150,17 +156,20 @@ const BurgerIngredients = () => {
                                         key={ingredient._id}
                                         item={ingredient}
                                         type={ingredient.type}
-                                        clickHandler={() => handlerOpenDetails(ingredient)}
+                                        clickHandler={() => {
+                                            // handlerOpenDetails(ingredient)
+
+                                        }}
                                         className={`${ingredientsStyles.ingredient} text text_type_main-small mt-6 ml-3 mr-3`}
                                     >
-                                        <>
+                                        <Link className={`${ingredientsStyles.ingredientLink}`} to={`ingredients/${ingredient._id}`}>
                                             <Counter count={currentIngredientsList.filter(item => item._id === ingredient._id).length} size="default" extraClass="m-1" />
                                             <img className="pl-4 pr-4" src={ingredient.image} alt={ingredient.name} />
                                             <p className={`${ingredientsStyles.ingredientDetail} mt-1 mb-1`}>
                                                 <span className="mr-1">{ingredient.price}</span><CurrencyIcon type="primary" />
                                             </p>
                                             <p className={`${ingredientsStyles.ingredientDetail}`}>{ingredient.name}</p>
-                                        </>
+                                        </Link>
                                     </DraggableItem>
                                 ))}
 
