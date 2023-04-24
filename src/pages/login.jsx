@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useCallback } from 'react';
-import { useParams, useLocation, useNavigate, Link } from 'react-router-dom';
+import React from 'react';
+import { Link } from 'react-router-dom';
 import loginStyles from './login.module.css';
 import { EmailInput, Input, Button } from '@ya.praktikum/react-developer-burger-ui-components';
 

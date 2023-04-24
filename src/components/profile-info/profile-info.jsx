@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React from 'react';
 import profileStyles from './profile-info.module.css';
 import { EmailInput, Input } from '@ya.praktikum/react-developer-burger-ui-components';
 

@@ -7,11 +7,10 @@ import { getIngedients } from '../../services/actions/ingredients';
 import { useDispatch, useSelector } from 'react-redux';
 import { updateCurrentIngredient } from '../../services/actions/ingredients';
 import DraggableItem from './draggable-items';
-import { Link, useNavigate,useLocation} from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 
 const BurgerIngredients = () => {
-    const location = useLocation()
     const navigate = useNavigate()
     const dispatch = useDispatch();
     const { ingredientsList, currentIngredientsList, ingredientsListFailed, ingredientsListRequest } = useSelector(state => state.ingredients);

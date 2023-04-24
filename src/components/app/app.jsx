@@ -1,9 +1,9 @@
 import React from 'react';
-import AppHeader from './components/header/header';
+import AppHeader from '../header/header';
 import styles from './app.module.css';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { LoginPage, HomePage, RegisterPage, ForgotPasswordPage, ResetPasswordPage, ProfilePage, IngredientsPage } from './pages';
-import IngredientDetails from './components/ingredient-details/ingredient-details'
+import { LoginPage, HomePage, RegisterPage, ForgotPasswordPage, ResetPasswordPage, ProfilePage, IngredientsPage } from '../../pages';
+import IngredientDetails from '../ingredient-details/ingredient-details'
 
 const App = () => {
 
