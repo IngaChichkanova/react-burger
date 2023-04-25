@@ -1,18 +1,31 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import profileStyles from './profile-info.module.css';
 import { EmailInput, Input } from '@ya.praktikum/react-developer-burger-ui-components';
+import { useSelector, useDispatch } from 'react-redux';
+import { getUser, editUser } from '../../services/actions/login';
 
 const ProfileInfo = () => {
-  const [login, setLogin] = React.useState('');
-  const [email, setEmail] = React.useState('');
+  const dispatch = useDispatch();
+  const { user, getUserSuccess } = useSelector(state => state.login);
+  const [name, setName] = React.useState(user.name || '');
+  const [login, setLogin] = React.useState(user.email || '');
   const [password, setPassword] = React.useState('');
 
+  useEffect(() => {
+      dispatch(getUser());
+  }, [])
+
+  useEffect(() => {
+    setName(user.name);
+    setLogin(user.email);
+  }, [user])
+
   const onChangeLogin = e => {
-    setLogin(e.target.value);
+    setName(e.target.value);
   }
 
   const onChangeEmail = e => {
-    setEmail(e.target.value);
+    setLogin(e.target.value);
   }
 
   const onChangePassword = e => {
@@ -23,9 +36,9 @@ const ProfileInfo = () => {
     <div className={`${profileStyles.wrapper}`}>
       <Input
         onChange={onChangeLogin}
-        value={login}
-        name={'login'}
-        placeholder="Логин"
+        value={name}
+        name={'name'}
+        placeholder="Имя"
         extraClass="mb-6"
         type={'text'}
         icon={'EditIcon'}
@@ -35,10 +48,10 @@ const ProfileInfo = () => {
       />
       <EmailInput
         onChange={onChangeEmail}
-        value={email}
-        name={'email'}
+        value={login}
+        name={'login'}
         isIcon={true}
-        placeholder="E-mail"
+        placeholder="Логин"
         extraClass="mt-6 mb-6"
       />
       <Input

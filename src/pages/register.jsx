@@ -2,13 +2,13 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import registerStyles from './register.module.css';
 import { EmailInput, Input, Button } from '@ya.praktikum/react-developer-burger-ui-components';
-import { register } from '../services/actions/login';
-import { useDispatch, useSelector } from 'react-redux';
+import { useAuth } from '../services/auth';
+import { useSelector } from 'react-redux';
 import { validateEmail } from '../utils/validation';
 
 export const RegisterPage = () => {
+  const { register } = useAuth();
   const { rgisterFailed } = useSelector(state => state.login);
-  const dispatch = useDispatch();
 
   const [login, setLogin] = React.useState('');
   const [email, setEmail] = React.useState('');
@@ -32,7 +32,8 @@ export const RegisterPage = () => {
   }
 
   const registerButton = () => {
-    dispatch(register(email, password, login));
+    register(email, password, login);
+
   }
 
   return (
@@ -52,7 +53,7 @@ export const RegisterPage = () => {
         value={email}
         name={'email'}
         placeholder="E-mail"
-        extraClass="mt-6 mb-6"
+        extraClass=" mb-6"
       />
       <Input
         onChange={onChangePassword}

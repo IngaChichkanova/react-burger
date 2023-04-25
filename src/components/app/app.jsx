@@ -2,8 +2,8 @@ import React from 'react';
 import AppHeader from '../header/header';
 import styles from './app.module.css';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { LoginPage, HomePage, RegisterPage, ForgotPasswordPage, ResetPasswordPage, ProfilePage, IngredientsPage } from '../../pages';
-import IngredientDetails from '../ingredient-details/ingredient-details'
+import { LoginPage, HomePage, RegisterPage, ForgotPasswordPage, ResetPasswordPage, ProfilePage, IngredientsPage, NotFoundPage } from '../../pages';
+import IngredientDetails from '../ingredient-details/ingredient-details';
 
 const App = () => {
 
@@ -24,6 +24,7 @@ const App = () => {
             {/* добавим роут для просмотра чата */}
             <Route path="/ingredients/:id" element={<IngredientDetails />} />
           </Route>}
+          <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </BrowserRouter>
     </div>
