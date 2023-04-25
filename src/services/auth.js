@@ -3,6 +3,7 @@ import {
     loginRequest,
     updateRefreshRequest,
     logoutRequest,
+    userRequest,
     SIGN_IN_REQUEST,
     SIGN_IN_SUCCESS,
     SIGN_IN_FAILED,
@@ -14,7 +15,10 @@ import {
     RESET_REQUEST,
     LOGOUT_REQUEST,
     LOGOUT_SUCCESS,
-    LOGOUT_FAILED
+    LOGOUT_FAILED,
+    GET_USER_REQUEST,
+    GET_USER_SUCCESS,
+    GET_USER_FAILED
 } from './actions/login';
 import { setCookie, deleteCookie } from '../utils/set-cookie';
 import { useDispatch } from 'react-redux';
@@ -101,6 +105,7 @@ export function useAuth() {
             dispatch({
                 type: UPDATE_REFRESH_FAILED
             });
+            return false;
         }
     };
 
@@ -127,13 +132,35 @@ export function useAuth() {
             dispatch({
                 type: LOGOUT_FAILED
             });
+            return false;
         }
+    };
+
+    const getUser = async () => {
+        dispatch({
+            type: GET_USER_REQUEST
+        });
+
+        return await userRequest().then(response => {
+            dispatch({
+                type: GET_USER_SUCCESS,
+                payload: response.user
+            });
+
+            return response.success
+        })
+            .catch((e) => {
+                dispatch({
+                    type: GET_USER_FAILED
+                });
+            });
     };
 
     return {
         register,
         signIn,
         signOut,
-        updateRefreshToken
+        updateRefreshToken,
+        getUser
     };
 }

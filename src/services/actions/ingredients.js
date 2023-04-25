@@ -1,4 +1,6 @@
 import { request } from './index';
+import { getCookie } from '../../utils/set-cookie';
+import { updateRefreshRequest } from '../actions/login';
 
 export const GET_INGREDIENTS_FAILED = 'GET_INGREDIENTS_FAILED';
 export const GET_INGREDIENTS_REQUEST = 'GET_INGREDIENTS_REQUEST';
@@ -46,16 +48,25 @@ export function doOrder(ingredientsId) {
             request('orders', {
                 method: "POST",
                 headers: {
-                    'Content-Type': 'application/json;charset=utf-8'
+                    'Content-Type': 'application/json;charset=utf-8',
+                    Authorization: 'Bearer ' + getCookie('token')
                 },
                 body: `{"ingredients": ${JSON.stringify(ingredientsId)}}`
             })
                 .then(response => {
-                    dispatch({
-                        type: GET_ORDER_SUCCESS,
-                        payload: response.order
-                    });
-                    dispatch(updateCurrentIngredientsList([]));
+                    console.log(response)
+                    if (response.success) {
+                        dispatch({
+                            type: GET_ORDER_SUCCESS,
+                            payload: response.order
+                        });
+                        dispatch(updateCurrentIngredientsList([]));
+                    } else {
+                        if (response.message === "jwt expired") {
+                            console.log('fff')
+                            dispatch(updateRefreshRequest()).then(() => doOrder(ingredientsId));
+                        }
+                    }
                 })
                 .catch((e) => {
                     dispatch({

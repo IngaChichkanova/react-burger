@@ -2,9 +2,13 @@ import React, { useEffect } from 'react';
 import profileStyles from './profile-info.module.css';
 import { EmailInput, Input } from '@ya.praktikum/react-developer-burger-ui-components';
 import { useSelector, useDispatch } from 'react-redux';
-import { getUser, editUser } from '../../services/actions/login';
+import { editUser } from '../../services/actions/login';
+import { Button } from '@ya.praktikum/react-developer-burger-ui-components';
+import { validateEmail } from '../../utils/validation';
+import { useAuth } from '../../services/auth';
 
 const ProfileInfo = () => {
+  const { getUser } = useAuth();
   const dispatch = useDispatch();
   const { user, getUserSuccess } = useSelector(state => state.login);
   const [name, setName] = React.useState(user.name || '');
@@ -12,19 +16,21 @@ const ProfileInfo = () => {
   const [password, setPassword] = React.useState('');
 
   useEffect(() => {
-      dispatch(getUser());
+    getUser();
   }, [])
 
   useEffect(() => {
-    setName(user.name);
-    setLogin(user.email);
-  }, [user])
+    if (getUserSuccess) {
+      setName(user.name);
+      setLogin(user.email);
+    }
+  }, [getUserSuccess, user])
 
-  const onChangeLogin = e => {
+  const onChangeName = e => {
     setName(e.target.value);
   }
 
-  const onChangeEmail = e => {
+  const onChangeLogin = e => {
     setLogin(e.target.value);
   }
 
@@ -32,10 +38,22 @@ const ProfileInfo = () => {
     setPassword(e.target.value);
   }
 
+  const onCancel = () => {
+    setName(user.name);
+    setLogin(user.email);
+    setPassword('');
+  }
+
+  const onSave = () => {
+    dispatch(editUser(login, password, name));
+  }
+
+  const isChanges = () => (getUserSuccess && (name !== user.name || (login !== user.email && validateEmail(login)) || password.length > 0));
+
   return (
-    <div className={`${profileStyles.wrapper}`}>
+    <section className={`${profileStyles.wrapper}`}>
       <Input
-        onChange={onChangeLogin}
+        onChange={onChangeName}
         value={name}
         name={'name'}
         placeholder="Имя"
@@ -45,14 +63,16 @@ const ProfileInfo = () => {
         error={false}
         errorText={'Ошибка'}
         size={'default'}
+        disabled={!getUserSuccess}
       />
       <EmailInput
-        onChange={onChangeEmail}
+        onChange={onChangeLogin}
         value={login}
         name={'login'}
         isIcon={true}
         placeholder="Логин"
         extraClass="mt-6 mb-6"
+        disabled={!getUserSuccess}
       />
       <Input
         onChange={onChangePassword}
@@ -65,8 +85,19 @@ const ProfileInfo = () => {
         error={false}
         errorText={'Ошибка'}
         size={'default'}
+        disabled={!getUserSuccess}
       />
-    </div>
+
+      {isChanges() && <div className={`${profileStyles.buttons}`}>
+        <Button onClick={onCancel} htmlType="button" type="secondary" size="medium">
+          Отмена
+        </Button>
+        <Button onClick={onSave} htmlType="button" type="primary" size="medium">
+          Сохранить
+        </Button>
+      </div>}
+
+    </section>
   );
 };
 

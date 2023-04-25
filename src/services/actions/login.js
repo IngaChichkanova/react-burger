@@ -78,65 +78,36 @@ export function reset(password, token) {
     };
 }
 
-export function getUser() {
-    return function (dispatch) {
-        dispatch({
-            type: GET_USER_REQUEST
-        });
-        if (getCookie('token')) {
-            request('auth/user', {
-                method: "GET",
-                headers: {
-                    Authorization: 'Bearer ' + getCookie('token')
-                }
-            })
-                .then(response => {
-                    dispatch({
-                        type: GET_USER_SUCCESS,
-                        payload: response.user
-                    });
-                })
-                .catch((e) => {
-                    dispatch({
-                        type: GET_USER_FAILED
-                    });
-                });
-        } else {
-            dispatch({
-                type: GET_USER_FAILED
-            });
-        }
-    };
-}
-
 export function editUser(email, password, name) {
     return function (dispatch) {
         dispatch({
             type: GET_USER_REQUEST
         });
-        if (getCookie('token')) {
-            request('auth/user', {
-                method: "PATCH",
-                headers: {
-                    Authorization: 'Bearer ' + getCookie('token')
+        request('auth/user', {
+            method: "PATCH",
+            headers: {
+                'Content-Type': 'application/json;charset=utf-8',
+                Authorization: 'Bearer ' + getCookie('token')
+            },
+            body: `${JSON.stringify(
+                {
+                    "name": name,
+                    "email": email,
+                    "password": password,
                 }
-            })
-                .then(response => {
-                    dispatch({
-                        type: GET_USER_SUCCESS,
-                        payload: response.user
-                    });
-                })
-                .catch((e) => {
-                    dispatch({
-                        type: GET_USER_FAILED
-                    });
+            )}`
+        })
+            .then(response => {
+                dispatch({
+                    type: GET_USER_SUCCESS,
+                    payload: response.user
                 });
-        } else {
-            dispatch({
-                type: GET_USER_FAILED
+            })
+            .catch((e) => {
+                dispatch({
+                    type: GET_USER_FAILED
+                });
             });
-        }
     };
 }
 
@@ -191,4 +162,10 @@ export const logoutRequest = () => request('auth/logout', {
     )}`
 });
 
+export const userRequest = () => request('auth/user', {
+    method: "GET",
+    headers: {
+        Authorization: 'Bearer ' + getCookie('token')
+    }
+});
 
