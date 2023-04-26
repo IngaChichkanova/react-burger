@@ -54,21 +54,19 @@ export function doOrder(ingredientsId) {
                 body: `{"ingredients": ${JSON.stringify(ingredientsId)}}`
             })
                 .then(response => {
-                    console.log(response)
-                    if (response.success) {
                         dispatch({
                             type: GET_ORDER_SUCCESS,
                             payload: response.order
                         });
                         dispatch(updateCurrentIngredientsList([]));
-                    } else {
-                        if (response.message === "jwt expired") {
-                            console.log('fff')
-                            dispatch(updateRefreshRequest()).then(() => doOrder(ingredientsId));
-                        }
-                    }
                 })
                 .catch((e) => {
+                    console.log('kkkkkk')
+                    console.log('caught it!',e);
+                    if (e.message === "jwt expired") {
+                        console.log('fff')
+                        dispatch(updateRefreshRequest()).then(() => doOrder(ingredientsId));
+                    }
                     dispatch({
                         type: GET_ORDER_FAILED
                     });

@@ -37,6 +37,7 @@ export function PublicRouteElement({ element }) {
 
     useEffect(() => {
         init();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     if (!isUserLoaded) {
@@ -44,4 +45,4 @@ export function PublicRouteElement({ element }) {
     }
 
     return getUserSuccess ? <Navigate to='/' /> : element;
-} 
+}

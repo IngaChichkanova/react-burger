@@ -1,9 +1,34 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import ingredientDetailsStyles from '././ingredient-details.module.css';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { useLocation } from 'react-router-dom';
+import { updateCurrentIngredient } from '../../services/actions/ingredients';
+import { getIngedients } from '../../services/actions/ingredients';
 
 const IngredientDetails = () => {
-    const { currentIngredient } = useSelector(state => state.ingredients);
+    const dispatch = useDispatch();
+    const { currentIngredient, ingredientsList, ingredientsListFailed, ingredientsListRequest } = useSelector(state => state.ingredients);
+    const location = useLocation();
+
+    useEffect(() => {
+        if (!location.state) {
+          dispatch(getIngedients());
+        }
+
+        return () => dispatch(updateCurrentIngredient({}));
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+      }, [])
+    
+      useEffect(() => {
+        if (!ingredientsListRequest && !ingredientsListFailed && ingredientsList.length > 0) {
+          let currentId = location.pathname.split('/ingredients/')[1];
+          let current = ingredientsList.filter(item => item._id === currentId);
+          if (current.length > 0) {
+            dispatch(updateCurrentIngredient(current[0]))
+          }
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+      }, [ingredientsListRequest, ingredientsListFailed, ingredientsList])
 
     return (
         <>

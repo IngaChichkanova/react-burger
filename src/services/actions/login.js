@@ -141,7 +141,7 @@ export const loginRequest = (email, password) => request('auth/login', {
 export const updateRefreshRequest = () => request('auth/token', {
     method: "POST",
     headers: {
-        'Content-Type': 'application/json;charset=utf-8'
+        'Content-Type': 'application/json;charset=utf-8',
     },
     body: `${JSON.stringify(
         {

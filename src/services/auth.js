@@ -77,6 +77,7 @@ export function useAuth() {
     };
 
     const updateRefreshToken = async () => {
+        console.log('updateRefreshToken')
         dispatch({
             type: UPDATE_REFRESH_REQUEST
         });
@@ -150,6 +151,10 @@ export function useAuth() {
             return response.success
         })
             .catch((e) => {
+                if (e.message === "jwt expired") {
+                    console.log('fff')
+                    dispatch(updateRefreshRequest());
+                }
                 dispatch({
                     type: GET_USER_FAILED
                 });
