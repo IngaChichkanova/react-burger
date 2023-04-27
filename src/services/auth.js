@@ -1,98 +1,97 @@
+import { useState } from 'react';
 import {
     registerRequest,
     loginRequest,
     updateRefreshRequest,
     logoutRequest,
     userRequest,
-    SIGN_IN_REQUEST,
-    SIGN_IN_SUCCESS,
-    SIGN_IN_FAILED,
-    UPDATE_REFRESH_REQUEST,
-    UPDATE_REFRESH_SUCCESS,
-    UPDATE_REFRESH_FAILED,
-    REGISTER_SUCCESS,
-    REGISTER_FAILED,
-    RESET_REQUEST,
-    LOGOUT_REQUEST,
-    LOGOUT_SUCCESS,
-    LOGOUT_FAILED,
-    GET_USER_REQUEST,
-    GET_USER_SUCCESS,
-    GET_USER_FAILED
+    forgotPasswordRequest,
+    resetPasswordRequest,
+    SET_USER,
 } from './actions/login';
 import { setCookie, deleteCookie } from '../utils/set-cookie';
 import { useDispatch } from 'react-redux';
 
 export function useAuth() {
     const dispatch = useDispatch();
+    const [registerStart, setRegisterStart] = useState(false);
+    const [registerError, setRegisterError] = useState(false);
+    const [registerErrorText, setRegisterErrorText] = useState("");
+    const [forgotPasswordStart, setForgotPasswordStart] = useState(false);
+    const [forgotPasswordError, setForgotPasswordError] = useState(false);
+    const [resetPasswordStart, setResetPasswordStart] = useState(false);
+    const [resetPasswordError, setResetPasswordError] = useState(false);
+    const [loginStart, setLoginStart] = useState(false);
+    const [loginError, setLoginError] = useState(false);
+    const [loginErrorText, setLoginErrorText] = useState("");
+    const [logoutStart, setLogoutStart] = useState(false);
+    const [logoutError, setLogoutError] = useState(false);
+    const [getUserStart, setGetUserStart] = useState(false);
+    const [getUserError, setGetUserError] = useState(false);
 
     const register = async (email, password, name) => {
-        dispatch({
-            type: RESET_REQUEST
-        });
-        return await registerRequest(email, password, name).then(response => {
-            let accessToken;
-            accessToken = response.accessToken.split('Bearer ')[1];
-            if (accessToken) {
-                setCookie('token', accessToken);
-            }
+        setRegisterStart(true);
+        setRegisterError(false);
+        setRegisterErrorText("");
+        return await registerRequest(email, password, name)
+            .then(response => {
+                let accessToken;
+                accessToken = response.accessToken.split('Bearer ')[1];
+                if (accessToken) {
+                    setCookie('token', accessToken);
+                }
 
-            localStorage.setItem("refreshToken", response.refreshToken);
+                localStorage.setItem("refreshToken", response.refreshToken);
 
-            if (response.success) {
-                dispatch({
-                    type: REGISTER_SUCCESS
-                });
-            }
+                if (response.success) {
+                    dispatch({ type: SET_USER, payload: response.user })
+                }
 
-            return response
-        })
+                setRegisterStart(false);
+                setRegisterError(!response.success);
+                return response.success
+            })
             .catch((e) => {
-                dispatch({
-                    type: REGISTER_FAILED
-                });
-                return e
+                setRegisterStart(false);
+                setRegisterErrorText(`: ${e.message}`);
+                setRegisterError(true);
+                return false
             });
-    };
+    }
 
     const signIn = async (email, password) => {
-        dispatch({
-            type: SIGN_IN_REQUEST
-        });
+        setLoginStart(true);
+        setLoginError(false);
+        setLoginErrorText("");
         return await loginRequest(email, password).then(response => {
             let accessToken;
             accessToken = response.accessToken.split('Bearer ')[1];
             if (accessToken) {
                 setCookie('token',
-                    accessToken,
-                    // { expires: 1200 }
-                    { expires: 10 }
+                    accessToken
                 );
             }
 
             localStorage.setItem("refreshToken", response.refreshToken);
 
             if (response.success) {
-                dispatch({
-                    type: SIGN_IN_SUCCESS,
-                    payload: response
-                });
+                dispatch({ type: SET_USER, payload: response.user })
             }
 
-            return response
+            setLoginStart(false);
+            setLoginError(!response.success);
+
+            return response.success
         })
             .catch((e) => {
-                dispatch({
-                    type: SIGN_IN_FAILED
-                });
-                return e
+                setLoginStart(false);
+                setLoginErrorText(`: ${e.message}`);
+                setLoginError(true);
+                return false
             });
     };
 
     const updateRefreshToken = async () => {
-        dispatch({
-            type: UPDATE_REFRESH_REQUEST
-        });
         if (localStorage.getItem("refreshToken")) {
             deleteCookie('token');
             return await updateRefreshRequest().then(response => {
@@ -104,86 +103,128 @@ export function useAuth() {
 
                 localStorage.setItem("refreshToken", response.refreshToken);
 
-                dispatch({
-                    type: UPDATE_REFRESH_SUCCESS,
-                });
-
-                return response.success
+                return { success: response.success, accessToken: accessToken }
             })
                 .catch((e) => {
-                    console.log('updateRefreshToken UPDATE_REFRESH_FAILED', e)
-                    dispatch({
-                        type: UPDATE_REFRESH_FAILED
-                    });
+                    return { success: false };
                 });
         } else {
-            console.log('updateRefreshToken UPDATE_REFRESH_FAILED')
-            dispatch({
-                type: UPDATE_REFRESH_FAILED
-            });
             return false;
         }
     };
 
     const signOut = async () => {
-        dispatch({
-            type: LOGOUT_REQUEST
-        });
+        setLogoutStart(true);
+        setLogoutError(false);
         if (localStorage.getItem("refreshToken")) {
             return await logoutRequest().then(response => {
                 deleteCookie('token');
                 localStorage.removeItem("refreshToken");
-                dispatch({
-                    type: LOGOUT_SUCCESS,
-                });
+
+                if (response.success) {
+                    dispatch({ type: SET_USER, payload: {} })
+                }
+
+                setLogoutStart(false);
+                setLogoutError(!response.success);
 
                 return response.success
             })
-                .catch((e) => {
-                    dispatch({
-                        type: LOGOUT_FAILED
-                    });
+                .catch(() => {
+                    setLogoutStart(false);
+                    setLogoutError(true);
+                    return false;
                 });
         } else {
-            dispatch({
-                type: LOGOUT_FAILED
-            });
+            setLogoutStart(false);
+            setLogoutError(true);
             return false;
         }
     };
 
-    const getUser = async () => {
-        dispatch({
-            type: GET_USER_REQUEST
-        });
+    const getUser = async (accessToken) => {
+        setGetUserError(false);
+        setGetUserStart(true);
 
-        return await userRequest().then(response => {
-            dispatch({
-                type: GET_USER_SUCCESS,
-                payload: response.user
-            });
+        return await userRequest(accessToken).then(response => {
+            if (response.success) {
+                dispatch({ type: SET_USER, payload: response.user })
+            }
 
-            return response
+            setGetUserError(!response.success);
+            setGetUserStart(false);
+
+
+            return ({ success: true, tokenExpired: false })
         })
             .catch((e) => {
-                if (e.message === "jwt expired" || e.message === "jwt malformed") {
-                    console.log('fff')
-                    dispatch(updateRefreshRequest());
+                if (localStorage.getItem("refreshToken") && e.message === "jwt expired") {
+                    setGetUserError(true);
+                    setGetUserStart(false);
 
-                    return e
+                    return ({ success: false, tokenExpired: true })
+
+                } else {
+                    setGetUserError(true);
+                    setGetUserStart(false);
+                    return ({ success: false, tokenExpired: false })
                 }
-                dispatch({
-                    type: GET_USER_FAILED
-                });
-                return e
             });
     };
+
+    const forgotPassword = async (email) => {
+        setForgotPasswordStart(true);
+        setForgotPasswordError(false);
+        return await forgotPasswordRequest(email)
+            .then(response => {
+                setForgotPasswordStart(false);
+                setForgotPasswordError(!response.success);
+                return response.success
+            })
+            .catch(() => {
+                setForgotPasswordStart(false);
+                setForgotPasswordError(true);
+                return false
+            });
+    }
+
+    const resetPassword = async (password, token) => {
+        setResetPasswordStart(true);
+        setResetPasswordError(false);
+        return await resetPasswordRequest(password, token)
+            .then(response => {
+                setResetPasswordStart(false);
+                setResetPasswordError(!response.success);
+                return response.success
+            })
+            .catch(() => {
+                setResetPasswordStart(false);
+                setResetPasswordError(true);
+                return false
+            });
+    }
 
     return {
         register,
         signIn,
         signOut,
         updateRefreshToken,
-        getUser
+        getUser,
+        forgotPassword,
+        resetPassword,
+        forgotPasswordStart,
+        forgotPasswordError,
+        resetPasswordStart,
+        resetPasswordError,
+        registerStart,
+        registerError,
+        registerErrorText,
+        loginStart,
+        loginError,
+        loginErrorText,
+        logoutStart,
+        logoutError,
+        getUserStart,
+        getUserError,
     };
 }

@@ -3,32 +3,43 @@ import orderDetailsStyles from '././order-details.module.css';
 import orderChecked from '../../icons/orderChecked.svg';
 import { useSelector, useDispatch } from 'react-redux';
 import { doOrder } from '../../services/actions/ingredients';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { getCookie } from '../../utils/set-cookie';
+import { useAuth } from '../../services/auth';
 
 const OrderDetails = () => {
     const dispatch = useDispatch();
     let navigate = useNavigate();
     const { currentIngredientsList, order, orderRequest, orderFailed } = useSelector(state => state.ingredients);
-    const { updateRefreshTokenRequest, updateRefreshTokenSuccess } = useSelector(state => state.login);
+    const { updateRefreshToken } = useAuth();
+
+    const doOrderRequest = async () => {
+        await (doOrder(currentIngredientsList.map(item => item._id), dispatch))
+            .then((response) => {
+                if (!response.success) {
+                    if (response.tokenExpired) {
+                        refreshToken();
+                    }
+                }
+            });
+    }
+
+    const refreshToken = () => {
+        updateRefreshToken().then(success => {
+            if (success.success) {
+                doOrderRequest()
+            }
+        })
+    }
 
     useEffect(() => {
-        //  if (getCookie('token') && (localStorage.getItem('refreshToken'))) {
-        if (getCookie('token') || (localStorage.getItem('refreshToken'))) {
-            dispatch(doOrder(currentIngredientsList.map(item => item._id)));
+        if (getCookie('token') && (localStorage.getItem('refreshToken'))) {
+            doOrderRequest();
         } else {
             navigate('/login');
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
-
-    useEffect(() => {
-        //  if (getCookie('token') && (localStorage.getItem('refreshToken'))) {
-        if (!updateRefreshTokenRequest && updateRefreshTokenSuccess) {
-            dispatch(doOrder(currentIngredientsList.map(item => item._id)));
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [updateRefreshTokenRequest, updateRefreshTokenSuccess])
 
     return (
         <div className={`${orderDetailsStyles.order} mt-30  mb-30`}>

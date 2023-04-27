@@ -1,125 +1,130 @@
-
-import React, { useState }  from 'react';
+import { useState, useEffect } from 'react';
 import profileStyles from './profile.module.css';
-import { Outlet, NavLink } from 'react-router-dom';
+import ProfileSidebar from '../components/profile-sidebar/profile-sidebar';
+import { EmailInput, Input } from '@ya.praktikum/react-developer-burger-ui-components';
+import { useSelector, useDispatch } from 'react-redux';
+import { editUser } from '../services/actions/login';
+import { Button } from '@ya.praktikum/react-developer-burger-ui-components';
+import { validateEmail } from '../utils/validation';
 import { useAuth } from '../services/auth';
-import { useNavigate } from "react-router-dom";
+import { getCookie } from '../utils/set-cookie';
 
 export const ProfilePage = () => {
-  const { signOut } = useAuth();
-  let navigate = useNavigate();
-  const [text, setText] = useState(<>В этом разделе вы можете изменить <br /> свои персональные данные</>);
+  const { getUser, getUserStart, getUserError, updateRefreshToken } = useAuth();
+  const dispatch = useDispatch();
+  const { user } = useSelector(state => state.login);
+  const [name, setName] = useState(user.name || '');
+  const [login, setLogin] = useState(user.email || '');
+  const [password, setPassword] = useState('');
 
-  const logOut = (e) => {
-    e.preventDefault();
-    signOut().then(() => {
-      navigate('/', { replace: true });
+  useEffect(() => {
+    getUserAsync();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  const getUserAsync = () => {
+    getUser(getCookie('token')).then(response => {
+      if (!response.success) {
+        if (response.tokenExpired) {
+          refreshToken();
+        }
+      }
     })
   }
 
+  const refreshToken = () => {
+    updateRefreshToken().then(success => {
+      if (success.success) {
+        getUser(success.accessToken)
+      }
+    })
+  }
+
+  useEffect(() => {
+    setName(user.name);
+    setLogin(user.email);
+  }, [user])
+
+  const onChangeName = e => {
+    setName(e.target.value);
+  }
+
+  const onChangeLogin = e => {
+    setLogin(e.target.value);
+  }
+
+  const onChangePassword = e => {
+    setPassword(e.target.value);
+  }
+
+  const onCancel = () => {
+    setName(user.name);
+    setLogin(user.email);
+    setPassword('');
+  }
+
+  const onSave = (e) => {
+    e.preventDefault();
+    dispatch(editUser(login, password, name));
+  }
+
+  const isChanges = () => (!getUserStart && (name !== user.name || (login !== user.email && validateEmail(login)) || password.length > 0));
+
+  if (getUserStart || getUserError) return null
+
   return (
     <main className={`${profileStyles.wrapper} mt-30`}>
-      <section className={`${profileStyles.navLinks} mr-15`}>
-        <ul>
-          <li className='pt-3 pb-3'>
-            <NavLink
-              to={{ pathname: `/profile` }}
-              className={({ isActive }) => `${profileStyles.navLink} text text_type_main-default ${isActive ? profileStyles.navLinkActive : 'text_color_inactive'}`}
-              onClick={() => setText(<>В этом разделе вы можете изменить <br /> свои персональные данные</>)}
-            >
-              Профиль
-            </NavLink>
-          </li>
-          <li className='pt-3 pb-3'>
-            <NavLink
-              to={{ pathname: `/profile/orders` }}
-              className={({ isActive }) => `${profileStyles.navLink} text text_type_main-default ${isActive ? profileStyles.navLinkActive : 'text_color_inactive'}`}
-              onClick={() => setText(<></>)}
-            >
-              История заказов
-            </NavLink>
-          </li>
-          <li className='pt-3 pb-3'>
-            <a href={"/"}
-              className={`${profileStyles.navLink} text text_type_main-default text_color_inactive`}
-              onClick={logOut}
-            >
-              Выход
-            </a>
-          </li>
-        </ul>
+      <ProfileSidebar />
 
-        <div className={`${profileStyles.text} text text_type_main-default text_color_inactive mt-20`}>
-          {text}
-        </div>
+      <section className={`${profileStyles.section}`}>
+        <form onSubmit={onSave}>
+          <Input
+            onChange={onChangeName}
+            value={name}
+            name={'name'}
+            placeholder="Имя"
+            extraClass="mb-6"
+            type={'text'}
+            icon={'EditIcon'}
+            error={false}
+            errorText={'Ошибка'}
+            size={'default'}
+            disabled={getUserStart}
+          />
+          <EmailInput
+            onChange={onChangeLogin}
+            value={login}
+            name={'login'}
+            isIcon={true}
+            placeholder="Логин"
+            extraClass="mt-6 mb-6"
+            disabled={getUserStart}
+          />
+          <Input
+            onChange={onChangePassword}
+            value={password}
+            name={'password'}
+            placeholder="Пароль"
+            extraClass="mb-6"
+            type={'password'}
+            icon={'EditIcon'}
+            error={false}
+            errorText={'Ошибка'}
+            size={'default'}
+            disabled={getUserStart}
+          />
+
+          {isChanges() && <div className={`${profileStyles.buttons}`}>
+            <Button onClick={onCancel} htmlType="button" type="secondary" size="medium">
+              Отмена
+            </Button>
+            <Button htmlType="submit" type="primary" size="medium">
+              Сохранить
+            </Button>
+          </div>}
+        </form>
+
       </section>
-      <Outlet />
     </main>
   );
 };
-
-/*import React, { useState } from 'react';
-import { NavLink } from 'react-router-dom';
-import profileStyles from './profile.module.css';
-import ProfileInfo from '../components/profile-info/profile-info';
-import { useAuth } from '../services/auth';
-import { useNavigate } from "react-router-dom";
-
-export const ProfilePage = ({children}) => {
-  const { signOut } = useAuth();
-  let navigate = useNavigate();
-  const [text, setText] = useState(<>В этом разделе вы можете изменить <br /> свои персональные данные</>);
-
-  const logOut = (e) => {
-    e.preventDefault();
-    signOut().then(() => {
-      navigate('/', { replace: true });
-    })
-  }
-
-  return (
-    <main className={`${profileStyles.wrapper} mt-30`}>
-      <section className={`${profileStyles.navLinks} mr-15`}>
-        <ul>
-          <li className='pt-3 pb-3'>
-            <NavLink
-              to={{ pathname: `/profile` }}
-              className={({ isActive }) => `${profileStyles.navLink} text text_type_main-default ${isActive ? profileStyles.navLinkActive : 'text_color_inactive'}`}
-              onClick={() => setText(<>В этом разделе вы можете изменить <br /> свои персональные данные</>)}
-            >
-              Профиль
-            </NavLink>
-          </li>
-          <li className='pt-3 pb-3'>
-            <NavLink
-              to={{ pathname: `/profile/orders` }}
-              className={({ isActive }) => `${profileStyles.navLink} text text_type_main-default ${isActive ? profileStyles.navLinkActive : 'text_color_inactive'}`}
-              onClick={() => setText(<></>)}
-            >
-              История заказов
-            </NavLink>
-          </li>
-          <li className='pt-3 pb-3'>
-            <a href={"/"}
-              className={`${profileStyles.navLink} text text_type_main-default text_color_inactive`}
-              onClick={logOut}
-            >
-              Выход
-            </a>
-          </li>
-        </ul>
-
-        <div className={`${profileStyles.text} text text_type_main-default text_color_inactive mt-20`}>
-          {text}
-        </div>
-      </section>
-
-     <ProfileInfo />*/
-     /*{children}
-
-      <section>
-
-      </section>
-    </main>
-  );
-};*/

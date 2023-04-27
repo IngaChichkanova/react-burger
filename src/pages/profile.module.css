@@ -5,21 +5,13 @@
     height: 100%;
 }
 
-.navLinks ul{
-    list-style: none;
-    padding: 0;
-    margin: 0;
+.section{
+    display: flex;
+    flex-direction: column;
 }
 
-.navLink{
-    text-decoration: none;
-    font-size: 24px;
-}
-
-.navLinkActive{
-    color: #F2F2F3;
-}
-
-.text{
-    opacity: 0.4;
+.buttons{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
 }

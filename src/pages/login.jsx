@@ -1,19 +1,18 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import loginStyles from './login.module.css';
 import { EmailInput, Input, Button } from '@ya.praktikum/react-developer-burger-ui-components';
 import { validateEmail } from '../utils/validation';
-import { useSelector } from 'react-redux';
 import { useAuth } from '../services/auth';
 
 export const LoginPage = () => {
-  const { signIn } = useAuth();
-  const { signInFailed, signInRequest } = useSelector(state => state.login);
+  const { signIn, loginStart, loginError, loginErrorText } = useAuth();
   let navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(true);
-  const [errorSignIn, setErrorSignIn] = useState('');
+  const location = useLocation();
+  let { state } = location;
 
   const onChangeEmail = e => {
     setEmail(e.target.value);
@@ -27,12 +26,11 @@ export const LoginPage = () => {
     setShowPassword(!showPassword);
   }
 
-  const submitButton = () => {
-    signIn(email, password).then((res) => {
-      if (res.success) {
-        navigate('/', { replace: true });
-      } else if (!res.success && res.message) {
-        setErrorSignIn(`: ${res.message}`);
+  const submitButton = async (e) => {
+    e.preventDefault();
+    await signIn(email, password).then((success) => {
+      if (success) {
+        navigate(state?.from ? state.from : '/', { replace: true });
       }
     })
   }
@@ -40,42 +38,43 @@ export const LoginPage = () => {
   return (
     <main className={`${loginStyles.wrapper}`}>
       <h1 className='text text_type_main-medium mb-6'>Вход</h1>
-      <EmailInput
-        onChange={onChangeEmail}
-        value={email}
-        name={'email'}
-        placeholder="E-mail"
-        extraClass="mt-6 mb-6"
-        disabled={signInRequest}
-      />
-      <Input
-        onChange={onChangePassword}
-        value={password}
-        name={'password'}
-        placeholder="Пароль"
-        extraClass="mb-6"
-        type={showPassword ? 'text' : 'password'}
-        icon={showPassword ? 'ShowIcon' : 'HideIcon'}
-        error={false}
-        onIconClick={onIconClick}
-        errorText={'Ошибка'}
-        size={'default'}
-        disabled={signInRequest}
-      />
-      <Button
-        onClick={submitButton}
-        disabled={signInRequest || (!validateEmail(email) || email.length === 0 || password.length === 0)}
-        htmlType="button"
-        type="primary"
-        size="large"
-        extraClass="mb-20"
-      >
-        Войти
-      </Button>
+      <form onSubmit={submitButton}>
+        <EmailInput
+          onChange={onChangeEmail}
+          value={email}
+          name={'email'}
+          placeholder="E-mail"
+          extraClass="mt-6 mb-6"
+          disabled={loginStart}
+        />
+        <Input
+          onChange={onChangePassword}
+          value={password}
+          name={'password'}
+          placeholder="Пароль"
+          extraClass="mb-6"
+          type={showPassword ? 'text' : 'password'}
+          icon={showPassword ? 'ShowIcon' : 'HideIcon'}
+          error={false}
+          onIconClick={onIconClick}
+          errorText={'Ошибка'}
+          size={'default'}
+          disabled={loginStart}
+        />
+        <Button
+          disabled={loginStart || (!validateEmail(email) || email.length === 0 || password.length === 0)}
+          htmlType="submit"
+          type="primary"
+          size="large"
+          extraClass="mb-20"
+        >
+          Войти
+        </Button>
+      </form>
 
-      {signInRequest && <div className={`text text_type_main-medium text_color_inactive mb-4`}>Выполняется вход</div>}
+      {loginStart && <div className={`text text_type_main-medium text_color_inactive mb-4`}>Выполняется вход</div>}
 
-      {signInFailed && <div className={`text text_type_main-medium mb-4`}>Ошибка {errorSignIn}</div>}
+      {loginError && <div className={`text text_type_main-medium mb-4`}>Ошибка {loginErrorText}</div>}
 
       <div className={`text text_type_main-default text_color_inactive mb-4`}>
         Вы — новый пользователь?

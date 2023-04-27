@@ -1,21 +1,18 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import registerStyles from './register.module.css';
 import { EmailInput, Input, Button } from '@ya.praktikum/react-developer-burger-ui-components';
 import { useAuth } from '../services/auth';
-import { useSelector } from 'react-redux';
 import { validateEmail } from '../utils/validation';
 
 export const RegisterPage = () => {
-  const { register } = useAuth();
+  const { register, registerStart, registerError, registerErrorText } = useAuth();
   let navigate = useNavigate();
-  const { rgisterFailed, rgisterRequest } = useSelector(state => state.login);
 
-  const [login, setLogin] = React.useState('');
-  const [email, setEmail] = React.useState('');
-  const [password, setPassword] = React.useState('');
-  const [showPassword, setShowPassword] = React.useState(true);
-  const [errorSignIn, setErrorSignIn] = useState('');
+  const [login, setLogin] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(true);
 
   const onChangeLogin = e => {
     setLogin(e.target.value);
@@ -33,13 +30,11 @@ export const RegisterPage = () => {
     setShowPassword(!showPassword);
   }
 
-  const registerButton = () => {
-    register(email, password, login).then((res) => {
-      console.log(res)
-      if (res.success) {
+  const registerButton = async (e) => {
+    e.preventDefault();
+    await register(email, password, login).then((success) => {
+      if (success) {
         navigate('/', { replace: true });
-      } else if (!res.success && res.message) {
-        setErrorSignIn(`: ${res.message}`);
       }
     })
   }
@@ -47,52 +42,53 @@ export const RegisterPage = () => {
   return (
     <main className={`${registerStyles.wrapper}`}>
       <h1 className='text text_type_main-medium mb-6'>Регистрация</h1>
-      <Input
-        onChange={onChangeLogin}
-        value={login}
-        name={'login'}
-        placeholder="Имя"
-        extraClass="mb-6"
-        type={'text'}
-        size={'default'}
-        disabled={rgisterRequest}
-      />
-      <EmailInput
-        onChange={onChangeEmail}
-        value={email}
-        name={'email'}
-        placeholder="E-mail"
-        extraClass=" mb-6"
-        disabled={rgisterRequest}
-      />
-      <Input
-        onChange={onChangePassword}
-        value={password}
-        name={'password'}
-        placeholder="Пароль"
-        extraClass="mb-6"
-        type={showPassword ? 'text' : 'password'}
-        icon={showPassword ? 'ShowIcon' : 'HideIcon'}
-        error={false}
-        onIconClick={onIconClick}
-        errorText={'Ошибка'}
-        size={'default'}
-        disabled={rgisterRequest}
-      />
-      <Button
-        htmlType="button"
-        type="primary"
-        size="large"
-        extraClass="mb-20"
-        disabled={rgisterRequest || (!validateEmail(email) || login.length === 0 || email.length === 0 || password.length === 0)}
-        onClick={registerButton}
-      >
-        Зарегистрироваться
-      </Button>
+      <form onSubmit={registerButton}>
+        <Input
+          onChange={onChangeLogin}
+          value={login}
+          name={'login'}
+          placeholder="Имя"
+          extraClass="mb-6"
+          type={'text'}
+          size={'default'}
+          disabled={registerStart}
+        />
+        <EmailInput
+          onChange={onChangeEmail}
+          value={email}
+          name={'email'}
+          placeholder="E-mail"
+          extraClass=" mb-6"
+          disabled={registerStart}
+        />
+        <Input
+          onChange={onChangePassword}
+          value={password}
+          name={'password'}
+          placeholder="Пароль"
+          extraClass="mb-6"
+          type={showPassword ? 'text' : 'password'}
+          icon={showPassword ? 'ShowIcon' : 'HideIcon'}
+          error={false}
+          onIconClick={onIconClick}
+          errorText={'Ошибка'}
+          size={'default'}
+          disabled={registerStart}
+        />
+        <Button
+          htmlType="submit"
+          type="primary"
+          size="large"
+          extraClass="mb-20"
+          disabled={registerStart || (!validateEmail(email) || login.length === 0 || email.length === 0 || password.length === 0)}
+        >
+          Зарегистрироваться
+        </Button>
+      </form>
 
-      {rgisterRequest && <div className={`text text_type_main-medium text_color_inactive mb-4`}>Выполняется регистрация</div>}
+      {registerStart && <div className={`text text_type_main-medium text_color_inactive mb-4`}>Выполняется регистрация</div>}
 
-      {rgisterFailed && <div className={`text text_type_main-medium mb-4`}>Ошибка {errorSignIn}</div>}
+      {registerError && <div className={`text text_type_main-medium mb-4`}>Ошибка {registerErrorText}</div>}
 
       <div className={`text text_type_main-default text_color_inactive mb-4`}>
         Уже зарегистрированы?

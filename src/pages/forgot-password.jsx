@@ -1,47 +1,64 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import { useState } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import forgotPasswordStyles from './forgot-password.module.css';
 import { EmailInput, Button } from '@ya.praktikum/react-developer-burger-ui-components';
-import { passwordReset } from '../services/actions/login';
-import { useDispatch, useSelector } from 'react-redux';
 import { validateEmail } from '../utils/validation';
+import { useAuth } from '../services/auth';
 
 export const ForgotPasswordPage = () => {
-  const { passwordResetFailed } = useSelector(state => state.login);
-  const dispatch = useDispatch();
-  const [email, setEmail] = React.useState('');
+  const { forgotPassword, forgotPasswordStart, forgotPasswordError } = useAuth();
+  let navigate = useNavigate();
+  const location = useLocation();
+  const [email, setEmail] = useState('');
 
   const onChangeEmail = e => {
     let email = e.target.value;
     setEmail(email);
   }
 
-  const submitButton = () => {
-    dispatch(passwordReset(email));
+  const submitButton = (e) => {
+    e.preventDefault();
+    forgotPassword(email).then((success) => {
+      if (success) {
+        navigate(
+          '/reset-password',
+          {
+            replace: true,
+            state: {
+              from: location.pathname
+            }
+          }
+        );
+      }
+    })
+
   }
 
   return (
     <main className={`${forgotPasswordStyles.wrapper}`}>
       <h1 className='text text_type_main-medium mb-6'>Восстановление пароля</h1>
-      <EmailInput
-        onChange={onChangeEmail}
-        value={email}
-        name={'email'}
-        placeholder="Укажите e-mail"
-        extraClass="mb-6"
-      />
-      <Button
-        htmlType="submit"
-        type="primary"
-        size="large"
-        extraClass="mb-20"
-        onClick={submitButton}
-        disabled={!validateEmail(email)}
-      >
-        Восстановить
-      </Button>
+      <form onSubmit={submitButton}>
+        <EmailInput
+          onChange={onChangeEmail}
+          value={email}
+          name={'email'}
+          placeholder="Укажите e-mail"
+          extraClass="mb-6"
+          disabled={forgotPasswordStart}
+        />
+        <Button
+          htmlType="submit"
+          type="primary"
+          size="large"
+          extraClass="mb-20"
+          disabled={forgotPasswordStart || !validateEmail(email)}
+        >
+          Восстановить
+        </Button>
+      </form>
 
-      {passwordResetFailed && <div className={`text text_type_main-medium mb-4`}>Ошибка</div>}
+      {forgotPasswordStart && <div className={`text text_type_main-medium mb-4`}>Подождите</div>}
+      {forgotPasswordError && <div className={`text text_type_main-medium mb-4`}>Ошибка</div>}
 
       <div className={`text text_type_main-default text_color_inactive`}>
         Вспомнили пароль?

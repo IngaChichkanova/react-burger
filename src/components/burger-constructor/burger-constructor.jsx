@@ -22,7 +22,7 @@ const BurgerConstructor = () => {
 
     const handleClose = () => {
         setOpenModal(false);
-        dispatch(doOrder([]));
+        doOrder([], dispatch);
     }
 
     const bun = useMemo(() => currentIngredientsList.filter((item) => item.type === 'bun'), [currentIngredientsList]);

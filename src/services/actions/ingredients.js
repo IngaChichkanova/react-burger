@@ -1,6 +1,5 @@
 import { request } from './index';
 import { getCookie } from '../../utils/set-cookie';
-import { updateRefreshRequest } from '../actions/login';
 
 export const GET_INGREDIENTS_FAILED = 'GET_INGREDIENTS_FAILED';
 export const GET_INGREDIENTS_REQUEST = 'GET_INGREDIENTS_REQUEST';
@@ -33,45 +32,45 @@ export function getIngedients() {
     };
 }
 
-export function doOrder(ingredientsId) {
-    return function (dispatch) {
-        if (ingredientsId.length === 0) {
-            dispatch({
-                type: GET_ORDER_SUCCESS,
-                payload: {}
-            });
-            return
-        } else {
-            dispatch({
-                type: GET_ORDER_REQUEST
-            });
-
-            request('orders', {
-                method: "POST",
-                headers: {
-                    'Content-Type': 'application/json;charset=utf-8',
-                    Authorization: 'Bearer ' + getCookie('token')
-                },
-                body: `{"ingredients": ${JSON.stringify(ingredientsId)}}`
-            })
-                .then(response => {
-                    dispatch({
-                        type: GET_ORDER_SUCCESS,
-                        payload: response.order
-                    });
-                    dispatch(updateCurrentIngredientsList([]));
-                })
-                .catch((e) => {
-                    // if (e.message === "jwt expired") {
-                    if (e.message === "jwt malformed") {
-                        dispatch(updateRefreshRequest());
-                    }
-                    dispatch({
-                        type: GET_ORDER_FAILED
-                    });
+export const doOrder = async (ingredientsId, dispatch) => {
+    if (ingredientsId.length === 0) {
+        dispatch({
+            type: GET_ORDER_SUCCESS,
+            payload: {}
+        });
+        return { success: true }
+    } else {
+        dispatch({
+            type: GET_ORDER_REQUEST
+        });
+        return await request('orders', {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json;charset=utf-8',
+                Authorization: 'Bearer ' + getCookie('token')
+            },
+            body: `{"ingredients": ${JSON.stringify(ingredientsId)}}`
+        })
+            .then(response => {
+                dispatch({
+                    type: GET_ORDER_SUCCESS,
+                    payload: response.order
                 });
-        }
-    };
+                dispatch(updateCurrentIngredientsList([]));
+
+                return { success: true }
+            })
+            .catch((e) => {
+                dispatch({
+                    type: GET_ORDER_FAILED
+                });
+                if (e.message === "jwt expired") {
+                    return { success: false, tokenExpired: true }
+                } else {
+                    return { success: false, tokenExpired: false }
+                }
+            });
+    }
 }
 
 export const updateCurrentIngredientsList = (items) => ({
