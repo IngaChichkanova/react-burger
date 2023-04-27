@@ -6,32 +6,22 @@ import { getCookie } from '../utils/set-cookie';
 import PropTypes from 'prop-types';
 
 export function ProtectedRouteElement({ element, isPublic }) {
-    let { getUser, updateRefreshToken } = useAuth();
+    let { getUser } = useAuth();
     const { user } = useSelector(state => state.login);
     const [isUserLoaded, setUserLoaded] = useState(false);
     const location = useLocation();
 
     const init = async () => {
-        await getUser(getCookie('token')).then(response => {
-            if (!response.success) {
-                if (response.tokenExpired) {
-                    refreshToken();
-                }
-            }
-            setUserLoaded(true);
-        })
+        await getUser();
+        setUserLoaded(true);
     };
 
-    const refreshToken = async () => {
-        await updateRefreshToken().then(success => {
-            if (success.success) {
-                getUser(success.accessToken)
-            }
-        })
-    }
-
     useEffect(() => {
-        init();
+        if (getCookie('token') && (localStorage.getItem('refreshToken'))) {
+            init();
+        } else {
+            setUserLoaded(true);
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 

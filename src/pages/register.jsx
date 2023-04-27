@@ -42,7 +42,7 @@ export const RegisterPage = () => {
   return (
     <main className={`${registerStyles.wrapper}`}>
       <h1 className='text text_type_main-medium mb-6'>Регистрация</h1>
-      <form onSubmit={registerButton}>
+      <form className={`${registerStyles.form}`} onSubmit={registerButton}>
         <Input
           onChange={onChangeLogin}
           value={login}

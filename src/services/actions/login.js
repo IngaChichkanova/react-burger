@@ -1,4 +1,4 @@
-import { request } from './index';
+import { request, checkAuthFetch } from './index';
 import { getCookie } from '../../utils/set-cookie';
 
 export const SET_USER = 'SET_USER';
@@ -30,39 +30,6 @@ export const resetPasswordRequest = (email, token) => request('password-reset', 
         }
     )}`
 })
-
-export function editUser(email, password, name) {
-    return function (dispatch) {
-        dispatch({
-            type: GET_USER_REQUEST
-        });
-        request('auth/user', {
-            method: "PATCH",
-            headers: {
-                'Content-Type': 'application/json;charset=utf-8',
-                Authorization: 'Bearer ' + getCookie('token')
-            },
-            body: `${JSON.stringify(
-                {
-                    "name": name,
-                    "email": email,
-                    "password": password,
-                }
-            )}`
-        })
-            .then(response => {
-                dispatch({
-                    type: GET_USER_SUCCESS,
-                    payload: response.user
-                });
-            })
-            .catch((e) => {
-                dispatch({
-                    type: GET_USER_FAILED
-                });
-            });
-    };
-}
 
 export const registerRequest = (email, password, name) => request('auth/register', {
     method: "POST",
@@ -103,22 +70,36 @@ export const logoutRequest = () => request('auth/logout', {
     )}`
 });
 
-export const userRequest = (accessToken) => request('auth/user', {
-    method: "GET",
-    headers: {
-        Authorization: 'Bearer ' + accessToken
-    }
-});
+export const editUser = async (email, password, name, dispatch) => {
+    dispatch({
+        type: GET_USER_REQUEST
+    });
+    return await checkAuthFetch('auth/user', {
+        method: "PATCH",
+        headers: {
+            'Content-Type': 'application/json;charset=utf-8',
+            Authorization: 'Bearer ' + getCookie('token')
+        },
+        body: `${JSON.stringify(
+            {
+                "name": name,
+                "email": email,
+                "password": password,
+            }
+        )}`
+    })
+        .then(response => {
+            if (response.success) {
+                dispatch({
+                    type: GET_USER_SUCCESS,
+                    payload: response.user
+                });
+            } else {
+                dispatch({
+                    type: GET_USER_FAILED
+                });
+            }
 
-export const updateRefreshRequest = () => request('auth/token', {
-    method: "POST",
-    headers: {
-        'Content-Type': 'application/json;charset=utf-8',
-    },
-    body: `${JSON.stringify(
-        {
-            "token": localStorage.getItem("refreshToken"),
-        }
-    )}`
-});
+        })
+};
 

@@ -1,5 +1,6 @@
 import { request } from './index';
 import { getCookie } from '../../utils/set-cookie';
+import { checkAuthFetch } from './index';
 
 export const GET_INGREDIENTS_FAILED = 'GET_INGREDIENTS_FAILED';
 export const GET_INGREDIENTS_REQUEST = 'GET_INGREDIENTS_REQUEST';
@@ -33,17 +34,16 @@ export function getIngedients() {
 }
 
 export const doOrder = async (ingredientsId, dispatch) => {
+    dispatch({
+        type: GET_ORDER_REQUEST
+    });
     if (ingredientsId.length === 0) {
         dispatch({
             type: GET_ORDER_SUCCESS,
             payload: {}
         });
-        return { success: true }
     } else {
-        dispatch({
-            type: GET_ORDER_REQUEST
-        });
-        return await request('orders', {
+        return await checkAuthFetch('orders', {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json;charset=utf-8',
@@ -52,26 +52,22 @@ export const doOrder = async (ingredientsId, dispatch) => {
             body: `{"ingredients": ${JSON.stringify(ingredientsId)}}`
         })
             .then(response => {
-                dispatch({
-                    type: GET_ORDER_SUCCESS,
-                    payload: response.order
-                });
-                dispatch(updateCurrentIngredientsList([]));
-
-                return { success: true }
-            })
-            .catch((e) => {
-                dispatch({
-                    type: GET_ORDER_FAILED
-                });
-                if (e.message === "jwt expired") {
-                    return { success: false, tokenExpired: true }
+                if (response.success) {
+                    dispatch({
+                        type: GET_ORDER_SUCCESS,
+                        payload: response.order
+                    });
+                    dispatch(updateCurrentIngredientsList([]));
                 } else {
-                    return { success: false, tokenExpired: false }
+                    dispatch({
+                        type: GET_ORDER_FAILED
+                    });
                 }
-            });
+
+            })
     }
-}
+
+};
 
 export const updateCurrentIngredientsList = (items) => ({
     type: CURRENT_INGREDIENTS_LIST,

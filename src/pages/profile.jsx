@@ -7,10 +7,9 @@ import { editUser } from '../services/actions/login';
 import { Button } from '@ya.praktikum/react-developer-burger-ui-components';
 import { validateEmail } from '../utils/validation';
 import { useAuth } from '../services/auth';
-import { getCookie } from '../utils/set-cookie';
 
 export const ProfilePage = () => {
-  const { getUser, getUserStart, getUserError, updateRefreshToken } = useAuth();
+  const { getUser, getUserStart, getUserError } = useAuth();
   const dispatch = useDispatch();
   const { user } = useSelector(state => state.login);
   const [name, setName] = useState(user.name || '');
@@ -18,27 +17,9 @@ export const ProfilePage = () => {
   const [password, setPassword] = useState('');
 
   useEffect(() => {
-    getUserAsync();
+    getUser();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
-
-  const getUserAsync = () => {
-    getUser(getCookie('token')).then(response => {
-      if (!response.success) {
-        if (response.tokenExpired) {
-          refreshToken();
-        }
-      }
-    })
-  }
-
-  const refreshToken = () => {
-    updateRefreshToken().then(success => {
-      if (success.success) {
-        getUser(success.accessToken)
-      }
-    })
-  }
 
   useEffect(() => {
     setName(user.name);
@@ -63,9 +44,10 @@ export const ProfilePage = () => {
     setPassword('');
   }
 
-  const onSave = (e) => {
+  const onSave = async (e) => {
     e.preventDefault();
-    dispatch(editUser(login, password, name));
+    await editUser(login, password, name, dispatch);
+    setPassword('');
   }
 
   const isChanges = () => (!getUserStart && (name !== user.name || (login !== user.email && validateEmail(login)) || password.length > 0));

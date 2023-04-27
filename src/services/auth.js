@@ -2,15 +2,14 @@ import { useState } from 'react';
 import {
     registerRequest,
     loginRequest,
-    updateRefreshRequest,
     logoutRequest,
-    userRequest,
     forgotPasswordRequest,
     resetPasswordRequest,
     SET_USER,
 } from './actions/login';
-import { setCookie, deleteCookie } from '../utils/set-cookie';
+import { setCookie, deleteCookie, getCookie } from '../utils/set-cookie';
 import { useDispatch } from 'react-redux';
+import { checkAuthFetch } from './actions/index';
 
 export function useAuth() {
     const dispatch = useDispatch();
@@ -91,28 +90,6 @@ export function useAuth() {
             });
     };
 
-    const updateRefreshToken = async () => {
-        if (localStorage.getItem("refreshToken")) {
-            deleteCookie('token');
-            return await updateRefreshRequest().then(response => {
-                let accessToken;
-                accessToken = response.accessToken.split('Bearer ')[1];
-                if (accessToken) {
-                    setCookie('token', accessToken);
-                }
-
-                localStorage.setItem("refreshToken", response.refreshToken);
-
-                return { success: response.success, accessToken: accessToken }
-            })
-                .catch((e) => {
-                    return { success: false };
-                });
-        } else {
-            return false;
-        }
-    };
-
     const signOut = async () => {
         setLogoutStart(true);
         setLogoutError(false);
@@ -140,36 +117,6 @@ export function useAuth() {
             setLogoutError(true);
             return false;
         }
-    };
-
-    const getUser = async (accessToken) => {
-        setGetUserError(false);
-        setGetUserStart(true);
-
-        return await userRequest(accessToken).then(response => {
-            if (response.success) {
-                dispatch({ type: SET_USER, payload: response.user })
-            }
-
-            setGetUserError(!response.success);
-            setGetUserStart(false);
-
-
-            return ({ success: true, tokenExpired: false })
-        })
-            .catch((e) => {
-                if (localStorage.getItem("refreshToken") && e.message === "jwt expired") {
-                    setGetUserError(true);
-                    setGetUserStart(false);
-
-                    return ({ success: false, tokenExpired: true })
-
-                } else {
-                    setGetUserError(true);
-                    setGetUserStart(false);
-                    return ({ success: false, tokenExpired: false })
-                }
-            });
     };
 
     const forgotPassword = async (email) => {
@@ -204,11 +151,32 @@ export function useAuth() {
             });
     }
 
+
+
+    const getUser = async () => {
+        setGetUserError(false);
+        setGetUserStart(true);
+
+        return await checkAuthFetch('auth/user', {
+            method: "GET",
+            headers: {
+                Authorization: 'Bearer ' + getCookie('token')
+            }
+        })
+            .then(response => {
+                if (response.success) {
+                    dispatch({ type: SET_USER, payload: response.user })
+                }
+
+                setGetUserError(!response.success);
+                setGetUserStart(false);
+            })
+    };
+
     return {
         register,
         signIn,
         signOut,
-        updateRefreshToken,
         getUser,
         forgotPassword,
         resetPassword,

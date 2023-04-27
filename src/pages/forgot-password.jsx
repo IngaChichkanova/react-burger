@@ -37,7 +37,7 @@ export const ForgotPasswordPage = () => {
   return (
     <main className={`${forgotPasswordStyles.wrapper}`}>
       <h1 className='text text_type_main-medium mb-6'>Восстановление пароля</h1>
-      <form onSubmit={submitButton}>
+      <form className={`${forgotPasswordStyles.form}`} onSubmit={submitButton}>
         <EmailInput
           onChange={onChangeEmail}
           value={email}

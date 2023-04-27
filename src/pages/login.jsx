@@ -38,7 +38,7 @@ export const LoginPage = () => {
   return (
     <main className={`${loginStyles.wrapper}`}>
       <h1 className='text text_type_main-medium mb-6'>Вход</h1>
-      <form onSubmit={submitButton}>
+      <form className={`${loginStyles.form}`} onSubmit={submitButton}>
         <EmailInput
           onChange={onChangeEmail}
           value={email}

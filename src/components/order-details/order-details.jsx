@@ -1,40 +1,19 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import orderDetailsStyles from '././order-details.module.css';
 import orderChecked from '../../icons/orderChecked.svg';
 import { useSelector, useDispatch } from 'react-redux';
 import { doOrder } from '../../services/actions/ingredients';
 import { useNavigate } from 'react-router-dom';
 import { getCookie } from '../../utils/set-cookie';
-import { useAuth } from '../../services/auth';
 
 const OrderDetails = () => {
     const dispatch = useDispatch();
     let navigate = useNavigate();
     const { currentIngredientsList, order, orderRequest, orderFailed } = useSelector(state => state.ingredients);
-    const { updateRefreshToken } = useAuth();
-
-    const doOrderRequest = async () => {
-        await (doOrder(currentIngredientsList.map(item => item._id), dispatch))
-            .then((response) => {
-                if (!response.success) {
-                    if (response.tokenExpired) {
-                        refreshToken();
-                    }
-                }
-            });
-    }
-
-    const refreshToken = () => {
-        updateRefreshToken().then(success => {
-            if (success.success) {
-                doOrderRequest()
-            }
-        })
-    }
 
     useEffect(() => {
         if (getCookie('token') && (localStorage.getItem('refreshToken'))) {
-            doOrderRequest();
+            doOrder(currentIngredientsList.map(item => item._id), dispatch);
         } else {
             navigate('/login');
         }

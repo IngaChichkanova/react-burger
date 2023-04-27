@@ -42,7 +42,7 @@ export const ResetPasswordPage = () => {
     state?.from ?
       <main className={`${resetPasswordStyles.wrapper}`}>
         <h1 className='text text_type_main-medium mb-6'>Восстановление пароля</h1>
-        <form onSubmit={onSave}>
+        <form className={`${resetPasswordStyles.form}`} onSubmit={onSave}>
           <Input
             onChange={onChangePassword}
             value={password}
