@@ -6,6 +6,7 @@ import { LoginPage, HomePage, RegisterPage, ForgotPasswordPage, ResetPasswordPag
 import IngredientDetails from '../ingredient-details/ingredient-details';
 import Modal from '../modal/modal';
 import { ProtectedRouteElement, PublicRouteElement } from '../protected-route';
+import ProfileInfo from '../../components/profile-info/profile-info'
 
 const App = () => {
   const location = useLocation();
@@ -22,7 +23,21 @@ const App = () => {
         <Route path="/forgot-password" element={<PublicRouteElement element={<ForgotPasswordPage />} />} />
         <Route path="/reset-password" element={<PublicRouteElement element={<ResetPasswordPage />} />} />
 
-        <Route path="/profile" element={<ProtectedRouteElement element={<ProfilePage />} />} />
+
+        {/*<Route exact path="/profile" element={<ProtectedRouteElement element={
+          <ProfilePage>
+            <ProfileInfo />
+          </ProfilePage>} />
+        } />
+      <Route exact path="/profile/orders" element={<ProtectedRouteElement element={<ProfilePage><NotFoundPage /></ProfilePage>} />} />*/}
+
+
+        <Route path="" element={<ProfilePage />}>
+          <Route path="/profile" element={<ProfileInfo />} />
+          <Route path="/profile/orders" element={<NotFoundPage />} />
+        </Route>
+
+
 
         <Route path="/" element={<HomePage />} />
 

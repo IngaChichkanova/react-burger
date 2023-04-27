@@ -1,5 +1,5 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import registerStyles from './register.module.css';
 import { EmailInput, Input, Button } from '@ya.praktikum/react-developer-burger-ui-components';
 import { useAuth } from '../services/auth';
@@ -8,12 +8,14 @@ import { validateEmail } from '../utils/validation';
 
 export const RegisterPage = () => {
   const { register } = useAuth();
-  const { rgisterFailed } = useSelector(state => state.login);
+  let navigate = useNavigate();
+  const { rgisterFailed, rgisterRequest } = useSelector(state => state.login);
 
   const [login, setLogin] = React.useState('');
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [showPassword, setShowPassword] = React.useState(true);
+  const [errorSignIn, setErrorSignIn] = useState('');
 
   const onChangeLogin = e => {
     setLogin(e.target.value);
@@ -32,8 +34,14 @@ export const RegisterPage = () => {
   }
 
   const registerButton = () => {
-    register(email, password, login);
-
+    register(email, password, login).then((res) => {
+      console.log(res)
+      if (res.success) {
+        navigate('/', { replace: true });
+      } else if (!res.success && res.message) {
+        setErrorSignIn(`: ${res.message}`);
+      }
+    })
   }
 
   return (
@@ -47,6 +55,7 @@ export const RegisterPage = () => {
         extraClass="mb-6"
         type={'text'}
         size={'default'}
+        disabled={rgisterRequest}
       />
       <EmailInput
         onChange={onChangeEmail}
@@ -54,6 +63,7 @@ export const RegisterPage = () => {
         name={'email'}
         placeholder="E-mail"
         extraClass=" mb-6"
+        disabled={rgisterRequest}
       />
       <Input
         onChange={onChangePassword}
@@ -67,19 +77,22 @@ export const RegisterPage = () => {
         onIconClick={onIconClick}
         errorText={'Ошибка'}
         size={'default'}
+        disabled={rgisterRequest}
       />
       <Button
         htmlType="button"
         type="primary"
         size="large"
         extraClass="mb-20"
-        disabled={!validateEmail(email) || login.length === 0 || email.length === 0 || password.length === 0}
+        disabled={rgisterRequest || (!validateEmail(email) || login.length === 0 || email.length === 0 || password.length === 0)}
         onClick={registerButton}
       >
         Зарегистрироваться
       </Button>
 
-      {rgisterFailed && <div className={`text text_type_main-medium mb-4`}>Ошибка</div>}
+      {rgisterRequest && <div className={`text text_type_main-medium text_color_inactive mb-4`}>Выполняется регистрация</div>}
+
+      {rgisterFailed && <div className={`text text_type_main-medium mb-4`}>Ошибка {errorSignIn}</div>}
 
       <div className={`text text_type_main-default text_color_inactive mb-4`}>
         Уже зарегистрированы?

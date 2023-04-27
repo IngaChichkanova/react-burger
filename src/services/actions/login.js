@@ -1,5 +1,5 @@
 import { request } from './index';
-import { getCookie } from '../../utils/set-cookie';
+import { getCookie, setCookie } from '../../utils/set-cookie';
 
 export const PASSWORD_RESET_SUCCESS = 'PASSWORD_RESET_SUCCESS';
 export const PASSWORD_RESET_REQUEST = 'PASSWORD_RESET_REQUEST';
@@ -138,7 +138,8 @@ export const loginRequest = (email, password) => request('auth/login', {
     )}`
 });
 
-export const updateRefreshRequest = () => request('auth/token', {
+/*export const updateRefreshRequest = () => 
+     request('auth/token', {
     method: "POST",
     headers: {
         'Content-Type': 'application/json;charset=utf-8',
@@ -148,7 +149,7 @@ export const updateRefreshRequest = () => request('auth/token', {
             "token": localStorage.getItem("refreshToken"),
         }
     )}`
-});
+});*/
 
 export const logoutRequest = () => request('auth/logout', {
     method: "POST",
@@ -168,4 +169,49 @@ export const userRequest = () => request('auth/user', {
         Authorization: 'Bearer ' + getCookie('token')
     }
 });
+
+
+export function updateRefreshRequest() {
+    return function (dispatch) {
+        dispatch({
+            type: UPDATE_REFRESH_REQUEST
+        });
+
+        request('auth/token', {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json;charset=utf-8',
+            },
+            body: `${JSON.stringify(
+                {
+                    "token": localStorage.getItem("refreshToken"),
+                }
+            )}`
+        })
+            .then(response => {
+                let accessToken;
+                accessToken = response.accessToken.split('Bearer ')[1];
+                if (accessToken) {
+                    setCookie('token', accessToken);
+                }
+
+                localStorage.setItem("refreshToken", response.refreshToken);
+
+                if (response.success) {
+                    dispatch({
+                        type: UPDATE_REFRESH_SUCCESS,
+                    });
+                } else {
+                    dispatch({
+                        type: UPDATE_REFRESH_FAILED
+                    });
+                }
+            })
+            .catch((e) => {
+                dispatch({
+                    type: UPDATE_REFRESH_FAILED
+                });
+            });
+    };
+}
 

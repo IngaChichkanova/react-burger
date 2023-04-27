@@ -74,7 +74,7 @@ export const loginReducer = (state = initialState, action) => {
         case RESET_REQUEST: {
             return {
                 ...state,
-                resetRequest: true
+                resetRequest: true,
             };
         }
         case RESET_SUCCESS: {
@@ -96,7 +96,8 @@ export const loginReducer = (state = initialState, action) => {
         case REGISTER_REQUEST: {
             return {
                 ...state,
-                rgisterRequest: true
+                rgisterRequest: true,
+                rgisterFailed: false
             };
         }
         case REGISTER_SUCCESS: {
@@ -110,7 +111,7 @@ export const loginReducer = (state = initialState, action) => {
         case REGISTER_FAILED: {
             return {
                 ...state,
-                signInFailed: true,
+                rgisterFailed: true,
                 rgisterSuccess: false,
                 rgisterRequest: false
             };
@@ -118,7 +119,8 @@ export const loginReducer = (state = initialState, action) => {
         case SIGN_IN_REQUEST: {
             return {
                 ...state,
-                signInRequest: true
+                signInRequest: true,
+                signInFailed: false,
             };
         }
         case SIGN_IN_SUCCESS: {

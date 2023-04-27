@@ -1,19 +1,19 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import loginStyles from './login.module.css';
 import { EmailInput, Input, Button } from '@ya.praktikum/react-developer-burger-ui-components';
 import { validateEmail } from '../utils/validation';
 import { useSelector } from 'react-redux';
-import { useNavigate } from "react-router-dom";
 import { useAuth } from '../services/auth';
 
 export const LoginPage = () => {
   const { signIn } = useAuth();
-  const { signInFailed } = useSelector(state => state.login);
+  const { signInFailed, signInRequest } = useSelector(state => state.login);
   let navigate = useNavigate();
-  const [email, setEmail] = React.useState('');
-  const [password, setPassword] = React.useState('');
-  const [showPassword, setShowPassword] = React.useState(true);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(true);
+  const [errorSignIn, setErrorSignIn] = useState('');
 
   const onChangeEmail = e => {
     setEmail(e.target.value);
@@ -28,8 +28,12 @@ export const LoginPage = () => {
   }
 
   const submitButton = () => {
-    signIn(email, password).then(() => {
-      navigate('/', { replace: true });
+    signIn(email, password).then((res) => {
+      if (res.success) {
+        navigate('/', { replace: true });
+      } else if (!res.success && res.message) {
+        setErrorSignIn(`: ${res.message}`);
+      }
     })
   }
 
@@ -42,6 +46,7 @@ export const LoginPage = () => {
         name={'email'}
         placeholder="E-mail"
         extraClass="mt-6 mb-6"
+        disabled={signInRequest}
       />
       <Input
         onChange={onChangePassword}
@@ -55,10 +60,11 @@ export const LoginPage = () => {
         onIconClick={onIconClick}
         errorText={'Ошибка'}
         size={'default'}
+        disabled={signInRequest}
       />
       <Button
         onClick={submitButton}
-        disabled={!validateEmail(email) || email.length === 0 || password.length === 0}
+        disabled={signInRequest || (!validateEmail(email) || email.length === 0 || password.length === 0)}
         htmlType="button"
         type="primary"
         size="large"
@@ -67,7 +73,9 @@ export const LoginPage = () => {
         Войти
       </Button>
 
-      {signInFailed && <div className={`text text_type_main-medium mb-4`}>Ошибка</div>}
+      {signInRequest && <div className={`text text_type_main-medium text_color_inactive mb-4`}>Выполняется вход</div>}
+
+      {signInFailed && <div className={`text text_type_main-medium mb-4`}>Ошибка {errorSignIn}</div>}
 
       <div className={`text text_type_main-default text_color_inactive mb-4`}>
         Вы — новый пользователь?

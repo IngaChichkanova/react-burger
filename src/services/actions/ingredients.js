@@ -11,6 +11,7 @@ export const GET_ORDER_REQUEST = 'GET_ORDER_REQUEST';
 export const GET_ORDER_SUCCESS = 'GET_ORDER_SUCCESS';
 export const GET_ORDER_FAILED = 'GET_ORDER_FAILED';
 
+
 export function getIngedients() {
     return function (dispatch) {
         dispatch({
@@ -54,18 +55,16 @@ export function doOrder(ingredientsId) {
                 body: `{"ingredients": ${JSON.stringify(ingredientsId)}}`
             })
                 .then(response => {
-                        dispatch({
-                            type: GET_ORDER_SUCCESS,
-                            payload: response.order
-                        });
-                        dispatch(updateCurrentIngredientsList([]));
+                    dispatch({
+                        type: GET_ORDER_SUCCESS,
+                        payload: response.order
+                    });
+                    dispatch(updateCurrentIngredientsList([]));
                 })
                 .catch((e) => {
-                    console.log('kkkkkk')
-                    console.log('caught it!',e);
-                    if (e.message === "jwt expired") {
-                        console.log('fff')
-                        dispatch(updateRefreshRequest()).then(() => doOrder(ingredientsId));
+                    // if (e.message === "jwt expired") {
+                    if (e.message === "jwt malformed") {
+                        dispatch(updateRefreshRequest());
                     }
                     dispatch({
                         type: GET_ORDER_FAILED

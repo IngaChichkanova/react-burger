@@ -38,14 +38,20 @@ export function useAuth() {
             }
 
             localStorage.setItem("refreshToken", response.refreshToken);
-            dispatch({
-                type: REGISTER_SUCCESS
-            });
+
+            if (response.success) {
+                dispatch({
+                    type: REGISTER_SUCCESS
+                });
+            }
+
+            return response
         })
             .catch((e) => {
                 dispatch({
                     type: REGISTER_FAILED
                 });
+                return e
             });
     };
 
@@ -57,31 +63,38 @@ export function useAuth() {
             let accessToken;
             accessToken = response.accessToken.split('Bearer ')[1];
             if (accessToken) {
-                setCookie('token', accessToken);
+                setCookie('token',
+                    accessToken,
+                    // { expires: 1200 }
+                    { expires: 10 }
+                );
             }
 
             localStorage.setItem("refreshToken", response.refreshToken);
 
-            dispatch({
-                type: SIGN_IN_SUCCESS,
-                payload: response.user
-            });
+            if (response.success) {
+                dispatch({
+                    type: SIGN_IN_SUCCESS,
+                    payload: response
+                });
+            }
 
-            return response.success
+            return response
         })
             .catch((e) => {
                 dispatch({
                     type: SIGN_IN_FAILED
                 });
+                return e
             });
     };
 
     const updateRefreshToken = async () => {
-        console.log('updateRefreshToken')
         dispatch({
             type: UPDATE_REFRESH_REQUEST
         });
         if (localStorage.getItem("refreshToken")) {
+            deleteCookie('token');
             return await updateRefreshRequest().then(response => {
                 let accessToken;
                 accessToken = response.accessToken.split('Bearer ')[1];
@@ -98,11 +111,13 @@ export function useAuth() {
                 return response.success
             })
                 .catch((e) => {
+                    console.log('updateRefreshToken UPDATE_REFRESH_FAILED', e)
                     dispatch({
                         type: UPDATE_REFRESH_FAILED
                     });
                 });
         } else {
+            console.log('updateRefreshToken UPDATE_REFRESH_FAILED')
             dispatch({
                 type: UPDATE_REFRESH_FAILED
             });
@@ -148,16 +163,19 @@ export function useAuth() {
                 payload: response.user
             });
 
-            return response.success
+            return response
         })
             .catch((e) => {
-                if (e.message === "jwt expired") {
+                if (e.message === "jwt expired" || e.message === "jwt malformed") {
                     console.log('fff')
                     dispatch(updateRefreshRequest());
+
+                    return e
                 }
                 dispatch({
                     type: GET_USER_FAILED
                 });
+                return e
             });
     };
 

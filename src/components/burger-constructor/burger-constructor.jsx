@@ -17,9 +17,7 @@ const BurgerConstructor = () => {
     const [openModal, setOpenModal] = useState(false);
 
     const handleOrder = () => {
-        if (currentIngredientsList.length > 0 && currentIngredientsList.filter((item) => item.type === 'bun').length > 0) {
-            setOpenModal(true);
-        }
+        setOpenModal(true);
     }
 
     const handleClose = () => {
@@ -161,7 +159,7 @@ const BurgerConstructor = () => {
                         <span className="mr-2">{totalPrice}</span>
                         <CurrencyIcon type="primary" />
                     </p>
-                    <Button onClick={handleOrder} htmlType="button" type="primary" size="large">
+                    <Button disabled={!(currentIngredientsList.length > 0 && currentIngredientsList.filter((item) => item.type === 'bun').length > 0)} onClick={handleOrder} htmlType="button" type="primary" size="large">
                         Оформить заказ
                     </Button>
                 </section>
