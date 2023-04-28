@@ -5,6 +5,7 @@
     box-sizing: border-box;
     align-items: center;
     height: 100%;
+    justify-content: center;
 }
 
 .wrapper div{
