@@ -6,7 +6,7 @@ import { NavLink } from 'react-router-dom';
 const AppHeader = () => {
 
     return (
-        <header className={`${headerStyles.header} pb-4 pt-4 mt-10 mr-10 ml-10`}>
+        <header className={`${headerStyles.header} pb-4 pt-4`}>
             <div className={`${headerStyles.headerBlock}`}>
 
                 <NavLink to="/" className={`${headerStyles.header_item_wrapper_item} pl-5 pr-5 pb-4 pt-4`}>

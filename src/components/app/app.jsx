@@ -14,7 +14,7 @@ const App = () => {
   let { state } = location;
 
   return (
-    <div className={`${styles.app}`}>
+    <div className={`${styles.app} pt-10 pr-10 pl-10`}>
       <AppHeader />
       <Routes location={state?.backgroundLocation || location}>
 
