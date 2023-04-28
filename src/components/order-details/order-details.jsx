@@ -1,28 +1,16 @@
-import { useEffect } from 'react';
+import React from 'react';
 import orderDetailsStyles from '././order-details.module.css';
 import orderChecked from '../../icons/orderChecked.svg';
-import { useSelector, useDispatch } from 'react-redux';
-import { doOrder } from '../../services/actions/ingredients';
-import { useNavigate } from 'react-router-dom';
-import { getCookie } from '../../utils/set-cookie';
+import { useSelector } from 'react-redux';
 
 const OrderDetails = () => {
-    const dispatch = useDispatch();
-    let navigate = useNavigate();
-    const { currentIngredientsList, order, orderRequest, orderFailed } = useSelector(state => state.ingredients);
-
-    useEffect(() => {
-        if (getCookie('token') && (localStorage.getItem('refreshToken'))) {
-            doOrder(currentIngredientsList.map(item => item._id), dispatch);
-        } else {
-            navigate('/login');
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
+    const order = useSelector(state => state.order.order);
+    const orderRequest = useSelector(state => state.order.orderRequest);
+    const orderFailed = useSelector(state => state.order.orderFailed);
 
     return (
         <div className={`${orderDetailsStyles.order} mt-30  mb-30`}>
-            {!orderRequest && !orderFailed && <>
+            {!orderRequest && !orderFailed && order && <>
                 <p className={`${orderDetailsStyles.total} text text_type_digits-large`}>{order.number}</p>
                 <p className={`text text_type_main-medium mt-8`}>идентификатор заказа</p>
                 <p className={`mt-15 mb-15`}>

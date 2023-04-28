@@ -9,7 +9,7 @@
 .section{
     display: flex;
     flex-direction: column;
-    min-width: 480px;
+    min-width: 584px;
 }
 
 .buttons{

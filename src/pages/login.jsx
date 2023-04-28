@@ -3,10 +3,14 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import loginStyles from './login.module.css';
 import { EmailInput, Input, Button } from '@ya.praktikum/react-developer-burger-ui-components';
 import { validateEmail } from '../utils/validation';
-import { useAuth } from '../services/auth';
+import { signIn } from '../services/actions/user';
+import { useDispatch, useSelector } from 'react-redux';
 
 export const LoginPage = () => {
-  const { signIn, loginStart, loginError, loginErrorText } = useAuth();
+  const dispatch = useDispatch();
+  const loginStart = useSelector(state => state.user.loginStart);
+  const loginError = useSelector(state => state.user.loginError);
+  const loginErrorText = useSelector(state => state.user.loginErrorText);
   let navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -28,7 +32,7 @@ export const LoginPage = () => {
 
   const submitButton = async (e) => {
     e.preventDefault();
-    await signIn(email, password).then((success) => {
+    await signIn(email, password, dispatch).then((success) => {
       if (success) {
         navigate(state?.from ? state.from : '/', { replace: true });
       }

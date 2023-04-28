@@ -2,11 +2,15 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import registerStyles from './register.module.css';
 import { EmailInput, Input, Button } from '@ya.praktikum/react-developer-burger-ui-components';
-import { useAuth } from '../services/auth';
+import { register } from '../services/actions/user';
 import { validateEmail } from '../utils/validation';
+import { useDispatch, useSelector } from 'react-redux';
 
 export const RegisterPage = () => {
-  const { register, registerStart, registerError, registerErrorText } = useAuth();
+  const dispatch = useDispatch();
+  const registerStart = useSelector(state => state.user.registerStart);
+  const registerError = useSelector(state => state.user.registerError);
+  const registerErrorText = useSelector(state => state.user.registerErrorText);
   let navigate = useNavigate();
 
   const [login, setLogin] = useState('');
@@ -32,7 +36,7 @@ export const RegisterPage = () => {
 
   const registerButton = async (e) => {
     e.preventDefault();
-    await register(email, password, login).then((success) => {
+    await register(email, password, login, dispatch).then((success) => {
       if (success) {
         navigate('/', { replace: true });
       }

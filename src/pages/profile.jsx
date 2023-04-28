@@ -3,27 +3,29 @@ import profileStyles from './profile.module.css';
 import ProfileSidebar from '../components/profile-sidebar/profile-sidebar';
 import { EmailInput, Input } from '@ya.praktikum/react-developer-burger-ui-components';
 import { useSelector, useDispatch } from 'react-redux';
-import { editUser } from '../services/actions/login';
+import { editUser, getUser } from '../services/actions/user';
 import { Button } from '@ya.praktikum/react-developer-burger-ui-components';
 import { validateEmail } from '../utils/validation';
-import { useAuth } from '../services/auth';
 
 export const ProfilePage = () => {
-  const { getUser, getUserStart, getUserError } = useAuth();
   const dispatch = useDispatch();
-  const { user } = useSelector(state => state.login);
+  const user = useSelector(state => state.user.user);
+  const getUserStart = useSelector(state => state.user.getUserStart);
+  const getUserError = useSelector(state => state.user.getUserError);
   const [name, setName] = useState(user.name || '');
   const [login, setLogin] = useState(user.email || '');
   const [password, setPassword] = useState('');
 
   useEffect(() => {
-    getUser();
+    getUser(dispatch);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {
-    setName(user.name);
-    setLogin(user.email);
+    if (user) {
+      setName(user.name);
+      setLogin(user.email);
+    }
   }, [user])
 
   const onChangeName = e => {

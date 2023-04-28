@@ -2,33 +2,37 @@ import React, { useEffect } from 'react';
 import ingredientDetailsStyles from '././ingredient-details.module.css';
 import { useSelector, useDispatch } from 'react-redux';
 import { useLocation } from 'react-router-dom';
-import { updateCurrentIngredient } from '../../services/actions/ingredients';
+import { updateCurrentIngredient } from '../../services/actions/ingredient-modal';
 import { getIngedients } from '../../services/actions/ingredients';
 
 const IngredientDetails = () => {
     const dispatch = useDispatch();
-    const { currentIngredient, ingredientsList, ingredientsListFailed, ingredientsListRequest } = useSelector(state => state.ingredients);
+    const currentIngredient = useSelector(state => state.ingredientModal.currentIngredient);
+    const ingredientsListFailed = useSelector(state => state.ingredients.ingredientsListFailed);
+    const ingredientsListRequest = useSelector(state => state.ingredients.ingredientsListRequest);
+    const ingredientsList = useSelector(state => state.ingredients.ingredientsList);
+
     const location = useLocation();
 
     useEffect(() => {
         if (!location.state) {
-          dispatch(getIngedients());
+            dispatch(getIngedients());
         }
 
-        return () => dispatch(updateCurrentIngredient({}));
+        return () => dispatch(updateCurrentIngredient(null));
         // eslint-disable-next-line react-hooks/exhaustive-deps
-      }, [])
-    
-      useEffect(() => {
+    }, [])
+
+    useEffect(() => {
         if (!ingredientsListRequest && !ingredientsListFailed && ingredientsList.length > 0) {
-          let currentId = location.pathname.split('/ingredients/')[1];
-          let current = ingredientsList.filter(item => item._id === currentId);
-          if (current.length > 0) {
-            dispatch(updateCurrentIngredient(current[0]))
-          }
+            let currentId = location.pathname.split('/ingredients/')[1];
+            let current = ingredientsList.filter(item => item._id === currentId);
+            if (current.length > 0) {
+                dispatch(updateCurrentIngredient(current[0]))
+            }
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-      }, [ingredientsListRequest, ingredientsListFailed, ingredientsList])
+    }, [ingredientsListRequest, ingredientsListFailed, ingredientsList])
 
     return (
         <>
@@ -36,7 +40,7 @@ const IngredientDetails = () => {
                 <p className={`${ingredientDetailsStyles.title} ml-10 mt-10 text text_type_main-large`}>Детали ингредиента</p>
             </div>
 
-            <div className={`${ingredientDetailsStyles.ingredient} mb-15`}>
+            {currentIngredient && <div className={`${ingredientDetailsStyles.ingredient} mb-15`}>
                 <p className={`mt-1 mb-1`}><img src={currentIngredient.image_large} alt={currentIngredient.name} /></p>
                 <p className={`text text_type_main-medium mt-4 mb-8`}>{currentIngredient.name}</p>
                 <div className={`${ingredientDetailsStyles.property}`}>
@@ -57,7 +61,7 @@ const IngredientDetails = () => {
                         <p>{currentIngredient.carbohydrates}</p>
                     </div>
                 </div>
-            </div>
+            </div>}
         </>
     );
 }

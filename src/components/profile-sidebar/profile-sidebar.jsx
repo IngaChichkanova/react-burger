@@ -1,18 +1,20 @@
 
-import { useState } from 'react';
+import React from 'react';
 import profileSidebarStyles from './profile-sidebar.module.css';
 import { NavLink } from 'react-router-dom';
-import { useAuth } from '../../services/auth';
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useMatch } from "react-router-dom";
+import { signOut } from '../../services/actions/user';
+import { useDispatch, useSelector } from 'react-redux';
 
 const ProfileSidebar = () => {
-    const { signOut, logoutStart, logoutError } = useAuth();
+    const dispatch = useDispatch();
+    const logoutStart = useSelector(state => state.user.logoutStart);
+    const logoutError = useSelector(state => state.user.logoutError);
     let navigate = useNavigate();
-    const [text, setText] = useState(<>В этом разделе вы можете изменить <br /> свои персональные данные</>);
 
     const logOut = async (e) => {
         e.preventDefault();
-        await signOut().then((success) => {
+        await signOut(dispatch).then((success) => {
             if (success) {
                 navigate('/login', { replace: true });
             }
@@ -27,7 +29,6 @@ const ProfileSidebar = () => {
                         to={{ pathname: `/profile` }}
                         end
                         className={({ isActive }) => `${profileSidebarStyles.navLink} text text_type_main-default ${isActive ? profileSidebarStyles.navLinkActive : 'text_color_inactive'}`}
-                        onClick={() => setText(<>В этом разделе вы можете изменить <br /> свои персональные данные</>)}
                     >
                         Профиль
                     </NavLink>
@@ -37,7 +38,6 @@ const ProfileSidebar = () => {
                         to={{ pathname: `/profile/orders` }}
                         end
                         className={({ isActive }) => `${profileSidebarStyles.navLink} text text_type_main-default ${isActive ? profileSidebarStyles.navLinkActive : 'text_color_inactive'}`}
-                        onClick={() => setText(<></>)}
                     >
                         История заказов
                     </NavLink>
@@ -56,7 +56,7 @@ const ProfileSidebar = () => {
             {logoutError && <div className={`text text_type_main-medium mb-4`}>Ошибка</div>}
 
             <div className={`${profileSidebarStyles.text} text text_type_main-default text_color_inactive mt-20`}>
-                {text}
+                {useMatch('/profile') ? <>В этом разделе вы можете изменить <br /> свои персональные данные</> : <></>}
             </div>
         </section>
     );

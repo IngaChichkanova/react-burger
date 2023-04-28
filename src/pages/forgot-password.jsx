@@ -3,10 +3,13 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import forgotPasswordStyles from './forgot-password.module.css';
 import { EmailInput, Button } from '@ya.praktikum/react-developer-burger-ui-components';
 import { validateEmail } from '../utils/validation';
-import { useAuth } from '../services/auth';
+import { forgotPassword } from '../services/actions/user';
+import { useDispatch, useSelector } from 'react-redux';
 
 export const ForgotPasswordPage = () => {
-  const { forgotPassword, forgotPasswordStart, forgotPasswordError } = useAuth();
+  const dispatch = useDispatch();
+  const forgotPasswordStart = useSelector(state => state.user.forgotPasswordStart);
+  const forgotPasswordError = useSelector(state => state.user.forgotPasswordError);
   let navigate = useNavigate();
   const location = useLocation();
   const [email, setEmail] = useState('');
@@ -18,7 +21,7 @@ export const ForgotPasswordPage = () => {
 
   const submitButton = (e) => {
     e.preventDefault();
-    forgotPassword(email).then((success) => {
+    forgotPassword(email, dispatch).then((success) => {
       if (success) {
         navigate(
           '/reset-password',

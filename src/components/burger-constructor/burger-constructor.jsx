@@ -1,28 +1,41 @@
-import React, { useState, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import burgerStyles from './burger-constructor.module.css';
 import { DragIcon, CurrencyIcon, Button, ConstructorElement } from '@ya.praktikum/react-developer-burger-ui-components';
 import Modal from '../modal/modal';
 import OrderDetails from '../order-details/order-details';
 import { useSelector, useDispatch } from 'react-redux';
-import { doOrder, updateCurrentIngredientsList } from '../../services/actions/ingredients';
+import { clearOrder, doOrder } from '../../services/actions/order';
+import { updateCurrentIngredientsList } from '../../services/actions/burder-constructor';
 import { useDrop } from "react-dnd";
 import DraggableItem from './draggable-items';
-
+import { getCookie } from '../../utils/set-cookie';
+import { useNavigate } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 
 const BurgerConstructor = () => {
     const dispatch = useDispatch();
-    const { currentIngredientsList } = useSelector(state => state.ingredients);
+    let navigate = useNavigate();
+    const currentIngredientsList = useSelector(state => state.burgerConstructor.currentIngredientsList);
 
     const [openModal, setOpenModal] = useState(false);
 
     const handleOrder = () => {
         setOpenModal(true);
+        if (getCookie('token') && (localStorage.getItem('refreshToken'))) {
+            let orderRequest = [
+                ...currentIngredientsList,
+                currentIngredientsList.find(item => item.type === 'bun')
+            ]
+
+            doOrder(orderRequest.map(item => item._id), dispatch);
+        } else {
+            navigate('/login');
+        }
     }
 
     const handleClose = () => {
         setOpenModal(false);
-        doOrder([], dispatch);
+        dispatch(clearOrder());
     }
 
     const bun = useMemo(() => currentIngredientsList.filter((item) => item.type === 'bun'), [currentIngredientsList]);

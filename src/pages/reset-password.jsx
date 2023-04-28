@@ -2,10 +2,13 @@ import { useState } from 'react';
 import { Link, useNavigate, useLocation, Navigate } from 'react-router-dom';
 import resetPasswordStyles from './reset-password.module.css';
 import { Input, Button } from '@ya.praktikum/react-developer-burger-ui-components';
-import { useAuth } from '../services/auth';
+import { resetPassword } from '../services/actions/user';
+import { useDispatch, useSelector } from 'react-redux';
 
 export const ResetPasswordPage = () => {
-  const { resetPassword, resetPasswordStart, resetPasswordError } = useAuth();
+  const dispatch = useDispatch();
+  const resetPasswordStart = useSelector(state => state.user.resetPasswordStart);
+  const resetPasswordError = useSelector(state => state.user.resetPasswordError);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -30,7 +33,7 @@ export const ResetPasswordPage = () => {
 
   const onSave = async (e) => {
     e.preventDefault();
-    await resetPassword(password, code).then((success) => {
+    await resetPassword(password, code, dispatch).then((success) => {
       if (success) {
         navigate('/login', { replace: true });
       }

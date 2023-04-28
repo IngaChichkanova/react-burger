@@ -3,4 +3,5 @@
     flex-direction: column;
     z-index: 1;
     height: 100vh;
+    overflow: auto hidden;
 }

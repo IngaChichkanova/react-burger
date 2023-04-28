@@ -10,7 +10,10 @@ import { Link, useLocation } from 'react-router-dom';
 const BurgerIngredients = () => {
     const location = useLocation();
     const dispatch = useDispatch();
-    const { ingredientsList, currentIngredientsList, ingredientsListFailed, ingredientsListRequest } = useSelector(state => state.ingredients);
+    const ingredientsList = useSelector(state => state.ingredients.ingredientsList);
+    const currentIngredientsList = useSelector(state => state.burgerConstructor.currentIngredientsList);
+    const ingredientsListFailed = useSelector(state => state.ingredients.ingredientsListFailed);
+    const ingredientsListRequest = useSelector(state => state.ingredients.ingredientsListRequest);
 
     const [currentTab, setCurrentTab] = useState("bun");
 
