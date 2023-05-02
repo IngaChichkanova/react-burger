@@ -1,22 +1,47 @@
 import React from 'react';
-import appStyles from './app.module.css';
 import AppHeader from '../header/header';
-import BurgerIngredients from '../burger-ingredients/burger-ingredients';
-import BurgerConstructor from '../burger-constructor/burger-constructor';
-import { DndProvider } from "react-dnd";
-import { HTML5Backend } from "react-dnd-html5-backend";
+import styles from './app.module.css';
+import { useNavigate, Routes, Route, useLocation } from 'react-router-dom';
+import { LoginPage, HomePage, RegisterPage, ForgotPasswordPage, ResetPasswordPage, ProfilePage, IngredientsPage, NotFoundPage, ProfileOrdersPage } from '../../pages';
+import IngredientDetails from '../ingredient-details/ingredient-details';
+import Modal from '../modal/modal';
+import { ProtectedRouteElement } from '../protected-route';
 
 const App = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  let { state } = location;
 
   return (
-    <div className={`${appStyles.app}`}>
+    <div className={`${styles.app} pt-10 pr-10 pl-10`}>
       <AppHeader />
-      <DndProvider backend={HTML5Backend}>
-        <main className={`${appStyles.main}`}>
-          <BurgerIngredients />
-          <BurgerConstructor />
-        </main>
-      </DndProvider>
+      <Routes location={state?.backgroundLocation || location}>
+
+        <Route path="/register" element={<ProtectedRouteElement element={<RegisterPage />} isPublic={true} />} />
+        <Route path="/login" element={<ProtectedRouteElement element={<LoginPage />} isPublic={true} />} />
+        <Route path="/forgot-password" element={<ProtectedRouteElement element={<ForgotPasswordPage />} isPublic={true} />} />
+        <Route path="/reset-password" element={<ProtectedRouteElement element={<ResetPasswordPage />} isPublic={true} />} />
+
+        <Route path="/" element={<HomePage />} />
+        <Route path="/ingredients/:id" element={<IngredientsPage />}>
+          <Route path="" element={<IngredientDetails />} />
+        </Route>
+
+        <Route path="/profile" element={<ProtectedRouteElement element={<ProfilePage />} isPublic={false} />} />
+        <Route path="/profile/orders" element={<ProtectedRouteElement element={<ProfileOrdersPage />} isPublic={false} />} />
+
+        <Route path="*" element={<NotFoundPage />} />
+
+      </Routes>
+
+      {state?.backgroundLocation && (
+        <Routes>
+          <Route path="/ingredients/:id" element={<Modal onClose={() => { navigate(`/`) }}>
+            <IngredientDetails />
+          </Modal>} />
+        </Routes>
+      )}
     </div>
   );
 }

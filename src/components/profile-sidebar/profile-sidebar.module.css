@@ -1,0 +1,18 @@
+.navLinks ul{
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.navLink{
+    text-decoration: none;
+    font-size: 24px;
+}
+
+.navLinkActive{
+    color: #F2F2F3;
+}
+
+.text{
+    opacity: 0.4;
+}

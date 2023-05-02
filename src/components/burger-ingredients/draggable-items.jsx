@@ -32,6 +32,5 @@ DraggableItem.propTypes = {
     children: PropTypes.node.isRequired,
     item: ingredientListPropTypes.isRequired,
     className: PropTypes.string.isRequired,
-    clickHandler: PropTypes.func.isRequired,
     type: PropTypes.string.isRequired
 };

@@ -28,6 +28,11 @@
 
 }
 
+.ingredientLink{
+    text-decoration: none;
+    color: white;
+}
+
 .ingredient:nth-child(odd){
     float: left;
 }

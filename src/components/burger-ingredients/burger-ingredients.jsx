@@ -1,19 +1,21 @@
 import React, { useState, createRef, useMemo, useEffect } from 'react';
 import ingredientsStyles from './burger-ingredients.module.css';
 import { Tab, CurrencyIcon, Counter } from '@ya.praktikum/react-developer-burger-ui-components';
-import Modal from '../modal/modal';
-import IngredientDetails from '../ingredient-details/ingredient-details';
 import { getIngedients } from '../../services/actions/ingredients';
 import { useDispatch, useSelector } from 'react-redux';
-import { updateCurrentIngredient } from '../../services/actions/ingredients';
 import DraggableItem from './draggable-items';
+import { Link, useLocation } from 'react-router-dom';
+
 
 const BurgerIngredients = () => {
+    const location = useLocation();
     const dispatch = useDispatch();
-    const { ingredientsList, currentIngredientsList, ingredientsListFailed, ingredientsListRequest } = useSelector(state => state.ingredients);
+    const ingredientsList = useSelector(state => state.ingredients.ingredientsList);
+    const currentIngredientsList = useSelector(state => state.burgerConstructor.currentIngredientsList);
+    const ingredientsListFailed = useSelector(state => state.ingredients.ingredientsListFailed);
+    const ingredientsListRequest = useSelector(state => state.ingredients.ingredientsListRequest);
 
     const [currentTab, setCurrentTab] = useState("bun");
-    const [openModal, setOpenModal] = useState(false);
 
     const bunRef = createRef();
     const sauceRef = createRef();
@@ -29,16 +31,6 @@ const BurgerIngredients = () => {
             setCurrentTab(value);
             valueRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
         }
-    }
-
-    const handleCloseDetails = () => {
-        setOpenModal(false);
-        dispatch(updateCurrentIngredient({}));
-    }
-
-    const handlerOpenDetails = async (ingredient) => {
-        await dispatch(updateCurrentIngredient(ingredient));
-        setOpenModal(true);
     }
 
     const scrollObserve = () => {
@@ -64,6 +56,7 @@ const BurgerIngredients = () => {
     const buns = useMemo(() => ingredientsList.filter((item) => item.type === 'bun'), [ingredientsList]);
     const sauces = useMemo(() => ingredientsList.filter((item) => item.type === 'sauce'), [ingredientsList]);
     const mains = useMemo(() => ingredientsList.filter((item) => item.type === 'main'), [ingredientsList]);
+
 
     return (
         <>
@@ -102,10 +95,13 @@ const BurgerIngredients = () => {
                                         key={ingredient._id}
                                         item={ingredient}
                                         type={ingredient.type}
-                                        clickHandler={() => handlerOpenDetails(ingredient)}
                                         className={`${ingredientsStyles.ingredient} text text_type_main-small mt-6 ml-3 mr-3`}
                                     >
-                                        <>
+                                        <Link
+                                            className={`${ingredientsStyles.ingredientLink}`}
+                                            to={`ingredients/${ingredient._id}`}
+                                            state={{ backgroundLocation: location }}
+                                        >
                                             <Counter count={currentIngredientsList.filter(item => item._id === ingredient._id).length} size="default" extraClass="m-1" />
                                             <img className="pl-4 pr-4" src={ingredient.image} alt={ingredient.name} />
                                             <p className={`${ingredientsStyles.ingredientDetail} mt-1 mb-1`}>
@@ -113,7 +109,7 @@ const BurgerIngredients = () => {
                                                 <CurrencyIcon type="primary" />
                                             </p>
                                             <p className={`${ingredientsStyles.ingredientDetail}`}>{ingredient.name}</p>
-                                        </>
+                                        </Link>
                                     </DraggableItem>
                                 ))}
 
@@ -127,17 +123,20 @@ const BurgerIngredients = () => {
                                         key={ingredient._id}
                                         item={ingredient}
                                         type={ingredient.type}
-                                        clickHandler={() => handlerOpenDetails(ingredient)}
                                         className={`${ingredientsStyles.ingredient} text text_type_main-small mt-6 ml-3 mr-3`}
                                     >
-                                        <>
+                                        <Link
+                                            className={`${ingredientsStyles.ingredientLink}`}
+                                            to={`ingredients/${ingredient._id}`}
+                                            state={{ backgroundLocation: location }}
+                                        >
                                             <Counter count={currentIngredientsList.filter(item => item._id === ingredient._id).length} size="default" extraClass="m-1" />
                                             <img className="pl-4 pr-4" src={ingredient.image} alt={ingredient.name} />
                                             <p className={`${ingredientsStyles.ingredientDetail} mt-1 mb-1`}>
                                                 <span className="mr-1">{ingredient.price}</span><CurrencyIcon type="primary" />
                                             </p>
                                             <p className={`${ingredientsStyles.ingredientDetail}`}>{ingredient.name}</p>
-                                        </>
+                                        </Link>
                                     </DraggableItem>))}
 
                             </section>
@@ -150,27 +149,26 @@ const BurgerIngredients = () => {
                                         key={ingredient._id}
                                         item={ingredient}
                                         type={ingredient.type}
-                                        clickHandler={() => handlerOpenDetails(ingredient)}
                                         className={`${ingredientsStyles.ingredient} text text_type_main-small mt-6 ml-3 mr-3`}
                                     >
-                                        <>
+                                        <Link
+                                            className={`${ingredientsStyles.ingredientLink}`}
+                                            to={`ingredients/${ingredient._id}`}
+                                            state={{ backgroundLocation: location }}
+                                        >
                                             <Counter count={currentIngredientsList.filter(item => item._id === ingredient._id).length} size="default" extraClass="m-1" />
                                             <img className="pl-4 pr-4" src={ingredient.image} alt={ingredient.name} />
                                             <p className={`${ingredientsStyles.ingredientDetail} mt-1 mb-1`}>
                                                 <span className="mr-1">{ingredient.price}</span><CurrencyIcon type="primary" />
                                             </p>
                                             <p className={`${ingredientsStyles.ingredientDetail}`}>{ingredient.name}</p>
-                                        </>
+                                        </Link>
                                     </DraggableItem>
                                 ))}
 
                             </section>
                         </section>}
             </section>
-
-            {openModal && <Modal onClose={handleCloseDetails}>
-                <IngredientDetails />
-            </Modal>}
         </>
     );
 }
