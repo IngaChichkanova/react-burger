@@ -5,28 +5,28 @@ import { getIngedients } from '../../services/actions/ingredients';
 import { useDispatch, useSelector } from 'react-redux';
 import DraggableItem from './draggable-items';
 import { Link, useLocation } from 'react-router-dom';
-
+import { IRootState, TIngredient } from '../../utils/types';
 
 const BurgerIngredients = () => {
     const location = useLocation();
-    const dispatch = useDispatch();
-    const ingredientsList = useSelector(state => state.ingredients.ingredientsList);
-    const currentIngredientsList = useSelector(state => state.burgerConstructor.currentIngredientsList);
-    const ingredientsListFailed = useSelector(state => state.ingredients.ingredientsListFailed);
-    const ingredientsListRequest = useSelector(state => state.ingredients.ingredientsListRequest);
+    const dispatch: Function = useDispatch();
+    const ingredientsList = useSelector((state: {[prop in keyof IRootState as string]: any}) => state.ingredients.ingredientsList);
+    const currentIngredientsList = useSelector((state: {[prop in keyof IRootState as string]: any}) => state.burgerConstructor.currentIngredientsList);
+    const ingredientsListFailed = useSelector((state: {[prop in keyof IRootState as string]: any}) => state.ingredients.ingredientsListFailed);
+    const ingredientsListRequest = useSelector((state: {[prop in keyof IRootState as string]: any}) => state.ingredients.ingredientsListRequest);
 
-    const [currentTab, setCurrentTab] = useState("bun");
+    const [currentTab, setCurrentTab] = useState<string>("bun");
 
-    const bunRef = createRef();
-    const sauceRef = createRef();
-    const mainRef = createRef();
+    const bunRef = createRef<any>();
+    const sauceRef = createRef<any>();
+    const mainRef = createRef<any>();
 
     useEffect(() => {
         dispatch(getIngedients());
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
-    const setCurrent = (valueRef, value) => {
+    const setCurrent = (valueRef: any, value: string) => {
         if (!ingredientsListFailed) {
             setCurrentTab(value);
             valueRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
@@ -34,7 +34,7 @@ const BurgerIngredients = () => {
     }
 
     const scrollObserve = () => {
-        function obCallback(payload) {
+        function obCallback(payload: any) {
             for (let i = 0; payload.length > i; i++) {
                 if ((payload[i].target === bunRef.current) && (payload[i].isIntersecting && payload[i].intersectionRatio > 0.7)) {
                     setCurrentTab("bun");
@@ -53,9 +53,9 @@ const BurgerIngredients = () => {
         ob.observe(mainRef.current);
     }
 
-    const buns = useMemo(() => ingredientsList.filter((item) => item.type === 'bun'), [ingredientsList]);
-    const sauces = useMemo(() => ingredientsList.filter((item) => item.type === 'sauce'), [ingredientsList]);
-    const mains = useMemo(() => ingredientsList.filter((item) => item.type === 'main'), [ingredientsList]);
+    const buns = useMemo(() => ingredientsList.filter((item: TIngredient) => item.type === 'bun'), [ingredientsList]);
+    const sauces = useMemo(() => ingredientsList.filter((item: TIngredient) => item.type === 'sauce'), [ingredientsList]);
+    const mains = useMemo(() => ingredientsList.filter((item: TIngredient) => item.type === 'main'), [ingredientsList]);
 
 
     return (
@@ -64,13 +64,13 @@ const BurgerIngredients = () => {
                 <section className={`mt-10`}>
                     <h1 className="text text_type_main-large">Соберите бургер</h1>
                     <div className={`${ingredientsStyles.tabs} mt-5`}>
-                        <Tab value={bunRef} active={currentTab === 'bun'} onClick={() => setCurrent(bunRef, 'bun')}>
+                        <Tab value={'bunRef'} active={currentTab === 'bun'} onClick={() => setCurrent(bunRef, 'bun')}>
                             Булки
                         </Tab>
-                        <Tab value={sauceRef} active={currentTab === 'sauce'} onClick={() => setCurrent(sauceRef, 'sauce')}>
+                        <Tab value={'sauceRef'} active={currentTab === 'sauce'} onClick={() => setCurrent(sauceRef, 'sauce')}>
                             Соусы
                         </Tab>
-                        <Tab value={mainRef} active={currentTab === 'main'} onClick={() => setCurrent(mainRef, 'main')}>
+                        <Tab value={'mainRef'} active={currentTab === 'main'} onClick={() => setCurrent(mainRef, 'main')}>
                             Начинки
                         </Tab>
                     </div>
@@ -90,7 +90,7 @@ const BurgerIngredients = () => {
                             <section ref={bunRef} className={`${ingredientsStyles.ingredientsSection} ml-1 mr-1`}>
                                 <p className="text text_type_main-medium mt-10 mb-6">Булки</p>
 
-                                {buns.map(ingredient => (
+                                {buns.map((ingredient: TIngredient) => (
                                     <DraggableItem
                                         key={ingredient._id}
                                         item={ingredient}
@@ -102,7 +102,7 @@ const BurgerIngredients = () => {
                                             to={`ingredients/${ingredient._id}`}
                                             state={{ backgroundLocation: location }}
                                         >
-                                            <Counter count={currentIngredientsList.filter(item => item._id === ingredient._id).length} size="default" extraClass="m-1" />
+                                            <Counter count={currentIngredientsList.filter((item: TIngredient) => item._id === ingredient._id).length} size="default" extraClass="m-1" />
                                             <img className="pl-4 pr-4" src={ingredient.image} alt={ingredient.name} />
                                             <p className={`${ingredientsStyles.ingredientDetail} mt-1 mb-1`}>
                                                 <span className="mr-1">{ingredient.price}</span>
@@ -118,7 +118,7 @@ const BurgerIngredients = () => {
                             <section ref={sauceRef} className={`${ingredientsStyles.ingredientsSection} ml-1 mr-1`}>
                                 <p className="text text_type_main-medium mt-10 mb-6">Соусы</p>
 
-                                {sauces.map(ingredient => (
+                                {sauces.map((ingredient: TIngredient) => (
                                     <DraggableItem
                                         key={ingredient._id}
                                         item={ingredient}
@@ -130,7 +130,7 @@ const BurgerIngredients = () => {
                                             to={`ingredients/${ingredient._id}`}
                                             state={{ backgroundLocation: location }}
                                         >
-                                            <Counter count={currentIngredientsList.filter(item => item._id === ingredient._id).length} size="default" extraClass="m-1" />
+                                            <Counter count={currentIngredientsList.filter((item: TIngredient) => item._id === ingredient._id).length} size="default" extraClass="m-1" />
                                             <img className="pl-4 pr-4" src={ingredient.image} alt={ingredient.name} />
                                             <p className={`${ingredientsStyles.ingredientDetail} mt-1 mb-1`}>
                                                 <span className="mr-1">{ingredient.price}</span><CurrencyIcon type="primary" />
@@ -144,7 +144,7 @@ const BurgerIngredients = () => {
                             <section ref={mainRef} className={`${ingredientsStyles.ingredientsSection} ml-1 mr-1`}>
                                 <p className="text text_type_main-medium mt-10 mb-6">Начинки</p>
 
-                                {mains.map(ingredient => (
+                                {mains.map((ingredient: TIngredient) => (
                                     <DraggableItem
                                         key={ingredient._id}
                                         item={ingredient}
@@ -156,7 +156,7 @@ const BurgerIngredients = () => {
                                             to={`ingredients/${ingredient._id}`}
                                             state={{ backgroundLocation: location }}
                                         >
-                                            <Counter count={currentIngredientsList.filter(item => item._id === ingredient._id).length} size="default" extraClass="m-1" />
+                                            <Counter count={currentIngredientsList.filter((item: TIngredient) => item._id === ingredient._id).length} size="default" extraClass="m-1" />
                                             <img className="pl-4 pr-4" src={ingredient.image} alt={ingredient.name} />
                                             <p className={`${ingredientsStyles.ingredientDetail} mt-1 mb-1`}>
                                                 <span className="mr-1">{ingredient.price}</span><CurrencyIcon type="primary" />

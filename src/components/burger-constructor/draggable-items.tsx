@@ -1,9 +1,13 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { ingredientListPropTypes } from '../../utils/prop-types';
+import React, { FC } from 'react';
 import { useDrag, useDrop } from "react-dnd";
+import { TIngredient } from '../../utils/types';
 
-const DraggableItem = ({ children, currentItem, className, moveItem }) => {
+type TDraggableProps = {
+    currentItem: TIngredient;
+    moveItem: Function;
+} & React.HTMLAttributes<HTMLHtmlElement>;
+
+const DraggableItem: FC<TDraggableProps> = ({ children, currentItem, className, moveItem }) => {
     const [{ isDragging }, drag] = useDrag(
         () => ({
             type: 'sort',
@@ -21,7 +25,8 @@ const DraggableItem = ({ children, currentItem, className, moveItem }) => {
             collect: monitor => ({
                 isHover: monitor.isOver(),
             }),
-            drop: (item, monitor) => {
+            drop: (item: any, monitor) => {
+                console.log(item)
                 if (item.currentItem.uniqueKey !== currentItem.uniqueKey && monitor.isOver({ shallow: true })) {
                     moveItem(item.currentItem.uniqueKey, currentItem.uniqueKey)
                 }
@@ -45,10 +50,3 @@ const DraggableItem = ({ children, currentItem, className, moveItem }) => {
 }
 
 export default DraggableItem;
-
-DraggableItem.propTypes = {
-    children: PropTypes.node.isRequired,
-    currentItem: ingredientListPropTypes.isRequired,
-    className: PropTypes.string.isRequired,
-    moveItem: PropTypes.func.isRequired
-};

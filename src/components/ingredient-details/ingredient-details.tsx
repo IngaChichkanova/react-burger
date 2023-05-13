@@ -4,13 +4,14 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { updateCurrentIngredient } from '../../services/actions/ingredient-modal';
 import { getIngedients } from '../../services/actions/ingredients';
+import { TIngredient, IRootState } from '../../utils/types';
 
 const IngredientDetails = () => {
-    const dispatch = useDispatch();
-    const currentIngredient = useSelector(state => state.ingredientModal.currentIngredient);
-    const ingredientsListFailed = useSelector(state => state.ingredients.ingredientsListFailed);
-    const ingredientsListRequest = useSelector(state => state.ingredients.ingredientsListRequest);
-    const ingredientsList = useSelector(state => state.ingredients.ingredientsList);
+    const dispatch: Function = useDispatch();
+    const currentIngredient = useSelector((state: {[prop in keyof IRootState as string]: any}) => state.ingredientModal.currentIngredient);
+    const ingredientsListFailed = useSelector((state: {[prop in keyof IRootState as string]: any}) => state.ingredients.ingredientsListFailed);
+    const ingredientsListRequest = useSelector((state: {[prop in keyof IRootState as string]: any}) => state.ingredients.ingredientsListRequest);
+    const ingredientsList = useSelector((state: {[prop in keyof IRootState as string]: any}) => state.ingredients.ingredientsList);
 
     const location = useLocation();
 
@@ -26,7 +27,7 @@ const IngredientDetails = () => {
     useEffect(() => {
         if (!ingredientsListRequest && !ingredientsListFailed && ingredientsList.length > 0) {
             let currentId = location.pathname.split('/ingredients/')[1];
-            let current = ingredientsList.filter(item => item._id === currentId);
+            let current = ingredientsList.filter((item: TIngredient) => item._id === currentId);
             if (current.length > 0) {
                 dispatch(updateCurrentIngredient(current[0]))
             }
