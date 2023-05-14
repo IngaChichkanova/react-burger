@@ -1,28 +1,29 @@
-import { useState } from 'react';
+import { FC, HTMLAttributes, useState } from 'react';
 import { Link, useNavigate, useLocation, Navigate } from 'react-router-dom';
 import resetPasswordStyles from './reset-password.module.css';
 import { Input, Button } from '@ya.praktikum/react-developer-burger-ui-components';
 import { resetPassword } from '../services/actions/user';
 import { useDispatch, useSelector } from 'react-redux';
+import { TRootState } from '../utils/types';
 
-export const ResetPasswordPage = () => {
+export const ResetPasswordPage: FC<HTMLAttributes<HTMLHtmlElement>> = () => {
   const dispatch = useDispatch();
-  const resetPasswordStart = useSelector(state => state.user.resetPasswordStart);
-  const resetPasswordError = useSelector(state => state.user.resetPasswordError);
+  const resetPasswordStart = useSelector((state: { [prop in keyof TRootState as string]: any }) => state.user.resetPasswordStart);
+  const resetPasswordError = useSelector((state: { [prop in keyof TRootState as string]: any }) => state.user.resetPasswordError);
   const location = useLocation();
   const navigate = useNavigate();
 
   let { state } = location;
 
-  const [code, setCode] = useState('');
-  const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(true);
+  const [code, setCode] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+  const [showPassword, setShowPassword] = useState<boolean>(true);
 
-  const onChangeCode = e => {
+  const onChangeCode = (e: any) => {
     setCode(e.target.value);
   }
 
-  const onChangePassword = e => {
+  const onChangePassword = (e: any) => {
     setPassword(e.target.value);
 
   }
@@ -31,7 +32,7 @@ export const ResetPasswordPage = () => {
     setShowPassword(!showPassword);
   }
 
-  const onSave = async (e) => {
+  const onSave = async (e: any) => {
     e.preventDefault();
     await resetPassword(password, code, dispatch).then((success) => {
       if (success) {

@@ -1,18 +1,19 @@
 
-import React from 'react';
+import { FC, HTMLAttributes } from 'react';
 import profileSidebarStyles from './profile-sidebar.module.css';
 import { NavLink } from 'react-router-dom';
 import { useNavigate, useMatch } from "react-router-dom";
 import { signOut } from '../../services/actions/user';
 import { useDispatch, useSelector } from 'react-redux';
+import { TRootState } from '../../utils/types';
 
-const ProfileSidebar = () => {
+const ProfileSidebar: FC<HTMLAttributes<HTMLHtmlElement>> = () => {
     const dispatch = useDispatch();
-    const logoutStart = useSelector(state => state.user.logoutStart);
-    const logoutError = useSelector(state => state.user.logoutError);
+    const logoutStart = useSelector((state: { [prop in keyof TRootState as string]: any }) => state.user.logoutStart);
+    const logoutError = useSelector((state: { [prop in keyof TRootState as string]: any }) => state.user.logoutError);
     let navigate = useNavigate();
 
-    const logOut = async (e) => {
+    const logOut = async (e: any) => {
         e.preventDefault();
         await signOut(dispatch).then((success) => {
             if (success) {

@@ -1,17 +1,17 @@
-import React, { useEffect } from 'react';
+import React, { FC, useEffect } from 'react';
 import ingredientDetailsStyles from '././ingredient-details.module.css';
 import { useSelector, useDispatch } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { updateCurrentIngredient } from '../../services/actions/ingredient-modal';
 import { getIngedients } from '../../services/actions/ingredients';
-import { TIngredient, IRootState } from '../../utils/types';
+import { TIngredient, TRootState } from '../../utils/types';
 
-const IngredientDetails = () => {
+const IngredientDetails: FC<React.HTMLAttributes<HTMLHtmlElement>> = () => {
     const dispatch: Function = useDispatch();
-    const currentIngredient = useSelector((state: {[prop in keyof IRootState as string]: any}) => state.ingredientModal.currentIngredient);
-    const ingredientsListFailed = useSelector((state: {[prop in keyof IRootState as string]: any}) => state.ingredients.ingredientsListFailed);
-    const ingredientsListRequest = useSelector((state: {[prop in keyof IRootState as string]: any}) => state.ingredients.ingredientsListRequest);
-    const ingredientsList = useSelector((state: {[prop in keyof IRootState as string]: any}) => state.ingredients.ingredientsList);
+    const currentIngredient = useSelector((state: { [prop in keyof TRootState as string]: any }) => state.ingredientModal.currentIngredient);
+    const ingredientsListFailed = useSelector((state: { [prop in keyof TRootState as string]: any }) => state.ingredients.ingredientsListFailed);
+    const ingredientsListRequest = useSelector((state: { [prop in keyof TRootState as string]: any }) => state.ingredients.ingredientsListRequest);
+    const ingredientsList = useSelector((state: { [prop in keyof TRootState as string]: any }) => state.ingredients.ingredientsList);
 
     const location = useLocation();
 

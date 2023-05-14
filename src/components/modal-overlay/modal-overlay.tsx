@@ -1,10 +1,10 @@
-import React, { FC } from 'react';
+import { FC, HTMLAttributes } from 'react';
 import * as ReactDOM from 'react-dom';
 import modalOverlayStyles from '././modal-overlay.module.css';
 
 type TModalProps = {
     onClose: Function;
-} & React.HTMLAttributes<HTMLElement>;
+} & HTMLAttributes<HTMLElement>;
 
 const ModalOverlay: FC<TModalProps> = ({ children, onClose }) => {
     const modalRoot: any = document.getElementById("burger-modals");

@@ -1,11 +1,11 @@
-import React, { FC } from 'react';
+import { FC, HTMLAttributes } from 'react';
 import { useDrag, useDrop } from "react-dnd";
 import { TIngredient } from '../../utils/types';
 
 type TDraggableProps = {
     currentItem: TIngredient;
     moveItem: Function;
-} & React.HTMLAttributes<HTMLHtmlElement>;
+} & HTMLAttributes<HTMLHtmlElement>;
 
 const DraggableItem: FC<TDraggableProps> = ({ children, currentItem, className, moveItem }) => {
     const [{ isDragging }, drag] = useDrag(
@@ -26,7 +26,6 @@ const DraggableItem: FC<TDraggableProps> = ({ children, currentItem, className, 
                 isHover: monitor.isOver(),
             }),
             drop: (item: any, monitor) => {
-                console.log(item)
                 if (item.currentItem.uniqueKey !== currentItem.uniqueKey && monitor.isOver({ shallow: true })) {
                     moveItem(item.currentItem.uniqueKey, currentItem.uniqueKey)
                 }

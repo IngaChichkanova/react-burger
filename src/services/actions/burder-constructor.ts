@@ -1,6 +1,6 @@
 export const CURRENT_INGREDIENTS_LIST = 'CURRENT_INGREDIENTS_LIST';
 
-export const updateCurrentIngredientsList = (items) => ({
+export const updateCurrentIngredientsList = (items: any) => ({
     type: CURRENT_INGREDIENTS_LIST,
     payload: items,
 })

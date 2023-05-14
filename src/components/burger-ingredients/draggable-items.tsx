@@ -1,11 +1,11 @@
-import React, { FC } from 'react';
+import { FC, HTMLAttributes } from 'react';
 import { useDrag } from "react-dnd";
 import { TIngredient } from '../../utils/types';
 
 type TDraggableProps = {
     item: TIngredient;
     type: string;
-} & React.HTMLAttributes<HTMLDivElement>;
+} & HTMLAttributes<HTMLDivElement>;
 
 const DraggableItem: FC<TDraggableProps> = ({ type, children, item, className }) => {
     const [{ isDrag }, dragRef] = useDrag({

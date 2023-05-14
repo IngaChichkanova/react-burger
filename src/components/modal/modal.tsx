@@ -1,4 +1,4 @@
-import React, { useEffect, FC } from 'react';
+import { useEffect, FC, HTMLAttributes } from 'react';
 import ModalOverlay from '../modal-overlay/modal-overlay';
 import modalStyles from '././modal.module.css';
 import { CloseIcon } from '@ya.praktikum/react-developer-burger-ui-components';
@@ -6,7 +6,7 @@ import { ESC_KEYCODE } from '../../utils/constants';
 
 type TModalProps = {
     onClose: Function;
-} & React.HTMLAttributes<HTMLHtmlElement>;
+} & HTMLAttributes<HTMLHtmlElement>;
 
 const Modal: FC<TModalProps> = ({ children, onClose }) => {
 

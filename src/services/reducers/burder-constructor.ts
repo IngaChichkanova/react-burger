@@ -1,12 +1,12 @@
 import {
     CURRENT_INGREDIENTS_LIST,
-} from '../actions//burder-constructor';
+} from '../actions/burder-constructor';
 
 const initialState = {
     currentIngredientsList: [],
 };
 
-export const burgerConstructorReducer = (state = initialState, action) => {
+export const burgerConstructorReducer = (state = initialState, action: any) => {
     switch (action.type) {
         case CURRENT_INGREDIENTS_LIST: {
              return {

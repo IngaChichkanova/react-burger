@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { FC, HTMLAttributes, useState, useMemo } from 'react';
 import burgerStyles from './burger-constructor.module.css';
 import { DragIcon, CurrencyIcon, Button, ConstructorElement } from '@ya.praktikum/react-developer-burger-ui-components';
 import Modal from '../modal/modal';
@@ -11,15 +11,15 @@ import DraggableItem from './draggable-items';
 import { getCookie } from '../../utils/set-cookie';
 import { useNavigate } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
-import { TIngredient, IRootState } from '../../utils/types';
+import { TIngredient, TRootState } from '../../utils/types';
 
-const BurgerConstructor = () => {
+const BurgerConstructor: FC<HTMLAttributes<HTMLHtmlElement>> = () => {
     const dispatch = useDispatch();
     let navigate = useNavigate();
 
-    const currentIngredientsList = useSelector((state: {[prop in keyof IRootState as string]: any}) => state.burgerConstructor.currentIngredientsList);
+    const currentIngredientsList = useSelector((state: { [prop in keyof TRootState as string]: any }) => state.burgerConstructor.currentIngredientsList);
 
-    const [openModal, setOpenModal] = useState(false);
+    const [openModal, setOpenModal] = useState<boolean>(false);
 
     const handleOrder = () => {
         setOpenModal(true);
@@ -116,7 +116,7 @@ const BurgerConstructor = () => {
                                 text={''}
                                 thumbnail={''}
                                 price={0}
-                                
+
                             />
                         </section>
                     }

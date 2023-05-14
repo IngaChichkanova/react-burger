@@ -10,7 +10,7 @@ const initialState = {
     orderFailed: false
 };
 
-export const orderReducer = (state = initialState, action) => {
+export const orderReducer = (state = initialState, action: any) => {
     switch (action.type) {
         case GET_ORDER_REQUEST: {
             return {

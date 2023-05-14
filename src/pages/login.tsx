@@ -1,28 +1,29 @@
-import { useState } from 'react';
+import { FC, HTMLAttributes, useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import loginStyles from './login.module.css';
 import { EmailInput, Input, Button } from '@ya.praktikum/react-developer-burger-ui-components';
 import { validateEmail } from '../utils/validation';
 import { signIn } from '../services/actions/user';
 import { useDispatch, useSelector } from 'react-redux';
+import { TRootState } from '../utils/types';
 
-export const LoginPage = () => {
+export const LoginPage: FC<HTMLAttributes<HTMLHtmlElement>> = () => {
   const dispatch = useDispatch();
-  const loginStart = useSelector(state => state.user.loginStart);
-  const loginError = useSelector(state => state.user.loginError);
-  const loginErrorText = useSelector(state => state.user.loginErrorText);
+  const loginStart = useSelector((state: { [prop in keyof TRootState as string]: any }) => state.user.loginStart);
+  const loginError = useSelector((state: { [prop in keyof TRootState as string]: any }) => state.user.loginError);
+  const loginErrorText = useSelector((state: { [prop in keyof TRootState as string]: any }) => state.user.loginErrorText);
   let navigate = useNavigate();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(true);
+  const [email, setEmail] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+  const [showPassword, setShowPassword] = useState<boolean>(true);
   const location = useLocation();
   let { state } = location;
 
-  const onChangeEmail = e => {
+  const onChangeEmail = (e: any) => {
     setEmail(e.target.value);
   }
 
-  const onChangePassword = e => {
+  const onChangePassword = (e: any) => {
     setPassword(e.target.value);
   }
 
@@ -30,7 +31,7 @@ export const LoginPage = () => {
     setShowPassword(!showPassword);
   }
 
-  const submitButton = async (e) => {
+  const submitButton = async (e: any) => {
     e.preventDefault();
     await signIn(email, password, dispatch).then((success) => {
       if (success) {

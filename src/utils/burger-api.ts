@@ -2,14 +2,13 @@
 import { NORMA_API } from './constants';
 import { getCookie, setCookie, deleteCookie } from './set-cookie';
 
-const checkResponse = (res) => res.ok ? res.json() : res.json().then((err) => Promise.reject(err));
+const checkResponse = (res: any) => res.ok ? res.json() : res.json().then((err: any) => Promise.reject(err));
 
-export const request = (endpoint, options) => {
-    console.log(endpoint, options)
+export const request = (endpoint: string, options: any) => {
     return fetch(`${NORMA_API}/${endpoint}`, options).then(checkResponse)
 };
 
-const updateRefreshToken = async (endpoint, options) => {
+const updateRefreshToken = async (endpoint: string, options: any) => {
     if (localStorage.getItem("refreshToken")) {
         deleteCookie('token');
         return await request('auth/token', {
@@ -43,20 +42,19 @@ const updateRefreshToken = async (endpoint, options) => {
     }
 };
 
-export const checkAuthFetch = async (endpoint, options) => await request(endpoint, options)
+export const checkAuthFetch = async (endpoint: string, options: any) => await request(endpoint, options)
     .then((response) => {
         return response
     })
     .catch(e => {
         if (e.message === "jwt expired") {
-            console.log(endpoint, options)
             return updateRefreshToken(endpoint, options)
         } else {
             return { success: false }
         }
     })
 
-export const registerRequest = (email, password, name) => request('auth/register', {
+export const registerRequest = (email: string, password: string, name: string) => request('auth/register', {
     method: "POST",
     headers: {
         'Content-Type': 'application/json;charset=utf-8'
@@ -70,7 +68,7 @@ export const registerRequest = (email, password, name) => request('auth/register
     )}`
 });
 
-export const loginRequest = (email, password) => request('auth/login', {
+export const loginRequest = (email: string, password:string) => request('auth/login', {
     method: "POST",
     headers: {
         'Content-Type': 'application/json;charset=utf-8'
@@ -96,7 +94,7 @@ export const logoutRequest = () => request('auth/logout', {
     )}`
 });
 
-export const forgotPasswordRequest = (email) => request('password-reset', {
+export const forgotPasswordRequest = (email:string) => request('password-reset', {
     method: "POST",
     headers: {
         'Content-Type': 'application/json;charset=utf-8'
@@ -108,7 +106,7 @@ export const forgotPasswordRequest = (email) => request('password-reset', {
     )}`
 });
 
-export const resetPasswordRequest = (email, token) => request('password-reset', {
+export const resetPasswordRequest = (email:string, token:string) => request('password-reset', {
     method: "POST",
     headers: {
         'Content-Type': 'application/json;charset=utf-8'
@@ -128,7 +126,7 @@ export const getUserRequest = () => checkAuthFetch('auth/user', {
     }
 })
 
-export const editUserRequest = (email, password, name) => checkAuthFetch('auth/user', {
+export const editUserRequest = (email:string, password:string, name:string) => checkAuthFetch('auth/user', {
     method: "PATCH",
     headers: {
         'Content-Type': 'application/json;charset=utf-8',
@@ -145,7 +143,7 @@ export const editUserRequest = (email, password, name) => checkAuthFetch('auth/u
 
 export const getIngedientsRequest = () => request('ingredients', {})
 
-export const orderRequest = (ingredientsId) => checkAuthFetch('orders', {
+export const orderRequest = (ingredientsId: any) => checkAuthFetch('orders', {
     method: "POST",
     headers: {
         'Content-Type': 'application/json;charset=utf-8',

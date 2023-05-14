@@ -3,7 +3,7 @@ import {
     GET_USER_REQUEST,
     GET_USER_SUCCESS,
     GET_USER_FAILED
-} from '../actions/login';
+} from '../actions/user';
 
 const initialState = {
     user: {},
@@ -12,7 +12,7 @@ const initialState = {
     getUserFailed: false,
 };
 
-export const loginReducer = (state = initialState, action) => {
+export const loginReducer = (state = initialState, action :any) => {
     switch (action.type) {
         case SET_USER: {
             return {

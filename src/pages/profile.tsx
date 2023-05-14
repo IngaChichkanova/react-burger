@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { FC, HTMLAttributes, useState, useEffect } from 'react';
 import profileStyles from './profile.module.css';
 import ProfileSidebar from '../components/profile-sidebar/profile-sidebar';
 import { EmailInput, Input } from '@ya.praktikum/react-developer-burger-ui-components';
@@ -6,15 +6,16 @@ import { useSelector, useDispatch } from 'react-redux';
 import { editUser, getUser } from '../services/actions/user';
 import { Button } from '@ya.praktikum/react-developer-burger-ui-components';
 import { validateEmail } from '../utils/validation';
+import { TRootState } from '../utils/types';
 
-export const ProfilePage = () => {
+export const ProfilePage: FC<HTMLAttributes<HTMLHtmlElement>> = () => {
   const dispatch = useDispatch();
-  const user = useSelector(state => state.user.user);
-  const getUserStart = useSelector(state => state.user.getUserStart);
-  const getUserError = useSelector(state => state.user.getUserError);
-  const [name, setName] = useState(user.name || '');
-  const [login, setLogin] = useState(user.email || '');
-  const [password, setPassword] = useState('');
+  const user = useSelector((state: { [prop in keyof TRootState as string]: any }) => state.user.user);
+  const getUserStart = useSelector((state: { [prop in keyof TRootState as string]: any }) => state.user.getUserStart);
+  const getUserError = useSelector((state: { [prop in keyof TRootState as string]: any }) => state.user.getUserError);
+  const [name, setName] = useState<string>(user.name || '');
+  const [login, setLogin] = useState<string>(user.email || '');
+  const [password, setPassword] = useState<string>('');
 
   useEffect(() => {
     getUser(dispatch);
@@ -28,15 +29,15 @@ export const ProfilePage = () => {
     }
   }, [user])
 
-  const onChangeName = e => {
+  const onChangeName = (e: any) => {
     setName(e.target.value);
   }
 
-  const onChangeLogin = e => {
+  const onChangeLogin = (e: any) => {
     setLogin(e.target.value);
   }
 
-  const onChangePassword = e => {
+  const onChangePassword = (e: any) => {
     setPassword(e.target.value);
   }
 
@@ -46,7 +47,7 @@ export const ProfilePage = () => {
     setPassword('');
   }
 
-  const onSave = async (e) => {
+  const onSave = async (e: any) => {
     e.preventDefault();
     await editUser(login, password, name, dispatch);
     setPassword('');

@@ -1,4 +1,4 @@
-export type IRootState<TKey extends string = ''> = {
+export type TRootState<TKey extends string = ''> = {
     [key in TKey]: any;
 };
 
