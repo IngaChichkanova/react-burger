@@ -22,6 +22,7 @@ import {
     GET_USER_SUCCESS,
     GET_USER_FAILED
 } from '../actions/user';
+import { TActionUser } from '../../utils/types';
 
 const initialState = {
     registerStart: false,
@@ -44,7 +45,7 @@ const initialState = {
     getUserFailed: false,
 };
 
-export const userReducer = (state = initialState, action: any) => {
+export const userReducer = (state = initialState, action: TActionUser) => {
     switch (action.type) {
         case REGISTER_REQUEST: {
             return {

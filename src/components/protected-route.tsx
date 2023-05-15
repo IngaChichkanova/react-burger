@@ -3,16 +3,17 @@ import { useEffect, useState } from 'react';
 import { getCookie } from '../utils/set-cookie';
 import { getUser } from '../services/actions/user';
 import { useDispatch, useSelector } from 'react-redux';
-import { TRootState } from '../utils/types';
+import { TUserRoot } from '../utils/types';
 
-//type TProtectedRouteElementProps = {
-//    element: any;
-//    isPublic: boolean
-//};
 
-export function ProtectedRouteElement({ element, isPublic }: { [prop in string]: any }) {
+type TProtectedRouteElementProps = {
+    element: JSX.Element;
+    isPublic: boolean
+};
+
+export function ProtectedRouteElement({ element, isPublic }: TProtectedRouteElementProps) {
     const dispatch = useDispatch();
-    const user = useSelector((state: { [prop in keyof TRootState as string]: any }) => state.user.user);
+    const user = useSelector((state: { [prop in string]: TUserRoot }) => state.user.user);
     const [isUserLoaded, setUserLoaded] = useState<boolean>(false);
     const location = useLocation();
 

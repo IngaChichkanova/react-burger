@@ -1,4 +1,4 @@
-import {FC, HTMLAttributes} from 'react';
+import { FC, HTMLAttributes } from 'react';
 import orderDetailsStyles from '././order-details.module.css';
 import orderChecked from '../../icons/orderChecked.svg';
 import { useSelector } from 'react-redux';

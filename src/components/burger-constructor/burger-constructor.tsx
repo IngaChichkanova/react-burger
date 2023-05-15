@@ -11,13 +11,14 @@ import DraggableItem from './draggable-items';
 import { getCookie } from '../../utils/set-cookie';
 import { useNavigate } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
-import { TIngredient, TRootState } from '../../utils/types';
+import { TIngredient, TIngredientsRoot } from '../../utils/types';
+//{ [prop in string]: TUserRoot }
 
 const BurgerConstructor: FC<HTMLAttributes<HTMLHtmlElement>> = () => {
     const dispatch = useDispatch();
     let navigate = useNavigate();
 
-    const currentIngredientsList = useSelector((state: { [prop in keyof TRootState as string]: any }) => state.burgerConstructor.currentIngredientsList);
+    const currentIngredientsList = useSelector((state: { [prop in string]: TIngredientsRoot }) => state.burgerConstructor.currentIngredientsList);
 
     const [openModal, setOpenModal] = useState<boolean>(false);
 
@@ -29,7 +30,7 @@ const BurgerConstructor: FC<HTMLAttributes<HTMLHtmlElement>> = () => {
                 currentIngredientsList.find((item: TIngredient) => item.type === 'bun')
             ]
 
-            doOrder(orderRequest.map(item => item._id), dispatch);
+            doOrder(orderRequest.map((item: any) => item._id), dispatch);
         } else {
             navigate('/login');
         }

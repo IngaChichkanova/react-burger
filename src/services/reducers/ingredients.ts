@@ -3,6 +3,7 @@ import {
     GET_INGREDIENTS_REQUEST,
     GET_INGREDIENTS_SUCCESS,
 } from '../actions/ingredients';
+import { TActionIngredient } from '../../utils/types';
 
 const initialState = {
     ingredientsList: [],
@@ -10,7 +11,7 @@ const initialState = {
     ingredientsListFailed: false,
 };
 
-export const ingredientsReducer = (state = initialState, action: any) => {
+export const ingredientsReducer = (state = initialState, action: TActionIngredient) => {
     switch (action.type) {
         case GET_INGREDIENTS_REQUEST: {
             return {
