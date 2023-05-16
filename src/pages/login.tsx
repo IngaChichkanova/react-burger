@@ -1,4 +1,4 @@
-import { FC, HTMLAttributes, useState } from 'react';
+import { FC, HTMLAttributes, useState, ChangeEvent } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import loginStyles from './login.module.css';
 import { EmailInput, Input, Button } from '@ya.praktikum/react-developer-burger-ui-components';
@@ -19,11 +19,11 @@ export const LoginPage: FC<HTMLAttributes<HTMLHtmlElement>> = () => {
   const location = useLocation();
   let { state } = location;
 
-  const onChangeEmail = (e: any) => {
+  const onChangeEmail = (e: ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
   }
 
-  const onChangePassword = (e: any) => {
+  const onChangePassword = (e: ChangeEvent<HTMLInputElement>) => {
     setPassword(e.target.value);
   }
 

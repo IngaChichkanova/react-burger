@@ -1,4 +1,4 @@
-import { FC, HTMLAttributes, useState } from 'react';
+import { FC, HTMLAttributes, useState, ChangeEvent } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import forgotPasswordStyles from './forgot-password.module.css';
 import { EmailInput, Button } from '@ya.praktikum/react-developer-burger-ui-components';
@@ -15,7 +15,7 @@ export const ForgotPasswordPage: FC<HTMLAttributes<HTMLHtmlElement>> = () => {
   const location = useLocation();
   const [email, setEmail] = useState<string>('');
 
-  const onChangeEmail = (e: any) => {
+  const onChangeEmail = (e: ChangeEvent<HTMLInputElement>) => {
     let email = e.target.value;
     setEmail(email);
   }

@@ -29,7 +29,7 @@ const BurgerConstructor: FC<HTMLAttributes<HTMLHtmlElement>> = () => {
                 currentIngredientsList.find((item: TIngredient) => item.type === 'bun')
             ]
 
-            doOrder(orderRequest.map((item: any) => item._id), dispatch);
+            doOrder(orderRequest.map((item: any ) => item._id), dispatch);
         } else {
             navigate('/login');
         }

@@ -1,4 +1,4 @@
-import { FC, HTMLAttributes, useState } from 'react';
+import { FC, HTMLAttributes, useState, ChangeEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import registerStyles from './register.module.css';
 import { EmailInput, Input, Button } from '@ya.praktikum/react-developer-burger-ui-components';
@@ -19,15 +19,15 @@ export const RegisterPage: FC<HTMLAttributes<HTMLHtmlElement>> = () => {
   const [password, setPassword] = useState<string>('');
   const [showPassword, setShowPassword] = useState<boolean>(true);
 
-  const onChangeLogin = (e: any) => {
+  const onChangeLogin = (e: ChangeEvent<HTMLInputElement>) => {
     setLogin(e.target.value);
   }
 
-  const onChangeEmail = (e: any) => {
+  const onChangeEmail = (e: ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
   }
 
-  const onChangePassword = (e: any) => {
+  const onChangePassword = (e: ChangeEvent<HTMLInputElement>) => {
     setPassword(e.target.value);
   }
 

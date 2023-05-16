@@ -1,4 +1,4 @@
-import { FC, HTMLAttributes, useState, useEffect } from 'react';
+import { FC, HTMLAttributes, useState, useEffect, ChangeEvent } from 'react';
 import profileStyles from './profile.module.css';
 import ProfileSidebar from '../components/profile-sidebar/profile-sidebar';
 import { EmailInput, Input } from '@ya.praktikum/react-developer-burger-ui-components';
@@ -29,15 +29,15 @@ export const ProfilePage: FC<HTMLAttributes<HTMLHtmlElement>> = () => {
     }
   }, [user])
 
-  const onChangeName = (e: any) => {
+  const onChangeName = (e: ChangeEvent<HTMLInputElement>) => {
     setName(e.target.value);
   }
 
-  const onChangeLogin = (e: any) => {
+  const onChangeLogin = (e: ChangeEvent<HTMLInputElement>) => {
     setLogin(e.target.value);
   }
 
-  const onChangePassword = (e: any) => {
+  const onChangePassword = (e: ChangeEvent<HTMLInputElement>) => {
     setPassword(e.target.value);
   }
 
