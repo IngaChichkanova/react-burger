@@ -6,13 +6,13 @@ import { useSelector, useDispatch } from 'react-redux';
 import { editUser, getUser } from '../services/actions/user';
 import { Button } from '@ya.praktikum/react-developer-burger-ui-components';
 import { validateEmail } from '../utils/validation';
-import { TRootState } from '../utils/types';
+import { TUserRoot } from '../utils/types';
 
 export const ProfilePage: FC<HTMLAttributes<HTMLHtmlElement>> = () => {
   const dispatch = useDispatch();
-  const user = useSelector((state: { [prop in keyof TRootState as string]: any }) => state.user.user);
-  const getUserStart = useSelector((state: { [prop in keyof TRootState as string]: any }) => state.user.getUserStart);
-  const getUserError = useSelector((state: { [prop in keyof TRootState as string]: any }) => state.user.getUserError);
+  const user = useSelector((state: { [prop in string]: any }) => state.user.user);
+  const getUserStart = useSelector((state: { [prop in string]: TUserRoot }) => state.user.getUserStart);
+  const getUserError = useSelector((state: { [prop in string]: TUserRoot }) => state.user.getUserError);
   const [name, setName] = useState<string>(user.name || '');
   const [login, setLogin] = useState<string>(user.email || '');
   const [password, setPassword] = useState<string>('');

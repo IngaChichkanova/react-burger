@@ -12,7 +12,6 @@ import { getCookie } from '../../utils/set-cookie';
 import { useNavigate } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 import { TIngredient, TIngredientsRoot } from '../../utils/types';
-//{ [prop in string]: TUserRoot }
 
 const BurgerConstructor: FC<HTMLAttributes<HTMLHtmlElement>> = () => {
     const dispatch = useDispatch();

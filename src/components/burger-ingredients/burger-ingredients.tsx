@@ -5,15 +5,15 @@ import { getIngedients } from '../../services/actions/ingredients';
 import { useDispatch, useSelector } from 'react-redux';
 import DraggableItem from './draggable-items';
 import { Link, useLocation } from 'react-router-dom';
-import { TRootState, TIngredient } from '../../utils/types';
+import { TIngredientsRoot, TIngredientRoot, TIngredient } from '../../utils/types';
 
 const BurgerIngredients: FC<HTMLAttributes<HTMLHtmlElement>> = () => {
     const location = useLocation();
     const dispatch: Function = useDispatch();
-    const ingredientsList = useSelector((state: { [prop in keyof TRootState as string]: any }) => state.ingredients.ingredientsList);
-    const currentIngredientsList = useSelector((state: { [prop in keyof TRootState as string]: any }) => state.burgerConstructor.currentIngredientsList);
-    const ingredientsListFailed = useSelector((state: { [prop in keyof TRootState as string]: any }) => state.ingredients.ingredientsListFailed);
-    const ingredientsListRequest = useSelector((state: { [prop in keyof TRootState as string]: any }) => state.ingredients.ingredientsListRequest);
+    const ingredientsList = useSelector((state: { [prop in string]: TIngredientRoot }) => state.ingredients.ingredientsList);
+    const currentIngredientsList = useSelector((state: { [prop in string]: TIngredientsRoot }) => state.burgerConstructor.currentIngredientsList);
+    const ingredientsListFailed = useSelector((state: { [prop in string]: TIngredientRoot }) => state.ingredients.ingredientsListFailed);
+    const ingredientsListRequest = useSelector((state: { [prop in string]: TIngredientRoot }) => state.ingredients.ingredientsListRequest);
 
     const [currentTab, setCurrentTab] = useState<string>("bun");
 

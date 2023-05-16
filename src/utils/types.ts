@@ -1,7 +1,3 @@
-export type TRootState<TKey extends string = ''> = {
-    [key in TKey]: any;
-};
-
 export interface ICheckResponse<T> extends Body {
     readonly headers: Headers;
     readonly ok: boolean;
@@ -73,6 +69,22 @@ export type TIngredientsRoot = {
     currentIngredientsList: Array<TIngredient>
 };
 
+export type TModalRoot = {
+    currentIngredient: null | TIngredient
+};
+
+export type TOrderRoot = {
+    order: null | TOrder,
+    orderRequest: boolean,
+    orderFailed: boolean
+};
+
+export type TIngredientRoot = {
+    ingredientsList: Array<TIngredient>;
+    ingredientsListRequest: boolean;
+    ingredientsListFailed: boolean
+};
+
 export type TIngredient = {
     _id: string;
     name: string;
@@ -87,4 +99,23 @@ export type TIngredient = {
     image_large: string;
     __v: number;
     uniqueKey?: string;
+};
+
+export type TOrder = {
+    createdAt: string;
+    ingredients: Array<TIngredient>;
+    name: string;
+    number: number;
+    owner: TOwner;
+    price: number;
+    status: string;
+    updatedAt: string;
+    _id: string
+};
+
+export type TOwner = {
+    createdAt: string;
+    email: string;
+    name: string;
+    updatedAt: string;
 };
