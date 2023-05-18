@@ -1,15 +1,5 @@
-export interface ICheckResponse<T> extends Body {
-    readonly headers: Headers;
-    readonly ok: boolean;
-    readonly redirected: boolean;
-    readonly status: number;
-    readonly statusText: string;
-    readonly type: ResponseType;
-    readonly url: string;
-    json(): Promise<T>;
-}
 
-export type TActionUser = {
+/*export type TActionUser = {
     type: 'REGISTER_REQUEST' | 'REGISTER_SUCCESS' | 'REGISTER_FAILED' | 'SIGN_IN_REQUEST' | 'SIGN_IN_SUCCESS' | 'SIGN_IN_FAILED' | 'SIGN_OUT_REQUEST' | 'SIGN_OUT_SUCCESS' | 'SIGN_OUT_FAILED' | 'FORGOT_PASSWORD_REQUEST' | 'FORGOT_PASSWORD_SUCCESS' | 'FORGOT_PASSWORD_FAILED' | 'RESET_PASSWORD_REQUEST' | 'RESET_PASSWORD_SUCCESS' | 'RESET_PASSWORD_FAILED' | 'USER_REQUEST' | 'USER_SUCCESS' | 'USER_FAILED' | 'SET_USER' | 'GET_USER_REQUEST' | 'GET_USER_SUCCESS' | 'GET_USER_FAILED';
     payload?: string | boolean;
 };
@@ -37,7 +27,7 @@ export type TActionIngredientModal = {
 export type TActionBurberConstructor = {
     type: 'CURRENT_INGREDIENTS_LIST';
     payload?: Array<TIngredient>;
-};
+};*/
 
 export type TUserRoot = {
     registerStart: boolean;
@@ -65,7 +55,7 @@ export type TUser = {
     name: string;
 };
 
-export type TIngredientsRoot = {
+export type TCurrentIngredientsRoot = {
     currentIngredientsList: Array<TIngredient>
 };
 
@@ -79,7 +69,7 @@ export type TOrderRoot = {
     orderFailed: boolean
 };
 
-export type TIngredientRoot = {
+export type TIngredientsRoot = {
     ingredientsList: Array<TIngredient>;
     ingredientsListRequest: boolean;
     ingredientsListFailed: boolean

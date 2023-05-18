@@ -1,13 +1,12 @@
 import {
     CURRENT_INGREDIENTS_LIST,
 } from '../actions/burder-constructor';
-import { TActionBurberConstructor } from '../../utils/types';
 
 const initialState = {
     currentIngredientsList: [],
 };
 
-export const burgerConstructorReducer = (state = initialState, action: TActionBurberConstructor) => {
+export const burgerConstructorReducer = (state = initialState, action) => {
     switch (action.type) {
         case CURRENT_INGREDIENTS_LIST: {
             return {

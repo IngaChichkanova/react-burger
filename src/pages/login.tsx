@@ -1,4 +1,4 @@
-import { FC, HTMLAttributes, useState, ChangeEvent } from 'react';
+import {  useState, ChangeEvent, FormEvent } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import loginStyles from './login.module.css';
 import { EmailInput, Input, Button } from '@ya.praktikum/react-developer-burger-ui-components';
@@ -7,7 +7,7 @@ import { signIn } from '../services/actions/user';
 import { useDispatch, useSelector } from 'react-redux';
 import { TUserRoot } from '../utils/types';
 
-export const LoginPage: FC<HTMLAttributes<HTMLHtmlElement>> = () => {
+export const LoginPage = () => {
   const dispatch = useDispatch();
   const loginStart = useSelector((state: { [prop in string]: TUserRoot }) => state.user.loginStart);
   const loginError = useSelector((state: { [prop in string]: TUserRoot }) => state.user.loginError);
@@ -31,7 +31,7 @@ export const LoginPage: FC<HTMLAttributes<HTMLHtmlElement>> = () => {
     setShowPassword(!showPassword);
   }
 
-  const submitButton = async (e: any) => {
+  const submitButton = async (e: FormEvent) => {
     e.preventDefault();
     await signIn(email, password, dispatch).then((success) => {
       if (success) {

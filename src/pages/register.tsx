@@ -1,4 +1,4 @@
-import { FC, HTMLAttributes, useState, ChangeEvent } from 'react';
+import { useState, ChangeEvent, FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import registerStyles from './register.module.css';
 import { EmailInput, Input, Button } from '@ya.praktikum/react-developer-burger-ui-components';
@@ -7,7 +7,7 @@ import { validateEmail } from '../utils/validation';
 import { useDispatch, useSelector } from 'react-redux';
 import { TUserRoot } from '../utils/types';
 
-export const RegisterPage: FC<HTMLAttributes<HTMLHtmlElement>> = () => {
+export const RegisterPage = () => {
   const dispatch = useDispatch();
   const registerStart = useSelector((state: { [prop in string]: TUserRoot }) => state.user.registerStart);
   const registerError = useSelector((state: { [prop in string]: TUserRoot }) => state.user.registerError);
@@ -35,7 +35,7 @@ export const RegisterPage: FC<HTMLAttributes<HTMLHtmlElement>> = () => {
     setShowPassword(!showPassword);
   }
 
-  const registerButton = async (e: any) => {
+  const registerButton = async (e: FormEvent) => {
     e.preventDefault();
     await register(email, password, login, dispatch).then((success) => {
       if (success) {

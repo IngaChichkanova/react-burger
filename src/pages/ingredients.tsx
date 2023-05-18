@@ -1,8 +1,8 @@
-import { FC, HTMLAttributes } from 'react';
+import React from 'react';
 import ingredientsStyles from './ingredients.module.css';
 import { Outlet } from 'react-router-dom';
 
-export const IngredientsPage: FC<HTMLAttributes<HTMLHtmlElement>> = () => {
+export const IngredientsPage = () => {
 
   return (
     <main className={`${ingredientsStyles.wrapper}`}>

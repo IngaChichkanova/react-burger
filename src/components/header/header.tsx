@@ -1,9 +1,9 @@
-import { FC, HTMLAttributes } from 'react';
+import React from 'react';
 import headerStyles from '././header.module.css';
 import { Logo, BurgerIcon, ListIcon, ProfileIcon } from '@ya.praktikum/react-developer-burger-ui-components';
 import { NavLink } from 'react-router-dom';
 
-const AppHeader: FC<HTMLAttributes<HTMLHtmlElement>> = () => {
+const AppHeader = () => {
 
     return (
         <header className={`${headerStyles.header} pb-4 pt-4`}>

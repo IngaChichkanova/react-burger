@@ -15,8 +15,8 @@ const Modal: FC<TModalProps> = ({ children, onClose }) => {
     }
 
     useEffect(() => {
-        const closeOnEsc = (e: any) => {
-            if (e.keyCode === ESC_KEYCODE) {
+        const closeOnEsc = (event: { keyCode: number }) => {
+            if (event.keyCode === ESC_KEYCODE) {
                 handleClose();
             }
         }

@@ -3,7 +3,6 @@ import {
     GET_ORDER_SUCCESS,
     GET_ORDER_FAILED
 } from '../actions/order';
-import { TActionOrder } from '../../utils/types';
 
 const initialState = {
     order: null,
@@ -11,7 +10,7 @@ const initialState = {
     orderFailed: false
 };
 
-export const orderReducer = (state = initialState, action: TActionOrder) => {
+export const orderReducer = (state = initialState, action) => {
     switch (action.type) {
         case GET_ORDER_REQUEST: {
             return {

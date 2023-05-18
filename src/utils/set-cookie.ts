@@ -1,5 +1,6 @@
-export function setCookie(name: string, value: string, props?: { [prop in string]: any }) {
-    console.log(typeof (props))
+type TCookie<T> = T extends number ? number : T extends Date ? Date : any;
+
+export function setCookie(name: string, value: string, props?: { [prop in string]: TCookie<prop> }) {
     props = props || {};
     let exp = props.expires;
     if (typeof exp == 'number' && exp) {

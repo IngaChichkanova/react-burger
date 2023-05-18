@@ -1,7 +1,7 @@
-import { FC, HTMLAttributes } from 'react';
+import React from 'react';
 import styles from './not-found.module.css';
 
-export const NotFoundPage: FC<HTMLAttributes<HTMLHtmlElement>> = () => {
+export const NotFoundPage = () => {
 
   return (
     <main className={`${styles.wrapper} text text_type_main-medium text_color_inactive`}>

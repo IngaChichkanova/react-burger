@@ -7,7 +7,7 @@ type TModalProps = {
 } & HTMLAttributes<HTMLElement>;
 
 const ModalOverlay: FC<TModalProps> = ({ children, onClose }) => {
-    const modalRoot: any = document.getElementById("burger-modals");
+    const modalRoot = document.getElementById("burger-modals") as HTMLElement;
 
     return ReactDOM.createPortal(
         (

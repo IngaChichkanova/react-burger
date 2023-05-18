@@ -1,19 +1,19 @@
-import { FC, HTMLAttributes, useState, createRef, useMemo, useEffect } from 'react';
+import { useState, createRef, useMemo, useEffect } from 'react';
 import ingredientsStyles from './burger-ingredients.module.css';
 import { Tab, CurrencyIcon, Counter } from '@ya.praktikum/react-developer-burger-ui-components';
 import { getIngedients } from '../../services/actions/ingredients';
 import { useDispatch, useSelector } from 'react-redux';
 import DraggableItem from './draggable-items';
 import { Link, useLocation } from 'react-router-dom';
-import { TIngredientsRoot, TIngredientRoot, TIngredient } from '../../utils/types';
+import { TCurrentIngredientsRoot, TIngredientsRoot, TIngredient } from '../../utils/types';
 
-const BurgerIngredients: FC<HTMLAttributes<HTMLHtmlElement>> = () => {
+const BurgerIngredients = () => {
     const location = useLocation();
     const dispatch: Function = useDispatch();
-    const ingredientsList = useSelector((state: { [prop in string]: TIngredientRoot }) => state.ingredients.ingredientsList);
-    const currentIngredientsList = useSelector((state: { [prop in string]: TIngredientsRoot }) => state.burgerConstructor.currentIngredientsList);
-    const ingredientsListFailed = useSelector((state: { [prop in string]: TIngredientRoot }) => state.ingredients.ingredientsListFailed);
-    const ingredientsListRequest = useSelector((state: { [prop in string]: TIngredientRoot }) => state.ingredients.ingredientsListRequest);
+    const ingredientsList = useSelector((state: { [prop in string]: TIngredientsRoot }) => state.ingredients.ingredientsList);
+    const currentIngredientsList = useSelector((state: { [prop in string]: TCurrentIngredientsRoot }) => state.burgerConstructor.currentIngredientsList);
+    const ingredientsListFailed = useSelector((state: { [prop in string]: TIngredientsRoot }) => state.ingredients.ingredientsListFailed);
+    const ingredientsListRequest = useSelector((state: { [prop in string]: TIngredientsRoot }) => state.ingredients.ingredientsListRequest);
 
     const [currentTab, setCurrentTab] = useState<string>("bun");
 

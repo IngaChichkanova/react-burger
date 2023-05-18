@@ -1,13 +1,12 @@
 import {
     CURRENT_INGREDIENT,
 } from '../actions/ingredient-modal';
-import { TActionIngredientModal } from '../../utils/types';
 
 const initialState = {
     currentIngredient: null,
 };
 
-export const ingredientModalReducer = (state = initialState, action: TActionIngredientModal) => {
+export const ingredientModalReducer = (state = initialState, action) => {
     switch (action.type) {
         case CURRENT_INGREDIENT: {
             return {

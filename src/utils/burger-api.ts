@@ -1,15 +1,32 @@
 
 import { NORMA_API } from './constants';
 import { getCookie, setCookie, deleteCookie } from './set-cookie';
-import { ICheckResponse } from './types';
+import { TIngredient, TUser, TOrder, TOwner } from '../utils/types';
 
-const checkResponse = (res: ICheckResponse<any>) => res.ok ? res.json() : res.json().then((err: string) => Promise.reject(err));
+interface ICheckResponse<T> extends Body {
+    readonly headers: Headers;
+    readonly ok: boolean;
+    readonly redirected: boolean;
+    readonly status: number;
+    readonly statusText: string;
+    readonly type: ResponseType;
+    readonly url: string;
+    json(): Promise<T>;
+}
 
-export const request = (endpoint: string, options: object) => {
+type TParams = {
+    headers?: { [prop in string]: string };
+    method?: string;
+    body?: string
+};
+
+const checkResponse = (res: ICheckResponse<TIngredient | TUser | TOrder | TOwner | any>) => res.ok ? res.json() : res.json().then((err: string) => Promise.reject(err));
+
+export const request = (endpoint: string, options: TParams) => {
     return fetch(`${NORMA_API}/${endpoint}`, options).then(checkResponse)
 };
 
-const updateRefreshToken = async (endpoint: string, options: { [prop in string]: any }) => {
+const updateRefreshToken = async (endpoint: string, options: TParams) => {
     if (localStorage.getItem("refreshToken")) {
         deleteCookie('token');
         return await request('auth/token', {
@@ -31,8 +48,9 @@ const updateRefreshToken = async (endpoint: string, options: { [prop in string]:
 
             localStorage.setItem("refreshToken", response.refreshToken);
 
-            options.headers.Authorization = `Bearer ${accessToken}`;
-
+            if (options.headers) {
+                options.headers.Authorization = `Bearer ${accessToken}`;
+            }
             return request(endpoint, options).then(user => user)
         })
             .catch(() => {
@@ -43,7 +61,7 @@ const updateRefreshToken = async (endpoint: string, options: { [prop in string]:
     }
 };
 
-export const checkAuthFetch = async (endpoint: string, options: object) => await request(endpoint, options)
+export const checkAuthFetch = async (endpoint: string, options: TParams) => await request(endpoint, options)
     .then((response) => {
         return response
     })
@@ -142,7 +160,7 @@ export const editUserRequest = (email: string, password: string, name: string) =
     )}`
 })
 
-export const getIngedientsRequest = () => request('ingredients', {})
+export const getIngedientsRequest = () => request('ingredients', { method: "GET" })
 
 export const orderRequest = (ingredientsId: Array<string>) => checkAuthFetch('orders', {
     method: "POST",

@@ -4,7 +4,6 @@ import {
     GET_USER_SUCCESS,
     GET_USER_FAILED
 } from '../actions/user';
-import { TActionLogin } from '../../utils/types';
 
 const initialState = {
     user: null,
@@ -13,7 +12,7 @@ const initialState = {
     getUserFailed: false,
 };
 
-export const loginReducer = (state = initialState, action: TActionLogin) => {
+export const loginReducer = (state = initialState, action) => {
     switch (action.type) {
         case SET_USER: {
             return {

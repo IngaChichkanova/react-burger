@@ -1,4 +1,4 @@
-import { FC, HTMLAttributes, useState, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import burgerStyles from './burger-constructor.module.css';
 import { DragIcon, CurrencyIcon, Button, ConstructorElement } from '@ya.praktikum/react-developer-burger-ui-components';
 import Modal from '../modal/modal';
@@ -11,13 +11,13 @@ import DraggableItem from './draggable-items';
 import { getCookie } from '../../utils/set-cookie';
 import { useNavigate } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
-import { TIngredient, TIngredientsRoot } from '../../utils/types';
+import { TIngredient, TCurrentIngredientsRoot } from '../../utils/types';
 
-const BurgerConstructor: FC<HTMLAttributes<HTMLHtmlElement>> = () => {
+const BurgerConstructor = () => {
     const dispatch = useDispatch();
     let navigate = useNavigate();
 
-    const currentIngredientsList = useSelector((state: { [prop in string]: TIngredientsRoot }) => state.burgerConstructor.currentIngredientsList);
+    const currentIngredientsList = useSelector((state: { [prop in string]: TCurrentIngredientsRoot }) => state.burgerConstructor.currentIngredientsList);
 
     const [openModal, setOpenModal] = useState<boolean>(false);
 
@@ -26,10 +26,10 @@ const BurgerConstructor: FC<HTMLAttributes<HTMLHtmlElement>> = () => {
         if (getCookie('token') && (localStorage.getItem('refreshToken'))) {
             let orderRequest = [
                 ...currentIngredientsList,
-                currentIngredientsList.find((item: TIngredient) => item.type === 'bun')
+                currentIngredientsList.filter((item: TIngredient) => item.type === 'bun')[0]
             ]
 
-            doOrder(orderRequest.map((item: any ) => item._id), dispatch);
+            doOrder(orderRequest.map((item: TIngredient) => item._id), dispatch);
         } else {
             navigate('/login');
         }
@@ -45,9 +45,9 @@ const BurgerConstructor: FC<HTMLAttributes<HTMLHtmlElement>> = () => {
 
     const totalPrice = useMemo(() => currentIngredientsList.reduce((acc: number, item: TIngredient) => acc + item.price * (item.type === 'bun' ? 2 : 1), 0), [currentIngredientsList]);
 
-    const onDropHandler = (item: TIngredient, u: string) => {
+    const onDropHandler = (item: TIngredient, uniqueKey: string) => {
         let itemModificated = { ...item }
-        itemModificated.uniqueKey = u
+        itemModificated.uniqueKey = uniqueKey;
         if (item.type === "bun" && currentIngredientsList.some((item: TIngredient) => item.type === "bun")) {
             dispatch(updateCurrentIngredientsList([
                 ...currentIngredientsList.filter((item: TIngredient) => item.type !== "bun"),

@@ -25,7 +25,7 @@ const DraggableItem: FC<TDraggableProps> = ({ children, currentItem, className, 
             collect: monitor => ({
                 isHover: monitor.isOver(),
             }),
-            drop: (item: any, monitor) => {
+            drop: (item: TIngredient & any, monitor) => {
                 if (item.currentItem.uniqueKey !== currentItem.uniqueKey && monitor.isOver({ shallow: true })) {
                     moveItem(item.currentItem.uniqueKey, currentItem.uniqueKey)
                 }

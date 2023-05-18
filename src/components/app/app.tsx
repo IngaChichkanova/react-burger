@@ -1,4 +1,4 @@
-import { FC, HTMLAttributes } from 'react';
+import React from 'react';
 import AppHeader from '../header/header';
 import styles from './app.module.css';
 import { useNavigate, Routes, Route, useLocation } from 'react-router-dom';
@@ -7,7 +7,7 @@ import IngredientDetails from '../ingredient-details/ingredient-details';
 import Modal from '../modal/modal';
 import { ProtectedRouteElement } from '../protected-route';
 
-const App: FC<HTMLAttributes<HTMLHtmlElement>> = () => {
+const App = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
