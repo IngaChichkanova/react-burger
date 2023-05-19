@@ -17,9 +17,9 @@ const BurgerIngredients: FC<HTMLAttributes<HTMLElement>> = () => {
 
     const [currentTab, setCurrentTab] = useState<string>("bun");
 
-    const bunRef = createRef<any>();
-    const sauceRef = createRef<any>();
-    const mainRef = createRef<any>();
+    const bunRef = createRef() as React.RefObject<HTMLDivElement>;
+    const sauceRef = createRef() as React.RefObject<HTMLDivElement>;
+    const mainRef = createRef() as React.RefObject<HTMLDivElement>;
 
     useEffect(() => {
         dispatch(getIngedients());
@@ -34,7 +34,7 @@ const BurgerIngredients: FC<HTMLAttributes<HTMLElement>> = () => {
     }
 
     const scrollObserve = (): void => {
-        function obCallback(payload: any) {
+        function obCallback(payload: IntersectionObserverEntry[]) {
             console.log(payload)
             for (let i = 0; payload.length > i; i++) {
                 if ((payload[i].target === bunRef.current) && (payload[i].isIntersecting && payload[i].intersectionRatio > 0.7)) {
@@ -49,9 +49,9 @@ const BurgerIngredients: FC<HTMLAttributes<HTMLElement>> = () => {
 
         const ob = new IntersectionObserver(obCallback);
 
-        ob.observe(bunRef.current);
-        ob.observe(sauceRef.current);
-        ob.observe(mainRef.current);
+        ob.observe(bunRef.current as HTMLElement);
+        ob.observe(sauceRef.current as HTMLElement);
+        ob.observe(mainRef.current as HTMLElement);
     }
 
     const buns = useMemo(() => ingredientsList.filter((item: TIngredient) => item.type === 'bun'), [ingredientsList]);

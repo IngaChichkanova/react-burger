@@ -1,4 +1,4 @@
-type TCookie<T> = T extends number ? number : T extends Date ? Date : any;
+type TCookie<T> = T extends number ? number : (T extends Date ? Date : any);
 
 export function setCookie(name: string, value: string, props?: { [prop in string]: TCookie<prop> }): void {
     props = props || {};
