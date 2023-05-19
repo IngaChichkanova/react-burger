@@ -17,7 +17,7 @@ export function ProtectedRouteElement({ element, isPublic }: TProtectedRouteElem
     const [isUserLoaded, setUserLoaded] = useState<boolean>(false);
     const location = useLocation();
 
-    const init = async () => {
+    const init = async (): Promise<void> => {
         await getUser(dispatch);
         setUserLoaded(true);
     };

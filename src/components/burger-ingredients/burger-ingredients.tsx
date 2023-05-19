@@ -1,4 +1,4 @@
-import { useState, createRef, useMemo, useEffect } from 'react';
+import React, { FC, HTMLAttributes, useState, createRef, useMemo, useEffect } from 'react';
 import ingredientsStyles from './burger-ingredients.module.css';
 import { Tab, CurrencyIcon, Counter } from '@ya.praktikum/react-developer-burger-ui-components';
 import { getIngedients } from '../../services/actions/ingredients';
@@ -7,7 +7,7 @@ import DraggableItem from './draggable-items';
 import { Link, useLocation } from 'react-router-dom';
 import { TCurrentIngredientsRoot, TIngredientsRoot, TIngredient } from '../../utils/types';
 
-const BurgerIngredients = () => {
+const BurgerIngredients: FC<HTMLAttributes<HTMLElement>> = () => {
     const location = useLocation();
     const dispatch: Function = useDispatch();
     const ingredientsList = useSelector((state: { [prop in string]: TIngredientsRoot }) => state.ingredients.ingredientsList);
@@ -26,15 +26,16 @@ const BurgerIngredients = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
-    const setCurrent = (valueRef: any, value: string) => {
-        if (!ingredientsListFailed) {
+    const setCurrent = (valueRef: React.RefObject<HTMLElement>, value: string): void => {
+        if (!ingredientsListFailed && valueRef.current) {
             setCurrentTab(value);
             valueRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
         }
     }
 
-    const scrollObserve = () => {
+    const scrollObserve = (): void => {
         function obCallback(payload: any) {
+            console.log(payload)
             for (let i = 0; payload.length > i; i++) {
                 if ((payload[i].target === bunRef.current) && (payload[i].isIntersecting && payload[i].intersectionRatio > 0.7)) {
                     setCurrentTab("bun");
@@ -64,13 +65,13 @@ const BurgerIngredients = () => {
                 <section className={`mt-10`}>
                     <h1 className="text text_type_main-large">Соберите бургер</h1>
                     <div className={`${ingredientsStyles.tabs} mt-5`}>
-                        <Tab value={'bunRef'} active={currentTab === 'bun'} onClick={() => setCurrent(bunRef, 'bun')}>
+                        <Tab value={'bunRef'} active={currentTab === 'bun'} onClick={(): void => setCurrent(bunRef, 'bun')}>
                             Булки
                         </Tab>
-                        <Tab value={'sauceRef'} active={currentTab === 'sauce'} onClick={() => setCurrent(sauceRef, 'sauce')}>
+                        <Tab value={'sauceRef'} active={currentTab === 'sauce'} onClick={(): void => setCurrent(sauceRef, 'sauce')}>
                             Соусы
                         </Tab>
-                        <Tab value={'mainRef'} active={currentTab === 'main'} onClick={() => setCurrent(mainRef, 'main')}>
+                        <Tab value={'mainRef'} active={currentTab === 'main'} onClick={(): void => setCurrent(mainRef, 'main')}>
                             Начинки
                         </Tab>
                     </div>

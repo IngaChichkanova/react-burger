@@ -1,4 +1,4 @@
-import { useState, useEffect, ChangeEvent, FormEvent } from 'react';
+import { FC, HTMLAttributes, useState, useEffect, ChangeEvent, FormEvent } from 'react';
 import profileStyles from './profile.module.css';
 import ProfileSidebar from '../components/profile-sidebar/profile-sidebar';
 import { EmailInput, Input } from '@ya.praktikum/react-developer-burger-ui-components';
@@ -8,7 +8,7 @@ import { Button } from '@ya.praktikum/react-developer-burger-ui-components';
 import { validateEmail } from '../utils/validation';
 import { TUserRoot } from '../utils/types';
 
-export const ProfilePage = () => {
+export const ProfilePage: FC<HTMLAttributes<HTMLHtmlElement>> = () => {
   const dispatch = useDispatch();
   const user = useSelector((state: { [prop in string]: TUserRoot }) => state.user.user);
   const getUserStart = useSelector((state: { [prop in string]: TUserRoot }) => state.user.getUserStart);
@@ -30,31 +30,31 @@ export const ProfilePage = () => {
     }
   }, [user])
 
-  const onChangeName = (e: ChangeEvent<HTMLInputElement>) => {
+  const onChangeName = (e: ChangeEvent<HTMLInputElement>): void => {
     setName(e.target.value);
   }
 
-  const onChangeLogin = (e: ChangeEvent<HTMLInputElement>) => {
+  const onChangeLogin = (e: ChangeEvent<HTMLInputElement>): void => {
     setLogin(e.target.value);
   }
 
-  const onChangePassword = (e: ChangeEvent<HTMLInputElement>) => {
+  const onChangePassword = (e: ChangeEvent<HTMLInputElement>): void => {
     setPassword(e.target.value);
   }
 
-  const onCancel = () => {
+  const onCancel = (): void => {
     setName(user ? user.name : '');
     setLogin(user ? user.email : '');
     setPassword('');
   }
 
-  const onSave = async (e: FormEvent) => {
+  const onSave = async (e: FormEvent): Promise<void> => {
     e.preventDefault();
     await editUser(login, password, name, dispatch);
     setPassword('');
   }
 
-  const isChanges = () => (!getUserStart && (name !== (user ? user.name : '') || (login !== (user ? user.email : '') && validateEmail(login)) || password.length > 0));
+  const isChanges = (): boolean => (!getUserStart && (name !== (user ? user.name : '') || (login !== (user ? user.email : '') && validateEmail(login)) || password.length > 0));
 
   if (getUserStart || getUserError) return null
 

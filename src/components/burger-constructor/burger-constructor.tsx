@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { FC, HTMLAttributes, useState, useMemo } from 'react';
 import burgerStyles from './burger-constructor.module.css';
 import { DragIcon, CurrencyIcon, Button, ConstructorElement } from '@ya.praktikum/react-developer-burger-ui-components';
 import Modal from '../modal/modal';
@@ -13,7 +13,7 @@ import { useNavigate } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 import { TIngredient, TCurrentIngredientsRoot } from '../../utils/types';
 
-const BurgerConstructor = () => {
+const BurgerConstructor: FC<HTMLAttributes<HTMLHtmlElement>> = () => {
     const dispatch = useDispatch();
     let navigate = useNavigate();
 
@@ -21,7 +21,7 @@ const BurgerConstructor = () => {
 
     const [openModal, setOpenModal] = useState<boolean>(false);
 
-    const handleOrder = () => {
+    const handleOrder = (): void => {
         setOpenModal(true);
         if (getCookie('token') && (localStorage.getItem('refreshToken'))) {
             let orderRequest = [
@@ -35,7 +35,7 @@ const BurgerConstructor = () => {
         }
     }
 
-    const handleClose = () => {
+    const handleClose = (): void => {
         setOpenModal(false);
         dispatch(clearOrder());
     }
@@ -45,7 +45,7 @@ const BurgerConstructor = () => {
 
     const totalPrice = useMemo(() => currentIngredientsList.reduce((acc: number, item: TIngredient) => acc + item.price * (item.type === 'bun' ? 2 : 1), 0), [currentIngredientsList]);
 
-    const onDropHandler = (item: TIngredient, uniqueKey: string) => {
+    const onDropHandler = (item: TIngredient, uniqueKey: string): void => {
         let itemModificated = { ...item }
         itemModificated.uniqueKey = uniqueKey;
         if (item.type === "bun" && currentIngredientsList.some((item: TIngredient) => item.type === "bun")) {
@@ -71,7 +71,7 @@ const BurgerConstructor = () => {
         })
     });
 
-    const removeIngredient = (ingredient: TIngredient) => {
+    const removeIngredient = (ingredient: TIngredient): void => {
         dispatch(updateCurrentIngredientsList(currentIngredientsList.filter((item: TIngredient) => ingredient.uniqueKey !== item.uniqueKey)));
     }
 

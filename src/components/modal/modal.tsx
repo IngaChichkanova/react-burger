@@ -10,7 +10,7 @@ type TModalProps = {
 
 const Modal: FC<TModalProps> = ({ children, onClose }) => {
 
-    const handleClose = () => {
+    const handleClose = (): void => {
         onClose();
     }
 

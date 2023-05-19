@@ -1,5 +1,5 @@
 import { FC, HTMLAttributes } from 'react';
-import { useDrag, useDrop } from "react-dnd";
+import { useDrag, useDrop, DropTargetMonitor } from "react-dnd";
 import { TIngredient } from '../../utils/types';
 
 type TDraggableProps = {
@@ -25,7 +25,7 @@ const DraggableItem: FC<TDraggableProps> = ({ children, currentItem, className, 
             collect: monitor => ({
                 isHover: monitor.isOver(),
             }),
-            drop: (item: TIngredient & any, monitor) => {
+            drop: (item: {[prop in string]: TIngredient}, monitor: DropTargetMonitor<unknown, unknown>): void => {
                 if (item.currentItem.uniqueKey !== currentItem.uniqueKey && monitor.isOver({ shallow: true })) {
                     moveItem(item.currentItem.uniqueKey, currentItem.uniqueKey)
                 }

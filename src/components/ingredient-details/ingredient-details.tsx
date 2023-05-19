@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { FC, HTMLAttributes, useEffect } from 'react';
 import ingredientDetailsStyles from '././ingredient-details.module.css';
 import { useSelector, useDispatch } from 'react-redux';
 import { useLocation } from 'react-router-dom';
@@ -6,7 +6,7 @@ import { updateCurrentIngredient } from '../../services/actions/ingredient-modal
 import { getIngedients } from '../../services/actions/ingredients';
 import { TIngredient, TIngredientsRoot, TModalRoot } from '../../utils/types';
 
-const IngredientDetails = () => {
+const IngredientDetails: FC<HTMLAttributes<HTMLHtmlElement>> = () => {
     const dispatch: Function = useDispatch();
     const currentIngredient = useSelector((state: { [prop in string]: TModalRoot }) => state.ingredientModal.currentIngredient);
     const ingredientsListFailed = useSelector((state: { [prop in string]: TIngredientsRoot }) => state.ingredients.ingredientsListFailed);

@@ -30,12 +30,14 @@ export const register = async (email: string, password: string, name: string, di
     return await registerRequest(email, password, name)
         .then(response => {
             let accessToken;
-            accessToken = response.accessToken.split('Bearer ')[1];
+            accessToken = response.accessToken ? response.accessToken.split('Bearer ')[1] : undefined;
             if (accessToken) {
                 setCookie('token', accessToken);
             }
 
-            localStorage.setItem("refreshToken", response.refreshToken);
+            if (response.refreshToken) {
+                localStorage.setItem("refreshToken", response.refreshToken);
+            }
 
             if (response.success) {
                 dispatch({ type: SET_USER, payload: response.user })
@@ -56,14 +58,16 @@ export const signIn = async (email: string, password: string, dispatch: Function
     dispatch({ type: REGISTER_REQUEST });
     return await loginRequest(email, password).then(response => {
         let accessToken;
-        accessToken = response.accessToken.split('Bearer ')[1];
+        accessToken = response.accessToken ? response.accessToken.split('Bearer ')[1] : undefined;
         if (accessToken) {
             setCookie('token',
                 accessToken
             );
         }
 
-        localStorage.setItem("refreshToken", response.refreshToken);
+        if(response.refreshToken){
+            localStorage.setItem("refreshToken", response.refreshToken);
+        }
 
         if (response.success) {
             dispatch({ type: SET_USER, payload: response.user })
