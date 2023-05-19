@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { FC, HTMLAttributes, useState, useMemo } from 'react';
 import burgerStyles from './burger-constructor.module.css';
 import { DragIcon, CurrencyIcon, Button, ConstructorElement } from '@ya.praktikum/react-developer-burger-ui-components';
 import Modal from '../modal/modal';
@@ -11,44 +11,46 @@ import DraggableItem from './draggable-items';
 import { getCookie } from '../../utils/set-cookie';
 import { useNavigate } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
+import { TIngredient, TCurrentIngredientsRoot } from '../../utils/types';
 
-const BurgerConstructor = () => {
+const BurgerConstructor: FC<HTMLAttributes<HTMLHtmlElement>> = () => {
     const dispatch = useDispatch();
     let navigate = useNavigate();
-    const currentIngredientsList = useSelector(state => state.burgerConstructor.currentIngredientsList);
 
-    const [openModal, setOpenModal] = useState(false);
+    const currentIngredientsList = useSelector((state: { [prop in string]: TCurrentIngredientsRoot }) => state.burgerConstructor.currentIngredientsList);
 
-    const handleOrder = () => {
+    const [openModal, setOpenModal] = useState<boolean>(false);
+
+    const handleOrder = (): void => {
         setOpenModal(true);
         if (getCookie('token') && (localStorage.getItem('refreshToken'))) {
             let orderRequest = [
                 ...currentIngredientsList,
-                currentIngredientsList.find(item => item.type === 'bun')
+                currentIngredientsList.filter((item: TIngredient) => item.type === 'bun')[0]
             ]
 
-            doOrder(orderRequest.map(item => item._id), dispatch);
+            doOrder(orderRequest.map((item: TIngredient) => item._id), dispatch);
         } else {
             navigate('/login');
         }
     }
 
-    const handleClose = () => {
+    const handleClose = (): void => {
         setOpenModal(false);
         dispatch(clearOrder());
     }
 
-    const bun = useMemo(() => currentIngredientsList.filter((item) => item.type === 'bun'), [currentIngredientsList]);
-    const mainIngredients = useMemo(() => currentIngredientsList.filter((item) => item.type !== 'bun'), [currentIngredientsList]);
+    const bun = useMemo(() => currentIngredientsList.filter((item: TIngredient) => item.type === 'bun'), [currentIngredientsList]);
+    const mainIngredients = useMemo(() => currentIngredientsList.filter((item: TIngredient) => item.type !== 'bun'), [currentIngredientsList]);
 
-    const totalPrice = useMemo(() => currentIngredientsList.reduce((acc, item) => acc + item.price * (item.type === 'bun' ? 2 : 1), 0), [currentIngredientsList]);
+    const totalPrice = useMemo(() => currentIngredientsList.reduce((acc: number, item: TIngredient) => acc + item.price * (item.type === 'bun' ? 2 : 1), 0), [currentIngredientsList]);
 
-    const onDropHandler = (item, u) => {
+    const onDropHandler = (item: TIngredient, uniqueKey: string): void => {
         let itemModificated = { ...item }
-        itemModificated.uniqueKey = u
-        if (item.type === "bun" && currentIngredientsList.some(item => item.type === "bun")) {
+        itemModificated.uniqueKey = uniqueKey;
+        if (item.type === "bun" && currentIngredientsList.some((item: TIngredient) => item.type === "bun")) {
             dispatch(updateCurrentIngredientsList([
-                ...currentIngredientsList.filter(item => item.type !== "bun"),
+                ...currentIngredientsList.filter((item: TIngredient) => item.type !== "bun"),
                 itemModificated
             ]));
         } else {
@@ -61,7 +63,7 @@ const BurgerConstructor = () => {
 
     const [{ isHover }, dropTargetBun] = useDrop({
         accept: ["bun", "sauce", "main"],
-        drop(item) {
+        drop(item: TIngredient) {
             onDropHandler(item, uuidv4());
         },
         collect: monitor => ({
@@ -69,14 +71,14 @@ const BurgerConstructor = () => {
         })
     });
 
-    const removeIngredient = (ingredient) => {
-        dispatch(updateCurrentIngredientsList(currentIngredientsList.filter((item) => ingredient.uniqueKey !== item.uniqueKey)));
+    const removeIngredient = (ingredient: TIngredient): void => {
+        dispatch(updateCurrentIngredientsList(currentIngredientsList.filter((item: TIngredient) => ingredient.uniqueKey !== item.uniqueKey)));
     }
 
-    const moveItem = (draggedId, hoveredId) => {
-        const draggedItemKey = currentIngredientsList.indexOf(currentIngredientsList.filter(el => el.uniqueKey === draggedId)[0]);
-        const draggedItem = currentIngredientsList.filter(el => el.uniqueKey === draggedId)[0];
-        const hoveredItemKey = currentIngredientsList.indexOf(currentIngredientsList.filter(el => el.uniqueKey === hoveredId)[0]);
+    const moveItem = (draggedId: string, hoveredId: string) => {
+        const draggedItemKey = currentIngredientsList.indexOf(currentIngredientsList.filter((el: TIngredient) => el.uniqueKey === draggedId)[0]);
+        const draggedItem = currentIngredientsList.filter((el: TIngredient) => el.uniqueKey === draggedId)[0];
+        const hoveredItemKey = currentIngredientsList.indexOf(currentIngredientsList.filter((el: TIngredient) => el.uniqueKey === hoveredId)[0]);
 
         let currentIngredients = [...currentIngredientsList];
 
@@ -97,7 +99,7 @@ const BurgerConstructor = () => {
 
 
 
-                    {bun.length > 0 ? bun.map((ingredient) => (<section key={ingredient.uniqueKey} className={`${burgerStyles.sectionIngredient} mb-4 mr-4`}>
+                    {bun.length > 0 ? bun.map((ingredient: TIngredient) => (<section key={ingredient.uniqueKey} className={`${burgerStyles.sectionIngredient} mb-4 mr-4`}>
                         <ConstructorElement
                             type="top"
                             isLocked
@@ -111,6 +113,10 @@ const BurgerConstructor = () => {
                                 type="top"
                                 isLocked
                                 extraClass={burgerStyles.empty}
+                                text={''}
+                                thumbnail={''}
+                                price={0}
+
                             />
                         </section>
                     }
@@ -118,7 +124,7 @@ const BurgerConstructor = () => {
 
                     {mainIngredients.length > 0 ?
                         <section className={`${burgerStyles.scroll} custom-scroll`}>
-                            {mainIngredients.map((ingredient) => (
+                            {mainIngredients.map((ingredient: TIngredient) => (
                                 <DraggableItem
                                     key={ingredient.uniqueKey}
                                     className={`${burgerStyles.sectionIngredient} mt-4`}
@@ -142,12 +148,15 @@ const BurgerConstructor = () => {
                             <ConstructorElement
                                 isLocked
                                 extraClass={burgerStyles.empty}
+                                text={''}
+                                thumbnail={''}
+                                price={0}
                             />
                         </section>
                     }
 
 
-                    {bun.length > 0 ? bun.map((ingredient) => (<section key={ingredient.uniqueKey} className={`${burgerStyles.sectionIngredient} mt-4 mr-4`}>
+                    {bun.length > 0 ? bun.map((ingredient: TIngredient) => (<section key={ingredient.uniqueKey} className={`${burgerStyles.sectionIngredient} mt-4 mr-4`}>
                         <ConstructorElement
                             type="bottom"
                             isLocked
@@ -161,6 +170,9 @@ const BurgerConstructor = () => {
                                 type="bottom"
                                 isLocked
                                 extraClass={burgerStyles.empty}
+                                text={''}
+                                thumbnail={''}
+                                price={0}
                             />
                         </section>
                     }
@@ -172,7 +184,7 @@ const BurgerConstructor = () => {
                         <span className="mr-2">{totalPrice}</span>
                         <CurrencyIcon type="primary" />
                     </p>
-                    <Button disabled={!(currentIngredientsList.length > 0 && currentIngredientsList.filter((item) => item.type === 'bun').length > 0)} onClick={handleOrder} htmlType="button" type="primary" size="large">
+                    <Button disabled={!(currentIngredientsList.length > 0 && currentIngredientsList.filter((item: TIngredient) => item.type === 'bun').length > 0)} onClick={handleOrder} htmlType="button" type="primary" size="large">
                         Оформить заказ
                     </Button>
                 </section>

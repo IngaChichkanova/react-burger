@@ -1,40 +1,41 @@
-import { useState } from 'react';
+import { FC, HTMLAttributes, useState, ChangeEvent, FormEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import registerStyles from './register.module.css';
 import { EmailInput, Input, Button } from '@ya.praktikum/react-developer-burger-ui-components';
 import { register } from '../services/actions/user';
 import { validateEmail } from '../utils/validation';
 import { useDispatch, useSelector } from 'react-redux';
+import { TUserRoot } from '../utils/types';
 
-export const RegisterPage = () => {
+export const RegisterPage: FC<HTMLAttributes<HTMLHtmlElement>> = () => {
   const dispatch = useDispatch();
-  const registerStart = useSelector(state => state.user.registerStart);
-  const registerError = useSelector(state => state.user.registerError);
-  const registerErrorText = useSelector(state => state.user.registerErrorText);
+  const registerStart = useSelector((state: { [prop in string]: TUserRoot }) => state.user.registerStart);
+  const registerError = useSelector((state: { [prop in string]: TUserRoot }) => state.user.registerError);
+  const registerErrorText = useSelector((state: { [prop in string]: TUserRoot }) => state.user.registerErrorText);
   let navigate = useNavigate();
 
-  const [login, setLogin] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(true);
+  const [login, setLogin] = useState<string>('');
+  const [email, setEmail] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+  const [showPassword, setShowPassword] = useState<boolean>(true);
 
-  const onChangeLogin = e => {
+  const onChangeLogin = (e: ChangeEvent<HTMLInputElement>): void => {
     setLogin(e.target.value);
   }
 
-  const onChangeEmail = e => {
+  const onChangeEmail = (e: ChangeEvent<HTMLInputElement>): void => {
     setEmail(e.target.value);
   }
 
-  const onChangePassword = e => {
+  const onChangePassword = (e: ChangeEvent<HTMLInputElement>): void => {
     setPassword(e.target.value);
   }
 
-  const onIconClick = () => {
+  const onIconClick = (): void => {
     setShowPassword(!showPassword);
   }
 
-  const registerButton = async (e) => {
+  const registerButton = async (e: FormEvent): Promise<void> => {
     e.preventDefault();
     await register(email, password, login, dispatch).then((success) => {
       if (success) {

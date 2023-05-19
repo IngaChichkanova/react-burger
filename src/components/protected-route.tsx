@@ -1,18 +1,23 @@
 import { Navigate, useLocation } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { getCookie } from '../utils/set-cookie';
-import PropTypes from 'prop-types';
 import { getUser } from '../services/actions/user';
 import { useDispatch, useSelector } from 'react-redux';
+import { TUserRoot } from '../utils/types';
 
 
-export function ProtectedRouteElement({ element, isPublic }) {
+type TProtectedRouteElementProps = {
+    element: JSX.Element;
+    isPublic: boolean
+};
+
+export function ProtectedRouteElement({ element, isPublic }: TProtectedRouteElementProps) {
     const dispatch = useDispatch();
-    const user = useSelector(state => state.user.user);
-    const [isUserLoaded, setUserLoaded] = useState(false);
+    const user = useSelector((state: { [prop in string]: TUserRoot }) => state.user.user);
+    const [isUserLoaded, setUserLoaded] = useState<boolean>(false);
     const location = useLocation();
 
-    const init = async () => {
+    const init = async (): Promise<void> => {
         await getUser(dispatch);
         setUserLoaded(true);
     };
@@ -36,9 +41,4 @@ export function ProtectedRouteElement({ element, isPublic }) {
             from: location.pathname
         }} />;
     }
-}
-
-ProtectedRouteElement.propTypes = {
-    element: PropTypes.node.isRequired,
-    isPublic: PropTypes.bool.isRequired
 }

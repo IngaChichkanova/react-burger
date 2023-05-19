@@ -25,17 +25,19 @@ export const GET_USER_REQUEST = 'GET_USER_REQUEST';
 export const GET_USER_SUCCESS = 'GET_USER_SUCCESS';
 export const GET_USER_FAILED = 'GET_USER_FAILED';
 
-export const register = async (email, password, name, dispatch) => {
+export const register = async (email: string, password: string, name: string, dispatch: Function) => {
     dispatch({ type: REGISTER_REQUEST });
     return await registerRequest(email, password, name)
         .then(response => {
             let accessToken;
-            accessToken = response.accessToken.split('Bearer ')[1];
+            accessToken = response.accessToken ? response.accessToken.split('Bearer ')[1] : undefined;
             if (accessToken) {
                 setCookie('token', accessToken);
             }
 
-            localStorage.setItem("refreshToken", response.refreshToken);
+            if (response.refreshToken) {
+                localStorage.setItem("refreshToken", response.refreshToken);
+            }
 
             if (response.success) {
                 dispatch({ type: SET_USER, payload: response.user })
@@ -52,18 +54,20 @@ export const register = async (email, password, name, dispatch) => {
         });
 }
 
-export const signIn = async (email, password, dispatch) => {
+export const signIn = async (email: string, password: string, dispatch: Function) => {
     dispatch({ type: REGISTER_REQUEST });
     return await loginRequest(email, password).then(response => {
         let accessToken;
-        accessToken = response.accessToken.split('Bearer ')[1];
+        accessToken = response.accessToken ? response.accessToken.split('Bearer ')[1] : undefined;
         if (accessToken) {
             setCookie('token',
                 accessToken
             );
         }
 
-        localStorage.setItem("refreshToken", response.refreshToken);
+        if(response.refreshToken){
+            localStorage.setItem("refreshToken", response.refreshToken);
+        }
 
         if (response.success) {
             dispatch({ type: SET_USER, payload: response.user })
@@ -79,7 +83,7 @@ export const signIn = async (email, password, dispatch) => {
         });
 };
 
-export const signOut = async (dispatch) => {
+export const signOut = async (dispatch: Function) => {
     dispatch({ type: SIGN_OUT_REQUEST });
     if (localStorage.getItem("refreshToken")) {
         return await logoutRequest().then(response => {
@@ -104,7 +108,7 @@ export const signOut = async (dispatch) => {
     }
 };
 
-export const forgotPassword = async (email, dispatch) => {
+export const forgotPassword = async (email: string, dispatch: Function) => {
     dispatch({ type: FORGOT_PASSWORD_REQUEST });
     return await forgotPasswordRequest(email)
         .then(response => {
@@ -117,7 +121,7 @@ export const forgotPassword = async (email, dispatch) => {
         });
 }
 
-export const resetPassword = async (password, token, dispatch) => {
+export const resetPassword = async (password: string, token: string, dispatch: Function) => {
     dispatch({ type: RESET_PASSWORD_REQUEST });
     return await resetPasswordRequest(password, token)
         .then(response => {
@@ -130,7 +134,7 @@ export const resetPassword = async (password, token, dispatch) => {
         });
 }
 
-export const getUser = async (dispatch) => {
+export const getUser = async (dispatch: Function) => {
     dispatch({ type: USER_REQUEST });
 
     return await getUserRequest()
@@ -147,7 +151,7 @@ export const getUser = async (dispatch) => {
         });
 };
 
-export const editUser = async (email, password, name, dispatch) => {
+export const editUser = async (email: string, password: string, name: string, dispatch: Function) => {
     dispatch({
         type: GET_USER_REQUEST
     });

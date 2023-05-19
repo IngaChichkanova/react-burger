@@ -1,0 +1,80 @@
+export type TUserRoot = {
+    registerStart: boolean;
+    registerError: boolean;
+    registerErrorText: string;
+    loginStart: boolean;
+    loginError: boolean;
+    loginErrorText: string;
+    logoutStart: boolean;
+    logoutError: boolean;
+    forgotPasswordStart: boolean;
+    forgotPasswordError: boolean;
+    resetPasswordStart: boolean;
+    resetPasswordError: boolean;
+    getUserStart: boolean;
+    getUserError: boolean;
+    user: null | TUser;
+    getUserRequest: boolean;
+    getUserSuccess: boolean;
+    getUserFailed: boolean;
+};
+
+export type TUser = {
+    email: string;
+    name: string;
+};
+
+export type TCurrentIngredientsRoot = {
+    currentIngredientsList: Array<TIngredient>
+};
+
+export type TModalRoot = {
+    currentIngredient: null | TIngredient
+};
+
+export type TOrderRoot = {
+    order: null | TOrder,
+    orderRequest: boolean,
+    orderFailed: boolean
+};
+
+export type TIngredientsRoot = {
+    ingredientsList: Array<TIngredient>;
+    ingredientsListRequest: boolean;
+    ingredientsListFailed: boolean
+};
+
+export type TIngredient = {
+    _id: string;
+    name: string;
+    type: string;
+    proteins: number;
+    fat: number;
+    carbohydrates: number;
+    calories: number;
+    price: number;
+    image: string;
+    image_mobile: string;
+    image_large: string;
+    __v: number;
+    uniqueKey?: string;
+};
+
+export type TOrder = {
+    createdAt: string;
+    ingredients: Array<TIngredient>;
+    name: string;
+    number: number;
+    owner: TOwner;
+    price: number;
+    status: string;
+    updatedAt: string;
+    _id: string
+};
+
+export type TOwner = {
+    createdAt: string;
+    email: string;
+    name: string;
+    updatedAt: string;
+};
