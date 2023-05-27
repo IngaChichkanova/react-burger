@@ -71,10 +71,12 @@ export const checkAuthFetch = async (endpoint: string, options: TParams): Promis
     success: boolean;
 }> => await request(endpoint, options)
     .then((response) => {
+        console.log('checkAuthFetch', response)
         return response
     })
     .catch(e => {
         if (e.message === "jwt expired") {
+            console.log('checkAuthFetch expired')
             return updateRefreshToken(endpoint, options)
         } else {
             return { success: false }
@@ -146,7 +148,7 @@ export const resetPasswordRequest = (email: string, token: string): Promise<Pick
     )}`
 })
 
-export const getUserRequest = (): Promise<Pick<TAuth, 'success' | 'user'>> => checkAuthFetch('auth/user', {
+export const getUserRequestAction = (): Promise<Pick<TAuth, 'success' | 'user'>> => checkAuthFetch('auth/user', {
     method: "GET",
     headers: {
         Authorization: 'Bearer ' + getCookie('token')

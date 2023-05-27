@@ -2,15 +2,23 @@ import {
     GET_ORDER_REQUEST,
     GET_ORDER_SUCCESS,
     GET_ORDER_FAILED
-} from '../actions/order';
+} from '../constants/order';
+import { TOrder } from '../../utils/types';
+import { TOrderAction } from '../actions/order';
 
-const initialState = {
+export type TOrderState = {
+    order: null | TOrder;
+    orderRequest: boolean;
+    orderFailed: boolean;
+};
+
+const initialState: TOrderState = {
     order: null,
     orderRequest: false,
     orderFailed: false
 };
 
-export const orderReducer = (state = initialState, action) => {
+export const orderReducer = (state = initialState, action: TOrderAction) => {
     switch (action.type) {
         case GET_ORDER_REQUEST: {
             return {

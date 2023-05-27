@@ -1,7 +1,16 @@
 import { TIngredient } from "../../utils/types";
-export const CURRENT_INGREDIENT = 'CURRENT_INGREDIENT';
+import { CURRENT_INGREDIENT } from '../constants/ingredient-modal';
 
-export const updateCurrentIngredient = (item: null | TIngredient) => ({
+export interface IIngredientModalItemAction {
+    readonly type: typeof CURRENT_INGREDIENT;
+    readonly payload: null | TIngredient;
+}
+
+export type TIngredientModalAction =
+    | IIngredientModalItemAction
+    ;
+
+export const updateCurrentIngredient = (item: null | TIngredient): IIngredientModalItemAction => ({
     type: CURRENT_INGREDIENT,
     payload: item,
 })

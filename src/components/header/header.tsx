@@ -19,7 +19,7 @@ const AppHeader: FC<HTMLAttributes<HTMLHtmlElement>> = () => {
                         </>
                     )}
                 </NavLink>
-                <NavLink to="/orders" className={`${headerStyles.header_item_wrapper_item} pl-5 pr-5 pb-4 pt-4`}>
+                <NavLink to="/feed" className={`${headerStyles.header_item_wrapper_item} pl-5 pr-5 pb-4 pt-4`}>
                     {({ isActive }) => (
                         <>
                             <ListIcon type={isActive ? "primary" : "secondary"} />

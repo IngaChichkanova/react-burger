@@ -1,11 +1,32 @@
 import { orderRequest } from '../../utils/burger-api';
 import { updateCurrentIngredientsList } from './burder-constructor';
+import {
+    GET_ORDER_REQUEST,
+    GET_ORDER_SUCCESS,
+    GET_ORDER_FAILED
+} from '../constants/order';
+import { TOrder, AppDispatch, AppThunkAction } from '../../utils/types';
 
-export const GET_ORDER_REQUEST = 'GET_ORDER_REQUEST';
-export const GET_ORDER_SUCCESS = 'GET_ORDER_SUCCESS';
-export const GET_ORDER_FAILED = 'GET_ORDER_FAILED';
+export interface IOrderFailedAction {
+    readonly type: typeof GET_ORDER_FAILED;
+}
 
-export const doOrder = async (ingredientsId: Array<string>, dispatch: Function) => {
+export interface IOrderRequestAction {
+    readonly type: typeof GET_ORDER_REQUEST;
+}
+
+export interface IOrderSuccessAction {
+    readonly type: typeof GET_ORDER_SUCCESS;
+    readonly payload?: TOrder;
+}
+
+export type TOrderAction =
+    | IOrderFailedAction
+    | IOrderRequestAction
+    | IOrderSuccessAction
+    ;
+
+export const doOrder = async (ingredientsId: Array<string>, dispatch: AppDispatch): Promise<AppThunkAction | boolean | undefined | void> => {
     dispatch({
         type: GET_ORDER_REQUEST
     });
@@ -28,8 +49,8 @@ export const doOrder = async (ingredientsId: Array<string>, dispatch: Function) 
                 type: GET_ORDER_FAILED
             });
         });
-};
+}
 
-export const clearOrder = () => ({
+export const clearOrder = (): IOrderSuccessAction => ({
     type: GET_ORDER_SUCCESS,
 })

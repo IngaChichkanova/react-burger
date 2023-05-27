@@ -1,3 +1,16 @@
+import type { ThunkAction, ThunkDispatch } from 'redux-thunk';
+import { store } from '../index';
+import { TBurgerConstructorActions } from '../services/actions/burder-constructor';
+import { TIngredientModalAction } from '../services/actions/ingredient-modal';
+import { TIngredientsAction } from '../services/actions/ingredients';
+import { TOrderAction } from '../services/actions/order';
+import { TUserAction } from '../services/actions/user';
+
+type TApplicationActions = | TBurgerConstructorActions | TIngredientModalAction | TIngredientsAction | TOrderAction | TUserAction;
+export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = ThunkDispatch<RootState, unknown, TApplicationActions>;
+export type AppThunkAction<ReturnType = void> = ThunkAction<ReturnType, RootState, unknown, TApplicationActions>;
+
 export type TUserRoot = {
     registerStart: boolean;
     registerError: boolean;
