@@ -2,9 +2,8 @@ import { FC, HTMLAttributes } from 'react';
 import AppHeader from '../header/header';
 import styles from './app.module.css';
 import { useNavigate, Routes, Route, useLocation } from 'react-router-dom';
-import { LoginPage, HomePage, FeedPage, RegisterPage, ForgotPasswordPage, ResetPasswordPage, ProfilePage, IngredientsPage, NotFoundPage, ProfileOrdersPage } from '../../pages';
+import { LoginPage, HomePage, FeedPage, RegisterPage, ForgotPasswordPage, ResetPasswordPage, ProfilePage, IngredientsPage, NotFoundPage, ProfileOrdersPage, FeedInfoPage } from '../../pages';
 import IngredientDetails from '../ingredient-details/ingredient-details';
-import FeedInfo from '../feed-info/feed-info';
 import Modal from '../modal/modal';
 import { ProtectedRouteElement } from '../protected-route';
 
@@ -30,10 +29,11 @@ const App: FC<HTMLAttributes<HTMLHtmlElement>> = () => {
         </Route>
 
         <Route path="/feed" element={<FeedPage />} />
-        <Route path="/feed/:id" element={<FeedInfo />} />
+        <Route path="/feed/:id" element={<FeedInfoPage />} />
 
         <Route path="/profile" element={<ProtectedRouteElement element={<ProfilePage />} isPublic={false} />} />
         <Route path="/profile/orders" element={<ProtectedRouteElement element={<ProfileOrdersPage />} isPublic={false} />} />
+        <Route path="/profile/orders/:id" element={<ProtectedRouteElement element={<FeedInfoPage />} isPublic={false} />} />
 
         <Route path="*" element={<NotFoundPage />} />
 
@@ -43,6 +43,14 @@ const App: FC<HTMLAttributes<HTMLHtmlElement>> = () => {
         <Routes>
           <Route path="/ingredients/:id" element={<Modal onClose={() => { navigate(`/`) }}>
             <IngredientDetails />
+          </Modal>} />
+
+          <Route path="/feed/:id" element={<Modal onClose={() => { navigate(`/feed`) }}>
+            <FeedInfoPage />
+          </Modal>} />
+
+          <Route path="/profile/orders/:id" element={<Modal onClose={() => { navigate(`/profile/orders`) }}>
+            <FeedInfoPage />
           </Modal>} />
         </Routes>
       )}

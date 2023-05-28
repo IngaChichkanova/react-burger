@@ -18,7 +18,7 @@ type TAuth = {
     accessToken?: string;
 };
 
-const checkResponse = <T>(res: Response): Promise<T> => res.ok ? res.json() : Promise.reject(res.status);
+const checkResponse = <T>(res: Response): Promise<T> => res.ok ? res.json() : res.json().then((err) => Promise.reject(err));
 
 export const request = (endpoint: string, options: TParams): Promise<{
     success: boolean;
@@ -71,12 +71,10 @@ export const checkAuthFetch = async (endpoint: string, options: TParams): Promis
     success: boolean;
 }> => await request(endpoint, options)
     .then((response) => {
-        console.log('checkAuthFetch', response)
         return response
     })
     .catch(e => {
         if (e.message === "jwt expired") {
-            console.log('checkAuthFetch expired')
             return updateRefreshToken(endpoint, options)
         } else {
             return { success: false }

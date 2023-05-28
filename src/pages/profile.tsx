@@ -59,10 +59,10 @@ export const ProfilePage: FC<HTMLAttributes<HTMLHtmlElement>> = () => {
   if (getUserStart || getUserError) return null
 
   return (
-    <main className={`${profileStyles.wrapper} mt-30`}>
+    <main className={`${profileStyles.wrapper}`}>
       <ProfileSidebar />
 
-      <section className={`${profileStyles.section}`}>
+      <section className={`${profileStyles.section}  mt-30`}>
         <form onSubmit={onSave}>
           <Input
             onChange={onChangeName}

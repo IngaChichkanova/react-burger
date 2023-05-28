@@ -37,3 +37,10 @@
 .price{
     float: right;
 }  
+
+.link{
+    text-decoration: none;
+    color: white;
+    display: flex;
+    flex-direction: column;
+}

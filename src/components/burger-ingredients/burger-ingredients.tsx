@@ -35,7 +35,6 @@ const BurgerIngredients: FC<HTMLAttributes<HTMLElement>> = () => {
 
     const scrollObserve = (): void => {
         function obCallback(payload: IntersectionObserverEntry[]) {
-            console.log(payload)
             for (let i = 0; payload.length > i; i++) {
                 if ((payload[i].target === bunRef.current) && (payload[i].isIntersecting && payload[i].intersectionRatio > 0.7)) {
                     setCurrentTab("bun");

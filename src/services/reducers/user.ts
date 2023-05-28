@@ -68,7 +68,6 @@ const initialState: TUserState = {
 };
 
 export const userReducer = (state = initialState, action: TUserAction) => {
-    console.log(action)
     switch (action.type) {
         case REGISTER_REQUEST: {
             return {

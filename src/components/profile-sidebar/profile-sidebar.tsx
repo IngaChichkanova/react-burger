@@ -23,7 +23,7 @@ const ProfileSidebar:FC<HTMLAttributes<HTMLHtmlElement>> = () => {
     }
 
     return (
-        <section className={`${profileSidebarStyles.navLinks} mr-15`}>
+        <section className={`${profileSidebarStyles.navLinks} mr-15  mt-30`}>
             <ul>
                 <li className='pt-3 pb-3'>
                     <NavLink
