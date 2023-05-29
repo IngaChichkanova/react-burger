@@ -91,3 +91,13 @@ export type TOwner = {
     name: string;
     updatedAt: string;
 };
+
+export type TOrderTrack = {
+    ingredients: Array<string>;
+    _id: string;
+    name: string;
+    status: string;
+    number: number;
+    createdAt: string;
+    updatedAt: string;
+};

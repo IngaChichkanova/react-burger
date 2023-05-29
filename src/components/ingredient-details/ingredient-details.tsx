@@ -5,9 +5,10 @@ import { useLocation } from 'react-router-dom';
 import { updateCurrentIngredient } from '../../services/actions/ingredient-modal';
 import { getIngedients } from '../../services/actions/ingredients';
 import { TIngredient, TIngredientsRoot, TModalRoot } from '../../utils/types';
+import { AppDispatch } from '../../utils/types';
 
 const IngredientDetails: FC<HTMLAttributes<HTMLHtmlElement>> = () => {
-    const dispatch: Function = useDispatch();
+    const dispatch: AppDispatch = useDispatch();
     const currentIngredient = useSelector((state: { [prop in string]: TModalRoot }) => state.ingredientModal.currentIngredient);
     const ingredientsListFailed = useSelector((state: { [prop in string]: TIngredientsRoot }) => state.ingredients.ingredientsListFailed);
     const ingredientsListRequest = useSelector((state: { [prop in string]: TIngredientsRoot }) => state.ingredients.ingredientsListRequest);
@@ -15,12 +16,12 @@ const IngredientDetails: FC<HTMLAttributes<HTMLHtmlElement>> = () => {
 
     const location = useLocation();
 
-    useEffect(() => {
+    useEffect((): ReturnType<React.EffectCallback> => {
         if (!location.state) {
             dispatch(getIngedients());
         }
 
-        return () => dispatch(updateCurrentIngredient(null));
+        return (): any  => dispatch(updateCurrentIngredient(null));
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 

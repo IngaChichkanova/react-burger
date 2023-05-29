@@ -3,9 +3,13 @@ import { updateCurrentIngredientsList } from './burder-constructor';
 import {
     GET_ORDER_REQUEST,
     GET_ORDER_SUCCESS,
-    GET_ORDER_FAILED
+    GET_ORDER_FAILED,
+    WATCH_ORDERS_PUBLIC_OPEN,
+    WATCH_ORDERS_PUBLIC_SUCCESS,
+    WATCH_ORDERS_PUBLIC_DATA
 } from '../constants/order';
-import { TOrder, AppDispatch, AppThunkAction } from '../../utils/types';
+import { TOrder, AppDispatch, AppThunkAction, TOrderTrack } from '../../utils/types';
+import { NORMA_API_WS } from '../../utils/constants';
 
 export interface IOrderFailedAction {
     readonly type: typeof GET_ORDER_FAILED;
@@ -20,10 +24,30 @@ export interface IOrderSuccessAction {
     readonly payload?: TOrder;
 }
 
+export interface IWatchOrdersOpenAction {
+    readonly type: typeof WATCH_ORDERS_PUBLIC_OPEN;
+    readonly payload?: boolean;
+}
+
+export interface IWatchOrdersSuccessAction {
+    readonly type: typeof WATCH_ORDERS_PUBLIC_SUCCESS;
+    readonly payload?: boolean;
+}
+
+export interface IWatchOrdersDataAction {
+    readonly type: typeof WATCH_ORDERS_PUBLIC_DATA;
+    readonly data: ReadonlyArray<TOrderTrack>;
+    readonly total: number;
+    readonly totalToday: number;
+}
+
 export type TOrderAction =
     | IOrderFailedAction
     | IOrderRequestAction
     | IOrderSuccessAction
+    | IWatchOrdersOpenAction
+    | IWatchOrdersSuccessAction
+    | IWatchOrdersDataAction
     ;
 
 export const doOrder = async (ingredientsId: Array<string>, dispatch: AppDispatch): Promise<AppThunkAction | boolean | undefined | void> => {
@@ -54,3 +78,28 @@ export const doOrder = async (ingredientsId: Array<string>, dispatch: AppDispatc
 export const clearOrder = (): IOrderSuccessAction => ({
     type: GET_ORDER_SUCCESS,
 })
+
+export function watchOrdersPublicTrack(): AppThunkAction {
+    return function (dispatch: AppDispatch) {
+        dispatch({ type: WATCH_ORDERS_PUBLIC_OPEN, payload: true });
+        const ws = new WebSocket(`${NORMA_API_WS}/orders/all`);
+
+        ws.onmessage = (event: MessageEvent) => {
+            console.log(JSON.parse(event.data))
+            if (event.data) {
+                let parsedData = JSON.parse(event.data);
+            
+                if (parsedData.success) {
+                    dispatch({
+                        type: WATCH_ORDERS_PUBLIC_DATA,
+                        data: parsedData.orders,
+                        total: parsedData.total,
+                        totalToday: parsedData.totalToday
+                    });
+                }
+
+                dispatch({ type: WATCH_ORDERS_PUBLIC_SUCCESS, payload: parsedData.success });
+            }
+        }
+    }
+}

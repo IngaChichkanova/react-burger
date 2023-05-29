@@ -6,10 +6,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import DraggableItem from './draggable-items';
 import { Link, useLocation } from 'react-router-dom';
 import { TCurrentIngredientsRoot, TIngredientsRoot, TIngredient } from '../../utils/types';
+import { AppDispatch } from '../../utils/types';
 
 const BurgerIngredients: FC<HTMLAttributes<HTMLElement>> = () => {
     const location = useLocation();
-    const dispatch: Function = useDispatch();
+    const dispatch: AppDispatch = useDispatch();
     const ingredientsList = useSelector((state: { [prop in string]: TIngredientsRoot }) => state.ingredients.ingredientsList);
     const currentIngredientsList = useSelector((state: { [prop in string]: TCurrentIngredientsRoot }) => state.burgerConstructor.currentIngredientsList);
     const ingredientsListFailed = useSelector((state: { [prop in string]: TIngredientsRoot }) => state.ingredients.ingredientsListFailed);
