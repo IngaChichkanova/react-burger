@@ -4,7 +4,8 @@ import {
     GET_ORDER_FAILED,
     WATCH_ORDERS_PUBLIC_OPEN,
     WATCH_ORDERS_PUBLIC_SUCCESS,
-    WATCH_ORDERS_PUBLIC_DATA
+    WATCH_ORDERS_PUBLIC_DATA,
+    CURRENT_ORDER
 } from '../constants/order';
 import { TOrder, TOrderTrack } from '../../utils/types';
 import { TOrderAction } from '../actions/order';
@@ -21,6 +22,7 @@ export type TOrderState = {
     ordersPrivateTrack: Array<TOrderTrack>;
     ordersTrackPrivateOpen: boolean;
     ordersTrackPrivateSuccess: boolean;
+    currentOrder: null | TOrderTrack;
 };
 
 const initialState: TOrderState = {
@@ -35,6 +37,7 @@ const initialState: TOrderState = {
     ordersTrackPrivateSuccess: false,
     ordersTrackPublicTotal: 0,
     ordersTrackPublicTotalToday: 0,
+    currentOrder: null,
 };
 
 export const orderReducer = (state = initialState, action: TOrderAction) => {
@@ -79,6 +82,12 @@ export const orderReducer = (state = initialState, action: TOrderAction) => {
                 ordersPublicTrack: action.data,
                 ordersTrackPublicTotal: action.total,
                 ordersTrackPublicTotalToday: action.totalToday,
+            };
+        }
+        case CURRENT_ORDER: {
+            return {
+                ...state,
+                currentOrder: action.payload,
             };
         }
         default: {

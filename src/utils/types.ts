@@ -11,50 +11,9 @@ export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = ThunkDispatch<RootState, unknown, TApplicationActions>;
 export type AppThunkAction<ReturnType = void> = ThunkAction<ReturnType, RootState, unknown, TApplicationActions>;
 
-export type TUserRoot = {
-    registerStart: boolean;
-    registerError: boolean;
-    registerErrorText: string;
-    loginStart: boolean;
-    loginError: boolean;
-    loginErrorText: string;
-    logoutStart: boolean;
-    logoutError: boolean;
-    forgotPasswordStart: boolean;
-    forgotPasswordError: boolean;
-    resetPasswordStart: boolean;
-    resetPasswordError: boolean;
-    getUserStart: boolean;
-    getUserError: boolean;
-    user: null | TUser;
-    getUserRequest: boolean;
-    getUserSuccess: boolean;
-    getUserFailed: boolean;
-};
-
 export type TUser = {
     email: string;
     name: string;
-};
-
-export type TCurrentIngredientsRoot = {
-    currentIngredientsList: Array<TIngredient>
-};
-
-export type TModalRoot = {
-    currentIngredient: null | TIngredient
-};
-
-export type TOrderRoot = {
-    order: null | TOrder,
-    orderRequest: boolean,
-    orderFailed: boolean
-};
-
-export type TIngredientsRoot = {
-    ingredientsList: Array<TIngredient>;
-    ingredientsListRequest: boolean;
-    ingredientsListFailed: boolean
 };
 
 export type TIngredient = {

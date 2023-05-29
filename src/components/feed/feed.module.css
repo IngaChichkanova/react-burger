@@ -60,7 +60,8 @@
 
 .pic img{
     position: relative;
-    left: -40px;
+    left: -26px;
+    width: 115px;
 }
 
 .picLess img{

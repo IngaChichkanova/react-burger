@@ -5,13 +5,13 @@ import { EmailInput, Input, Button } from '@ya.praktikum/react-developer-burger-
 import { validateEmail } from '../utils/validation';
 import { signIn } from '../services/actions/user';
 import { useDispatch, useSelector } from 'react-redux';
-import { TUserRoot } from '../utils/types';
+import { TUserState } from '../services/reducers/user';
 
 export const LoginPage: FC<HTMLAttributes<HTMLHtmlElement>> = () => {
   const dispatch = useDispatch();
-  const loginStart = useSelector((state: { [prop in string]: TUserRoot }) => state.user.loginStart);
-  const loginError = useSelector((state: { [prop in string]: TUserRoot }) => state.user.loginError);
-  const loginErrorText = useSelector((state: { [prop in string]: TUserRoot }) => state.user.loginErrorText);
+  const loginStart = useSelector((state: { [prop in string]: TUserState }) => state.user.loginStart);
+  const loginError = useSelector((state: { [prop in string]: TUserState }) => state.user.loginError);
+  const loginErrorText = useSelector((state: { [prop in string]: TUserState }) => state.user.loginErrorText);
   let navigate = useNavigate();
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');

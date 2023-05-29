@@ -4,12 +4,12 @@ import resetPasswordStyles from './reset-password.module.css';
 import { Input, Button } from '@ya.praktikum/react-developer-burger-ui-components';
 import { resetPassword } from '../services/actions/user';
 import { useDispatch, useSelector } from 'react-redux';
-import { TUserRoot } from '../utils/types';
+import { TUserState } from '../services/reducers/user';
 
 export const ResetPasswordPage: FC<HTMLAttributes<HTMLHtmlElement>> = () => {
   const dispatch = useDispatch();
-  const resetPasswordStart = useSelector((state: { [prop in string]: TUserRoot }) => state.user.resetPasswordStart);
-  const resetPasswordError = useSelector((state: { [prop in string]: TUserRoot }) => state.user.resetPasswordError);
+  const resetPasswordStart = useSelector((state: { [prop in string]: TUserState }) => state.user.resetPasswordStart);
+  const resetPasswordError = useSelector((state: { [prop in string]: TUserState }) => state.user.resetPasswordError);
   const location = useLocation();
   const navigate = useNavigate();
 

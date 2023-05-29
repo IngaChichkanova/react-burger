@@ -11,13 +11,14 @@ import DraggableItem from './draggable-items';
 import { getCookie } from '../../utils/set-cookie';
 import { useNavigate } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
-import { TIngredient, TCurrentIngredientsRoot } from '../../utils/types';
+import { TIngredient } from '../../utils/types';
+import { TBurgerConstructorState } from '../../services/reducers/burder-constructor';
 
 const BurgerConstructor: FC<HTMLAttributes<HTMLHtmlElement>> = () => {
     const dispatch = useDispatch();
     let navigate = useNavigate();
 
-    const currentIngredientsList = useSelector((state: { [prop in string]: TCurrentIngredientsRoot }) => state.burgerConstructor.currentIngredientsList);
+    const currentIngredientsList = useSelector((state: { [prop in string]: TBurgerConstructorState }) => state.burgerConstructor.currentIngredientsList);
 
     const [openModal, setOpenModal] = useState<boolean>(false);
 

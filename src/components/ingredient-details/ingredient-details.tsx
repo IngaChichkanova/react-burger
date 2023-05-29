@@ -4,15 +4,17 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { updateCurrentIngredient } from '../../services/actions/ingredient-modal';
 import { getIngedients } from '../../services/actions/ingredients';
-import { TIngredient, TIngredientsRoot, TModalRoot } from '../../utils/types';
+import { TIngredient } from '../../utils/types';
 import { AppDispatch } from '../../utils/types';
+import { TIngedientModalState } from '../../services/reducers/ingredient-modal';
+import { TIngredientsState } from '../../services/reducers/ingredients';
 
 const IngredientDetails: FC<HTMLAttributes<HTMLHtmlElement>> = () => {
     const dispatch: AppDispatch = useDispatch();
-    const currentIngredient = useSelector((state: { [prop in string]: TModalRoot }) => state.ingredientModal.currentIngredient);
-    const ingredientsListFailed = useSelector((state: { [prop in string]: TIngredientsRoot }) => state.ingredients.ingredientsListFailed);
-    const ingredientsListRequest = useSelector((state: { [prop in string]: TIngredientsRoot }) => state.ingredients.ingredientsListRequest);
-    const ingredientsList = useSelector((state: { [prop in string]: TIngredientsRoot }) => state.ingredients.ingredientsList);
+    const currentIngredient = useSelector((state: { [prop in string]: TIngedientModalState }) => state.ingredientModal.currentIngredient);
+    const ingredientsListFailed = useSelector((state: { [prop in string]: TIngredientsState }) => state.ingredients.ingredientsListFailed);
+    const ingredientsListRequest = useSelector((state: { [prop in string]: TIngredientsState }) => state.ingredients.ingredientsListRequest);
+    const ingredientsList = useSelector((state: { [prop in string]: TIngredientsState }) => state.ingredients.ingredientsList);
 
     const location = useLocation();
 
@@ -21,7 +23,7 @@ const IngredientDetails: FC<HTMLAttributes<HTMLHtmlElement>> = () => {
             dispatch(getIngedients());
         }
 
-        return (): any  => dispatch(updateCurrentIngredient(null));
+        return (): any => dispatch(updateCurrentIngredient(null));
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 

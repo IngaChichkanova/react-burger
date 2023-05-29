@@ -1,48 +1,134 @@
 import React, { FC, HTMLAttributes } from 'react';
 import feedInfoStyles from './feed-info.module.css';
-import { useState } from 'react';
+import { useEffect } from 'react';
 import { CurrencyIcon, FormattedDate } from '@ya.praktikum/react-developer-burger-ui-components';
+import { AppDispatch, TOrderTrack, TIngredient } from '../utils/types';
+import { useDispatch, useSelector } from 'react-redux';
+import { TOrderState } from '../services/reducers/order';
+import { TIngredientsState } from '../services/reducers/ingredients';
+import { useLocation } from 'react-router';
+import { getIngedients } from '../services/actions/ingredients';
+import { updateCurrentOrder } from '../services/actions/order';
+import { watchOrdersPublicTrack } from '../services/actions/order';
 
 export const FeedInfoPage: FC<HTMLAttributes<HTMLHtmlElement>> = () => {
-    const [color, setColor] = useState<string>('done');
+    const location = useLocation();
+    const dispatch: AppDispatch = useDispatch();
+    const ordersTrackPublicOpen = useSelector((state: { [prop in string]: TOrderState }) => state.order.ordersTrackPublicOpen);
+    const ordersTrackPublicSuccess = useSelector((state: { [prop in string]: TOrderState }) => state.order.ordersTrackPublicSuccess);
+    const currentOrder = useSelector((state: { [prop in string]: TOrderState }) => state.order.currentOrder);
+    const ordersPublicTrack = useSelector((state: { [prop in string]: TOrderState }) => state.order.ordersPublicTrack);
+    const ingredientsListRequest = useSelector((state: { [prop in string]: TIngredientsState }) => state.ingredients.ingredientsListRequest);
+    const ingredientsList = useSelector((state: { [prop in string]: TIngredientsState }) => state.ingredients.ingredientsList);
+
+    useEffect((): ReturnType<React.EffectCallback> => {
+        if (!location.state) {
+            dispatch(getIngedients());
+        } else {
+            getCurrent();
+        }
+
+        return (): any => dispatch(updateCurrentOrder(null));
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
+
+    useEffect((): ReturnType<React.EffectCallback> => {
+        if (currentOrder === null)
+            getCurrent();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [ordersPublicTrack])
+
+    useEffect(() => {
+        if (!location.state && !ingredientsListRequest && ingredientsList.length > 0) {
+            //(useMatch('/feed')
+            dispatch(watchOrdersPublicTrack());
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [ingredientsListRequest, ingredientsList])
+
+    useEffect(() => {
+        if (!location.state && ordersTrackPublicOpen && ordersTrackPublicSuccess && ordersPublicTrack.length > 0) {
+            getCurrent();
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [ordersTrackPublicOpen, ordersTrackPublicSuccess, ordersPublicTrack])
+
+    const getCurrent = () => {
+        let currentId = location.pathname.split('/feed/')[1];
+        let current = ordersPublicTrack.filter((item: TOrderTrack) => item._id === currentId);
+        if (current.length > 0) {
+            dispatch(updateCurrentOrder(current[0]))
+        }
+    }
+
+    const getStatus = () => {
+        if (currentOrder?.status === 'done') {
+            return 'Выполнен';
+        } else {
+            return 'В работе';
+        }
+    }
+
+    const ingredientsInfo = (): Array<TIngredient> => {
+        let ingredients: Array<TIngredient> = [];
+        let ids: Array<string> = currentOrder ? currentOrder.ingredients : [];
+        ingredientsList.forEach(item => {
+            if (ids.some(el => el === item._id)) {
+                ingredients.push(item);
+            }
+        })
+
+        return ingredients
+    }
+
+    const getQuantity = (item: TIngredient): number | undefined => {
+        if (currentOrder)
+            return currentOrder?.ingredients.filter(el => el === item._id).length + (item.type === 'bun' ? 1 : 0)
+    };
 
     return (
-        <main className={`${feedInfoStyles.main}`}>
-            <div className={`${feedInfoStyles.header} text text_type_digits-default mb-10`}>
-                434324234
-            </div>
+        <main className={`${feedInfoStyles.main} mt-10 ml-10 mr-10 mb-10`}>
+            {currentOrder && <>
+                <div className={`${feedInfoStyles.header} text text_type_digits-default mb-10`}>
+                    {`#${currentOrder.number}`}
+                </div>
 
-            <div className={`${feedInfoStyles.text} text text_type_main-medium mb-3`}>
-                TITLE
-            </div>
+                <div className={`${feedInfoStyles.text} text text_type_main-medium mb-3`}>
+                    {currentOrder.name}
+                </div>
 
-            <div className={`${feedInfoStyles.state} ${feedInfoStyles[color]} text text_type_main-default mb-15`}>
-                state
-            </div>
+                <div className={`${feedInfoStyles.state} ${feedInfoStyles[currentOrder.status]} text text_type_main-default mb-15`}>
+                    {getStatus()}
+                </div>
 
-            <div className={`${feedInfoStyles.text} text text_type_main-medium mb-6`}>
-                Состав:
-            </div>
+                <div className={`${feedInfoStyles.text} text text_type_main-medium mb-6`}>
+                    Состав:
+                </div>
 
-            <div className={`${feedInfoStyles.inner} mb-10`}>
-                <div className={`${feedInfoStyles.ingredient}`}>
-                    <div className={`${feedInfoStyles.icon}`}></div>
-                    <div className={`${feedInfoStyles.title}`}>title</div>
+                <div className={`${feedInfoStyles.inner} mb-10 pr-6 custom-scroll`}>
+                    {ingredientsInfo().map((item, key) => (<div key={key} className={`${feedInfoStyles.ingredient} mb-4`}>
+                        <div className={`${feedInfoStyles.ingredientFirstBlock}`}>
+                            <div className={`${feedInfoStyles.icon}`}>
+                                <img alt={item.name} src={item.image_mobile} />
+                            </div>
+                            <div className={`${feedInfoStyles.title} test text_type_main-default mr-4 ml-4`}>{item.name}</div>
+                        </div>
+                        <div className={`${feedInfoStyles.price}`}>
+                            <div className={` text text_type_digits-default mr-1`}>{`${getQuantity(item)} x ${item.price}`}</div>
+                            <CurrencyIcon type="primary" />
+                        </div>
+                    </div>))}
+                </div>
+
+                <div className={`${feedInfoStyles.footer} text text_type_digits-default`}>
+                    <div className={`${feedInfoStyles.time} text text_type_main-default text_color_inactive`}><FormattedDate date={new Date(currentOrder.createdAt)} />
+                    </div>
                     <div className={`${feedInfoStyles.price}`}>
-                        <div className={`${feedInfoStyles.ingredient}`}>111</div>
+                        <div className={`${feedInfoStyles.ingredient} mr-1`}>{ingredientsInfo().reduce((acc: number, item: TIngredient) => acc + item.price * (item.type === 'bun' ? 2 : 1), 0)}</div>
                         <CurrencyIcon type="primary" />
                     </div>
                 </div>
-            </div>
-
-            <div className={`${feedInfoStyles.footer} text text_type_digits-default mb-10`}>
-                <div className={`${feedInfoStyles.time} text text_type_main-default text_color_inactive`}><FormattedDate date={new Date('2022-10-10T17:33:32.877Z')} />
-                </div>
-                <div className={`${feedInfoStyles.price}`}>
-                    <div className={`${feedInfoStyles.ingredient}`}>1111</div>
-                    <CurrencyIcon type="primary" />
-                </div>
-            </div>
+            </>}
         </main>
     );
 };

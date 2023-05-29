@@ -5,12 +5,12 @@ import { NavLink } from 'react-router-dom';
 import { useNavigate, useMatch } from "react-router-dom";
 import { signOut } from '../../services/actions/user';
 import { useDispatch, useSelector } from 'react-redux';
-import { TUserRoot } from '../../utils/types';
+import { TUserState } from '../../services/reducers/user';
 
 const ProfileSidebar:FC<HTMLAttributes<HTMLHtmlElement>> = () => {
     const dispatch = useDispatch();
-    const logoutStart = useSelector((state: { [prop in string]: TUserRoot }) => state.user.logoutStart);
-    const logoutError = useSelector((state: { [prop in string]: TUserRoot }) => state.user.logoutError);
+    const logoutStart = useSelector((state: { [prop in string]: TUserState }) => state.user.logoutStart);
+    const logoutError = useSelector((state: { [prop in string]: TUserState }) => state.user.logoutError);
     let navigate = useNavigate();
 
     const logOut = async (e: FormEvent): Promise<void> => {

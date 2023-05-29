@@ -6,7 +6,8 @@ import {
     GET_ORDER_FAILED,
     WATCH_ORDERS_PUBLIC_OPEN,
     WATCH_ORDERS_PUBLIC_SUCCESS,
-    WATCH_ORDERS_PUBLIC_DATA
+    WATCH_ORDERS_PUBLIC_DATA,
+    CURRENT_ORDER
 } from '../constants/order';
 import { TOrder, AppDispatch, AppThunkAction, TOrderTrack } from '../../utils/types';
 import { NORMA_API_WS } from '../../utils/constants';
@@ -41,6 +42,11 @@ export interface IWatchOrdersDataAction {
     readonly totalToday: number;
 }
 
+export interface ICurrentOrderAction {
+    readonly type: typeof CURRENT_ORDER;
+    readonly payload: null | TOrderTrack;
+}
+
 export type TOrderAction =
     | IOrderFailedAction
     | IOrderRequestAction
@@ -48,6 +54,7 @@ export type TOrderAction =
     | IWatchOrdersOpenAction
     | IWatchOrdersSuccessAction
     | IWatchOrdersDataAction
+    | ICurrentOrderAction
     ;
 
 export const doOrder = async (ingredientsId: Array<string>, dispatch: AppDispatch): Promise<AppThunkAction | boolean | undefined | void> => {
@@ -88,7 +95,7 @@ export function watchOrdersPublicTrack(): AppThunkAction {
             console.log(JSON.parse(event.data))
             if (event.data) {
                 let parsedData = JSON.parse(event.data);
-            
+
                 if (parsedData.success) {
                     dispatch({
                         type: WATCH_ORDERS_PUBLIC_DATA,
@@ -103,3 +110,8 @@ export function watchOrdersPublicTrack(): AppThunkAction {
         }
     }
 }
+
+export const updateCurrentOrder = (item: null | TOrderTrack): ICurrentOrderAction => ({
+    type: CURRENT_ORDER,
+    payload: item,
+})
