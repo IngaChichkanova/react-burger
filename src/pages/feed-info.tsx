@@ -53,7 +53,7 @@ export const FeedInfoPage: FC<HTMLAttributes<HTMLHtmlElement>> = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [ordersTrackPublicOpen, ordersTrackPublicSuccess, ordersPublicTrack])
 
-    const getCurrent = () => {
+    const getCurrent = (): void => {
         let currentId = location.pathname.split('/feed/')[1];
         let current = ordersPublicTrack.filter((item: TOrderTrack) => item._id === currentId);
         if (current.length > 0) {
@@ -61,11 +61,15 @@ export const FeedInfoPage: FC<HTMLAttributes<HTMLHtmlElement>> = () => {
         }
     }
 
-    const getStatus = () => {
-        if (currentOrder?.status === 'done') {
-            return 'Выполнен';
-        } else {
-            return 'В работе';
+    const getStatus = (): string => {
+        switch(currentOrder?.status){
+            case 'done':
+            default:
+                return 'Выполнен';
+            case 'pending':
+                return 'В работе';
+            case 'created':
+                return 'Создан'
         }
     }
 
@@ -83,11 +87,11 @@ export const FeedInfoPage: FC<HTMLAttributes<HTMLHtmlElement>> = () => {
 
     const getQuantity = (item: TIngredient): number | undefined => {
         if (currentOrder)
-            return currentOrder?.ingredients.filter(el => el === item._id).length + (item.type === 'bun' ? 1 : 0)
+            return currentOrder?.ingredients.filter(el => el === item._id).length
     };
 
     return (
-        <main className={`${feedInfoStyles.main} mt-10 ml-10 mr-10 mb-10`}>
+        <main className={`${feedInfoStyles.main} mt-10 ml-10 mr-10 mb-10`} style={{ margin: !location.state ? 'auto' : '' }}>
             {currentOrder && <>
                 <div className={`${feedInfoStyles.header} text text_type_digits-default mb-10`}>
                     {`#${currentOrder.number}`}
@@ -124,7 +128,7 @@ export const FeedInfoPage: FC<HTMLAttributes<HTMLHtmlElement>> = () => {
                     <div className={`${feedInfoStyles.time} text text_type_main-default text_color_inactive`}><FormattedDate date={new Date(currentOrder.createdAt)} />
                     </div>
                     <div className={`${feedInfoStyles.price}`}>
-                        <div className={`${feedInfoStyles.ingredient} mr-1`}>{ingredientsInfo().reduce((acc: number, item: TIngredient) => acc + item.price * (item.type === 'bun' ? 2 : 1), 0)}</div>
+                        <div className={`${feedInfoStyles.ingredient} mr-1`}>{ingredientsInfo().reduce((acc: number, item: TIngredient) => acc + item.price, 0)}</div>
                         <CurrencyIcon type="primary" />
                     </div>
                 </div>

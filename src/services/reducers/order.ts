@@ -5,7 +5,10 @@ import {
     WATCH_ORDERS_PUBLIC_OPEN,
     WATCH_ORDERS_PUBLIC_SUCCESS,
     WATCH_ORDERS_PUBLIC_DATA,
-    CURRENT_ORDER
+    CURRENT_ORDER,
+    WATCH_ORDERS_PRIVATE_OPEN,
+    WATCH_ORDERS_PRIVATE_SUCCESS,
+    WATCH_ORDERS_PRIVATE_DATA
 } from '../constants/order';
 import { TOrder, TOrderTrack } from '../../utils/types';
 import { TOrderAction } from '../actions/order';
@@ -23,6 +26,8 @@ export type TOrderState = {
     ordersTrackPrivateOpen: boolean;
     ordersTrackPrivateSuccess: boolean;
     currentOrder: null | TOrderTrack;
+    ordersTrackPrivateTotal: number;
+    ordersTrackPrivateTotalToday: number;
 };
 
 const initialState: TOrderState = {
@@ -38,6 +43,8 @@ const initialState: TOrderState = {
     ordersTrackPublicTotal: 0,
     ordersTrackPublicTotalToday: 0,
     currentOrder: null,
+    ordersTrackPrivateTotal: 0,
+    ordersTrackPrivateTotalToday: 0
 };
 
 export const orderReducer = (state = initialState, action: TOrderAction) => {
@@ -88,6 +95,26 @@ export const orderReducer = (state = initialState, action: TOrderAction) => {
             return {
                 ...state,
                 currentOrder: action.payload,
+            };
+        }
+        case WATCH_ORDERS_PRIVATE_OPEN: {
+            return {
+                ...state,
+                ordersTrackPrivateOpen: action.payload,
+            };
+        }
+        case WATCH_ORDERS_PRIVATE_SUCCESS: {
+            return {
+                ...state,
+                ordersTrackPrivateSuccess: action.payload,
+            };
+        }
+        case WATCH_ORDERS_PRIVATE_DATA: {
+            return {
+                ...state,
+                ordersPrivateTrack: action.data,
+                ordersTrackPrivateTotal: action.total,
+                ordersTrackPrivateTotalToday: action.totalToday,
             };
         }
         default: {

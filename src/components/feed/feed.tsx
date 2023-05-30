@@ -2,12 +2,13 @@ import React, { FC, HTMLAttributes, useEffect } from 'react';
 import feedStyles from './feed.module.css';
 import { FormattedDate, CurrencyIcon } from '@ya.praktikum/react-developer-burger-ui-components';
 import { Link, useLocation, useMatch } from 'react-router-dom';
-import { watchOrdersPublicTrack } from '../../services/actions/order';
+import { watchOrdersPublicTrack, watchOrdersPrivateTrack } from '../../services/actions/order';
 import { useDispatch, useSelector } from 'react-redux';
 import { TOrderState } from '../../services/reducers/order';
 import { getIngedients } from '../../services/actions/ingredients';
-import { AppDispatch, TIngredient } from '../../utils/types';
+import { AppDispatch, TIngredient, TOrderTrack } from '../../utils/types';
 import { TIngredientsState } from '../../services/reducers/ingredients';
+import { TUserState } from '../../services/reducers/user';
 
 const Feed: FC<HTMLAttributes<HTMLHtmlElement>> = () => {
     const location = useLocation();
@@ -17,6 +18,10 @@ const Feed: FC<HTMLAttributes<HTMLHtmlElement>> = () => {
     const ordersPublicTrack = useSelector((state: { [prop in string]: TOrderState }) => state.order.ordersPublicTrack);
     const ingredientsListRequest = useSelector((state: { [prop in string]: TIngredientsState }) => state.ingredients.ingredientsListRequest);
     const ingredientsList = useSelector((state: { [prop in string]: TIngredientsState }) => state.ingredients.ingredientsList);
+    const ordersTrackPrivateOpen = useSelector((state: { [prop in string]: TOrderState }) => state.order.ordersTrackPrivateOpen);
+    const ordersTrackPrivateSuccess = useSelector((state: { [prop in string]: TOrderState }) => state.order.ordersTrackPrivateSuccess);
+    const ordersPrivateTrack = useSelector((state: { [prop in string]: TOrderState }) => state.order.ordersPrivateTrack);
+    const user = useSelector((state: { [prop in string]: TUserState }) => state.user.user);
 
     useEffect(() => {
         dispatch(getIngedients());
@@ -25,8 +30,11 @@ const Feed: FC<HTMLAttributes<HTMLHtmlElement>> = () => {
 
     useEffect(() => {
         if (!ingredientsListRequest && ingredientsList.length > 0) {
-            //(useMatch('/feed')
-            dispatch(watchOrdersPublicTrack());
+            if (location.pathname.match(/\/profile/)) {
+                dispatch(watchOrdersPrivateTrack());
+            } else {
+                dispatch(watchOrdersPublicTrack());
+            }
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [ingredientsListRequest, ingredientsList])
@@ -41,6 +49,26 @@ const Feed: FC<HTMLAttributes<HTMLHtmlElement>> = () => {
         return ingredients
     }
 
+    const getContent = (): { visible: boolean, content: Array<TOrderTrack>, isPrivate: boolean } => {
+        if (location.pathname.match(/\/profile/)) {
+            return { visible: (ordersTrackPrivateOpen && ordersTrackPrivateSuccess), content: ordersPrivateTrack, isPrivate: true }
+        } else {
+            return { visible: (ordersTrackPublicOpen && ordersTrackPublicSuccess), content: ordersPublicTrack, isPrivate: false }
+        }
+    }
+
+    const getStatus = (current: string): string => {
+        switch (current) {
+            case 'done':
+            default:
+                return 'Выполнен';
+            case 'pending':
+                return 'В работе';
+            case 'created':
+                return 'Создан'
+        }
+    }
+
     return (
 
         <section className={`mr-15`}>
@@ -48,9 +76,9 @@ const Feed: FC<HTMLAttributes<HTMLHtmlElement>> = () => {
                 {useMatch('/feed') && <h1 className="text text_type_main-large ">Лента заказов</h1>}
             </section>
 
-            {ordersTrackPublicOpen && ordersTrackPublicSuccess &&
-                <section className={`${feedStyles.scroll} custom-scroll`}>
-                    {ordersPublicTrack.map(item => (
+            {getContent().visible &&
+                <section className={`${feedStyles.scroll} custom-scroll`} style={{ height: getContent().isPrivate ? 'calc(100% - 194px)' : 'calc(100% - 130px)' }}>
+                    {getContent().content.map(item => (
                         <section key={item._id} className={`${feedStyles.feed} pt-6 pb-6 pl-6 pr-6 mb-6`}>
                             <Link
                                 className={`${feedStyles.link}`}
@@ -62,7 +90,9 @@ const Feed: FC<HTMLAttributes<HTMLHtmlElement>> = () => {
                                     <div className={`${feedStyles.time} text text_type_main-default text_color_inactive`}><FormattedDate date={new Date(item.createdAt)} /></div>
                                 </div>
 
-                                <div className={`${feedStyles.feedTitle} text text_type_main-medium mt-6 mb-6`}>{item.name}</div>
+                                <div className={`${feedStyles.feedTitle} text text_type_main-medium ${getContent().isPrivate ? 'mb-2' : 'mb-6'} mt-6 `}>{item.name}</div>
+
+                                {getContent().isPrivate && <div className={`${feedStyles.time} text text_type_main-default ${feedStyles[item.status]} mb-6`}>{getStatus(item.status)}</div>}
 
                                 <div className={`${feedStyles.feedInner}`}>
                                     <div className={`${feedStyles.inner}`}>

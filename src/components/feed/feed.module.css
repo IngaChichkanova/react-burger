@@ -1,5 +1,4 @@
 .scroll{
-    height: calc(100% - 130px);
     overflow: hidden auto;
 }
 
@@ -94,4 +93,8 @@
     align-items: center;
     align-items: center;
     border-radius: 50%;
+}
+
+.done{
+    color: #00CCCC;
 }
