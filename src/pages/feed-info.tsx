@@ -9,7 +9,7 @@ import { TIngredientsState } from '../services/reducers/ingredients';
 import { useLocation } from 'react-router';
 import { getIngedients } from '../services/actions/ingredients';
 import { updateCurrentOrder } from '../services/actions/order';
-import { watchOrdersPublicTrack } from '../services/actions/order';
+import { watchOrdersPublicTrack, watchOrdersPrivateTrack } from '../services/actions/order';
 
 export const FeedInfoPage: FC<HTMLAttributes<HTMLHtmlElement>> = () => {
     const location = useLocation();
@@ -20,6 +20,9 @@ export const FeedInfoPage: FC<HTMLAttributes<HTMLHtmlElement>> = () => {
     const ordersPublicTrack = useSelector((state: { [prop in string]: TOrderState }) => state.order.ordersPublicTrack);
     const ingredientsListRequest = useSelector((state: { [prop in string]: TIngredientsState }) => state.ingredients.ingredientsListRequest);
     const ingredientsList = useSelector((state: { [prop in string]: TIngredientsState }) => state.ingredients.ingredientsList);
+    const ordersTrackPrivateOpen = useSelector((state: { [prop in string]: TOrderState }) => state.order.ordersTrackPrivateOpen);
+    const ordersTrackPrivateSuccess = useSelector((state: { [prop in string]: TOrderState }) => state.order.ordersTrackPrivateSuccess);
+    const ordersPrivateTrack = useSelector((state: { [prop in string]: TOrderState }) => state.order.ordersPrivateTrack);
 
     useEffect((): ReturnType<React.EffectCallback> => {
         if (!location.state) {
@@ -40,8 +43,11 @@ export const FeedInfoPage: FC<HTMLAttributes<HTMLHtmlElement>> = () => {
 
     useEffect(() => {
         if (!location.state && !ingredientsListRequest && ingredientsList.length > 0) {
-            //(useMatch('/feed')
-            dispatch(watchOrdersPublicTrack());
+            if (location.pathname.match(/\/profile/)) {
+                dispatch(watchOrdersPrivateTrack());
+            } else {
+                dispatch(watchOrdersPublicTrack());
+            }
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [ingredientsListRequest, ingredientsList])
@@ -54,15 +60,15 @@ export const FeedInfoPage: FC<HTMLAttributes<HTMLHtmlElement>> = () => {
     }, [ordersTrackPublicOpen, ordersTrackPublicSuccess, ordersPublicTrack])
 
     const getCurrent = (): void => {
-        let currentId = location.pathname.split('/feed/')[1];
-        let current = ordersPublicTrack.filter((item: TOrderTrack) => item._id === currentId);
+        let currentId = location.pathname.match(/\/profile/) ? location.pathname.split('/profile/orders/')[1] : location.pathname.split('/feed/')[1];
+        let current = location.pathname.match(/\/profile/) ? ordersPrivateTrack.filter((item: TOrderTrack) => item._id === currentId) : ordersPublicTrack.filter((item: TOrderTrack) => item._id === currentId);
         if (current.length > 0) {
             dispatch(updateCurrentOrder(current[0]))
         }
     }
 
     const getStatus = (): string => {
-        switch(currentOrder?.status){
+        switch (currentOrder?.status) {
             case 'done':
             default:
                 return 'Выполнен';

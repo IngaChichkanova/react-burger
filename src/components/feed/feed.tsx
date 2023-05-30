@@ -71,7 +71,7 @@ const Feed: FC<HTMLAttributes<HTMLHtmlElement>> = () => {
 
     return (
 
-        <section className={`mr-15`}>
+        <section className={`mr-15 ${getContent().isPrivate ? 'mb-10': ''}`}>
             <section className={`mt-10 mb-6`}>
                 {useMatch('/feed') && <h1 className="text text_type_main-large ">Лента заказов</h1>}
             </section>
