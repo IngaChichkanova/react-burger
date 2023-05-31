@@ -2,13 +2,7 @@ import {
     GET_ORDER_REQUEST,
     GET_ORDER_SUCCESS,
     GET_ORDER_FAILED,
-    WATCH_ORDERS_PUBLIC_OPEN,
-    WATCH_ORDERS_PUBLIC_SUCCESS,
-    WATCH_ORDERS_PUBLIC_DATA,
     CURRENT_ORDER,
-    WATCH_ORDERS_PRIVATE_OPEN,
-    WATCH_ORDERS_PRIVATE_SUCCESS,
-    WATCH_ORDERS_PRIVATE_DATA
 } from '../constants/order';
 import { TOrder, TOrderTrack } from '../../utils/types';
 import { TOrderAction } from '../actions/order';
@@ -17,34 +11,14 @@ export type TOrderState = {
     order: null | TOrder;
     orderRequest: boolean;
     orderFailed: boolean;
-    ordersPublicTrack: Array<TOrderTrack>;
-    ordersTrackPublicOpen: boolean;
-    ordersTrackPublicSuccess: boolean;
-    ordersTrackPublicTotal: number;
-    ordersTrackPublicTotalToday: number;
-    ordersPrivateTrack: Array<TOrderTrack>;
-    ordersTrackPrivateOpen: boolean;
-    ordersTrackPrivateSuccess: boolean;
     currentOrder: null | TOrderTrack;
-    ordersTrackPrivateTotal: number;
-    ordersTrackPrivateTotalToday: number;
 };
 
 const initialState: TOrderState = {
     order: null,
     orderRequest: false,
     orderFailed: false,
-    ordersTrackPublicOpen: false,
-    ordersPublicTrack: [],
-    ordersTrackPublicSuccess: false,
-    ordersTrackPrivateOpen: false,
-    ordersPrivateTrack: [],
-    ordersTrackPrivateSuccess: false,
-    ordersTrackPublicTotal: 0,
-    ordersTrackPublicTotalToday: 0,
     currentOrder: null,
-    ordersTrackPrivateTotal: 0,
-    ordersTrackPrivateTotalToday: 0
 };
 
 export const orderReducer = (state = initialState, action: TOrderAction) => {
@@ -71,50 +45,10 @@ export const orderReducer = (state = initialState, action: TOrderAction) => {
                 orderRequest: false,
             };
         }
-        case WATCH_ORDERS_PUBLIC_OPEN: {
-            return {
-                ...state,
-                ordersTrackPublicOpen: action.payload,
-            };
-        }
-        case WATCH_ORDERS_PUBLIC_SUCCESS: {
-            return {
-                ...state,
-                ordersTrackPublicSuccess: action.payload,
-            };
-        }
-        case WATCH_ORDERS_PUBLIC_DATA: {
-            return {
-                ...state,
-                ordersPublicTrack: action.data,
-                ordersTrackPublicTotal: action.total,
-                ordersTrackPublicTotalToday: action.totalToday,
-            };
-        }
         case CURRENT_ORDER: {
             return {
                 ...state,
                 currentOrder: action.payload,
-            };
-        }
-        case WATCH_ORDERS_PRIVATE_OPEN: {
-            return {
-                ...state,
-                ordersTrackPrivateOpen: action.payload,
-            };
-        }
-        case WATCH_ORDERS_PRIVATE_SUCCESS: {
-            return {
-                ...state,
-                ordersTrackPrivateSuccess: action.payload,
-            };
-        }
-        case WATCH_ORDERS_PRIVATE_DATA: {
-            return {
-                ...state,
-                ordersPrivateTrack: action.data,
-                ordersTrackPrivateTotal: action.total,
-                ordersTrackPrivateTotalToday: action.totalToday,
             };
         }
         default: {

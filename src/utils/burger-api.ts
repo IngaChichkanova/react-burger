@@ -29,7 +29,6 @@ export const request = (endpoint: string, options: TParams): Promise<{
 };
 
 const updateRefreshToken = async (endpoint: string, options: TParams): Promise<{ success: boolean }> => {
-    console.log('THIS TOKEN')
     if (localStorage.getItem("refreshToken")) {
         deleteCookie('token');
         return await request('auth/token', {

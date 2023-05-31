@@ -5,16 +5,16 @@ import { TIngredientModalAction } from '../services/actions/ingredient-modal';
 import { TIngredientsAction } from '../services/actions/ingredients';
 import { TOrderAction } from '../services/actions/order';
 import { TUserAction } from '../services/actions/user';
+import { TWSActions } from '../services/actions/ws';
 import {
     WS_CONNECTION_SUCCESS,
     WS_CONNECTION_ERROR,
     WS_CONNECTION_CLOSED,
     WS_GET_MESSAGE,
-    WS_SEND_MESSAGE,
     WS_CONNECTION_START,
 } from '../services/constants/ws';
 
-export type TApplicationActions = | TBurgerConstructorActions | TIngredientModalAction | TIngredientsAction | TOrderAction | TUserAction;
+export type TApplicationActions = | TWSActions | TBurgerConstructorActions | TIngredientModalAction | TIngredientsAction | TOrderAction | TUserAction;
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = ThunkDispatch<RootState, unknown, TApplicationActions>;
 export type AppThunkAction<ReturnType = void> = ThunkAction<ReturnType, RootState, unknown, TApplicationActions>;
@@ -71,7 +71,6 @@ export type TOrderTrack = {
 
 export type TWSStoreActions = {
     wsInit: typeof WS_CONNECTION_START,
-    wsSendMessage: typeof WS_SEND_MESSAGE,
     onOpen: typeof WS_CONNECTION_SUCCESS,
     onClose: typeof WS_CONNECTION_CLOSED,
     onError: typeof WS_CONNECTION_ERROR,

@@ -9,20 +9,18 @@ import { TIngredientsState } from '../services/reducers/ingredients';
 import { useLocation } from 'react-router';
 import { getIngedients } from '../services/actions/ingredients';
 import { updateCurrentOrder } from '../services/actions/order';
-import { watchOrdersPublicTrack, watchOrdersPrivateTrack } from '../services/actions/order';
+import { TWSState } from '../services/reducers/ws';
+import { wsStart, wsClose } from '../services/actions/ws';
+import { TUserState } from '../services/reducers/user';
 
 export const FeedInfoPage: FC<HTMLAttributes<HTMLHtmlElement>> = () => {
     const location = useLocation();
     const dispatch: AppDispatch = useDispatch();
-    const ordersTrackPublicOpen = useSelector((state: { [prop in string]: TOrderState }) => state.order.ordersTrackPublicOpen);
-    const ordersTrackPublicSuccess = useSelector((state: { [prop in string]: TOrderState }) => state.order.ordersTrackPublicSuccess);
     const currentOrder = useSelector((state: { [prop in string]: TOrderState }) => state.order.currentOrder);
-    const ordersPublicTrack = useSelector((state: { [prop in string]: TOrderState }) => state.order.ordersPublicTrack);
     const ingredientsListRequest = useSelector((state: { [prop in string]: TIngredientsState }) => state.ingredients.ingredientsListRequest);
     const ingredientsList = useSelector((state: { [prop in string]: TIngredientsState }) => state.ingredients.ingredientsList);
-    const ordersTrackPrivateOpen = useSelector((state: { [prop in string]: TOrderState }) => state.order.ordersTrackPrivateOpen);
-    const ordersTrackPrivateSuccess = useSelector((state: { [prop in string]: TOrderState }) => state.order.ordersTrackPrivateSuccess);
-    const ordersPrivateTrack = useSelector((state: { [prop in string]: TOrderState }) => state.order.ordersPrivateTrack);
+    const orders = useSelector((state: { [prop in string]: TWSState }) => state.track.orders);
+    const user = useSelector((state: { [prop in string]: TUserState }) => state.user.user);
 
     useEffect((): ReturnType<React.EffectCallback> => {
         if (!location.state) {
@@ -31,7 +29,10 @@ export const FeedInfoPage: FC<HTMLAttributes<HTMLHtmlElement>> = () => {
             getCurrent();
         }
 
-        return (): any => dispatch(updateCurrentOrder(null));
+        return (): any => {
+            dispatch(updateCurrentOrder(null));
+            dispatch(wsClose());
+        };
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
@@ -39,29 +40,31 @@ export const FeedInfoPage: FC<HTMLAttributes<HTMLHtmlElement>> = () => {
         if (currentOrder === null)
             getCurrent();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [ordersPublicTrack])
+    }, [orders])
+
+
 
     useEffect(() => {
         if (!location.state && !ingredientsListRequest && ingredientsList.length > 0) {
-            if (location.pathname.match(/\/profile/)) {
-                dispatch(watchOrdersPrivateTrack());
+            if (location.pathname.match(/\/profile/) && user) {
+                dispatch(wsStart(true));
             } else {
-                dispatch(watchOrdersPublicTrack());
+                dispatch(wsStart(false));
             }
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [ingredientsListRequest, ingredientsList])
+    }, [user, ingredientsListRequest, ingredientsList])
 
     useEffect(() => {
-        if (!location.state && ordersTrackPublicOpen && ordersTrackPublicSuccess && ordersPublicTrack.length > 0) {
+        if (!location.state && orders.length > 0) {
             getCurrent();
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [ordersTrackPublicOpen, ordersTrackPublicSuccess, ordersPublicTrack])
+    }, [orders])
 
     const getCurrent = (): void => {
         let currentId = location.pathname.match(/\/profile/) ? location.pathname.split('/profile/orders/')[1] : location.pathname.split('/feed/')[1];
-        let current = location.pathname.match(/\/profile/) ? ordersPrivateTrack.filter((item: TOrderTrack) => item._id === currentId) : ordersPublicTrack.filter((item: TOrderTrack) => item._id === currentId);
+        let current = orders.filter((item: TOrderTrack) => item._id === currentId);
         if (current.length > 0) {
             dispatch(updateCurrentOrder(current[0]))
         }

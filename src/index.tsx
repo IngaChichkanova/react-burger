@@ -14,7 +14,6 @@ import {
   WS_CONNECTION_START,
   WS_CONNECTION_SUCCESS,
   WS_GET_MESSAGE,
-  WS_SEND_MESSAGE
 } from './services/constants/ws';
 import { TWSStoreActions } from './utils/types';
 import {socketMiddleware} from './services/middleware';
@@ -24,7 +23,6 @@ const wsUrl: string = `${NORMA_API_WS}/orders`;
 
 const wsActions: TWSStoreActions = {
   wsInit: WS_CONNECTION_START,
-  wsSendMessage: WS_SEND_MESSAGE,
   onOpen: WS_CONNECTION_SUCCESS,
   onClose: WS_CONNECTION_CLOSED,
   onError: WS_CONNECTION_ERROR,
