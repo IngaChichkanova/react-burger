@@ -23,8 +23,6 @@ export const socketMiddleware = (wsUrl: string, wsActions: TWSStoreActions): Mid
                 if (isPrivate) {
                     if (getCookie('token')) {
                         socket = new WebSocket(`${wsUrl}?token=${getCookie('token')}`);
-                    } else {
-                        console.log('error')
                     }
                 } else {
                     socket = new WebSocket(`${wsUrl}/all`);
