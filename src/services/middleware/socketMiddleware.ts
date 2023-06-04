@@ -18,6 +18,7 @@ export const socketMiddleware = (wsUrl: string, wsActions: TWSStoreActions): Mid
             const { type } = action;
             const { wsInit, onOpen, onClose, onError, onMessage } = wsActions;
             const { isPrivate } = getState().track;
+            const { user, getUserRequest, getUserSuccess } = getState().user;
 
             if (type === wsInit) {
                 if (isPrivate) {
@@ -43,7 +44,13 @@ export const socketMiddleware = (wsUrl: string, wsActions: TWSStoreActions): Mid
                     const { data } = event;
                     const parsedData: { orders: Array<TOrderTrack>, total: number, totalToday: number, success: boolean } = JSON.parse(data);
 
-                    dispatch({ type: onMessage, orders: parsedData.orders, total: parsedData.total, totalToday: parsedData.totalToday, });
+                    if (parsedData.success) {
+                        dispatch({ type: onMessage, orders: parsedData.orders, total: parsedData.total, totalToday: parsedData.totalToday, });
+                    }else{
+                        console.log('111111111', user, getUserRequest, getUserSuccess)
+                        dispatch({ type: onError, payload: event });
+                    }
+
                 };
 
                 socket.onclose = event => {

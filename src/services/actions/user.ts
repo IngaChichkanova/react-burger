@@ -114,7 +114,7 @@ export interface IGetUserRequestAction {
 
 export interface IGetUserSuccessAction {
     readonly type: typeof GET_USER_SUCCESS;
-    readonly payload?: null | TUser;
+    readonly payload?: boolean;
 }
 
 export interface IGetUserFailedAction {
@@ -292,7 +292,7 @@ export const editUser = async (email: string, password: string, name: string, di
             if (response.success) {
                 dispatch({
                     type: GET_USER_SUCCESS,
-                    payload: response.user
+                    payload: response.success
                 });
             } else {
                 dispatch({

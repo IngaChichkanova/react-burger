@@ -28,10 +28,8 @@ import {
 export type TUserState = {
     registerStart: boolean;
     registerError: boolean;
-    registerErrorText: string;
     loginStart: boolean;
     loginError: boolean;
-    loginErrorText: string;
     logoutStart: boolean;
     logoutError: boolean;
     forgotPasswordStart: boolean;
@@ -42,8 +40,10 @@ export type TUserState = {
     getUserError: boolean;
     user: null | TUser;
     getUserRequest: boolean;
-    getUserSuccess: boolean;
-    getUserFailed: boolean;
+    registerErrorText?: string;
+    loginErrorText?: string;
+    getUserSuccess?: boolean;
+    getUserFailed?: boolean;
 };
 
 const initialState: TUserState = {

@@ -2,25 +2,21 @@ import React, { FC, HTMLAttributes } from 'react';
 import feedInfoStyles from './feed-info.module.css';
 import { useEffect } from 'react';
 import { CurrencyIcon, FormattedDate } from '@ya.praktikum/react-developer-burger-ui-components';
-import { AppDispatch, TOrderTrack, TIngredient } from '../utils/types';
-import { useDispatch, useSelector } from 'react-redux';
-import { TOrderState } from '../services/reducers/order';
-import { TIngredientsState } from '../services/reducers/ingredients';
+import { AppDispatch, TOrderTrack, TIngredient , useSelector, RootState} from '../utils/types';
+import { useDispatch } from 'react-redux';
 import { useLocation } from 'react-router';
 import { getIngedients } from '../services/actions/ingredients';
 import { updateCurrentOrder } from '../services/actions/order';
-import { TWSState } from '../services/reducers/ws';
-import { wsStart, wsClose } from '../services/actions/ws';
-import { TUserState } from '../services/reducers/user';
+import { wsStart } from '../services/actions/ws';
 
 export const FeedInfoPage: FC<HTMLAttributes<HTMLHtmlElement>> = () => {
     const location = useLocation();
     const dispatch: AppDispatch = useDispatch();
-    const currentOrder = useSelector((state: { [prop in string]: TOrderState }) => state.order.currentOrder);
-    const ingredientsListRequest = useSelector((state: { [prop in string]: TIngredientsState }) => state.ingredients.ingredientsListRequest);
-    const ingredientsList = useSelector((state: { [prop in string]: TIngredientsState }) => state.ingredients.ingredientsList);
-    const orders = useSelector((state: { [prop in string]: TWSState }) => state.track.orders);
-    const user = useSelector((state: { [prop in string]: TUserState }) => state.user.user);
+    const currentOrder = useSelector((state: RootState) => state.order.currentOrder);
+    const ingredientsListRequest = useSelector((state: RootState) => state.ingredients.ingredientsListRequest);
+    const ingredientsList = useSelector((state: RootState) => state.ingredients.ingredientsList);
+    const orders = useSelector((state: RootState) => state.track.orders);
+    const user = useSelector((state: RootState) => state.user.user);
 
     useEffect((): ReturnType<React.EffectCallback> => {
         if (!location.state) {
@@ -29,10 +25,7 @@ export const FeedInfoPage: FC<HTMLAttributes<HTMLHtmlElement>> = () => {
             getCurrent();
         }
 
-        return (): any => {
-            dispatch(updateCurrentOrder(null));
-            dispatch(wsClose());
-        };
+        return (): any => dispatch(updateCurrentOrder(null));
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 

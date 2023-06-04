@@ -8,7 +8,7 @@ import { TOrder, TOrderTrack } from '../../utils/types';
 import { TOrderAction } from '../actions/order';
 
 export type TOrderState = {
-    order: null | TOrder;
+    order?: null | TOrder;
     orderRequest: boolean;
     orderFailed: boolean;
     currentOrder: null | TOrderTrack;

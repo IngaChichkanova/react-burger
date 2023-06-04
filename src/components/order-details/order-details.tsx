@@ -1,13 +1,12 @@
 import { FC, HTMLAttributes } from 'react';
 import orderDetailsStyles from '././order-details.module.css';
 import orderChecked from '../../icons/orderChecked.svg';
-import { useSelector } from 'react-redux';
-import { TOrderState } from '../../services/reducers/order';
+import { useSelector, RootState } from '../../utils/types';
 
 const OrderDetails: FC<HTMLAttributes<HTMLHtmlElement>> = () => {
-    const order = useSelector((state: { [prop in string]: TOrderState }) => state.order.order);
-    const orderRequest = useSelector((state: { [prop in string]: TOrderState }) => state.order.orderRequest);
-    const orderFailed = useSelector((state: { [prop in string]: TOrderState }) => state.order.orderFailed);
+    const order = useSelector((state: RootState) => state.order.order);
+    const orderRequest = useSelector((state: RootState) => state.order.orderRequest);
+    const orderFailed = useSelector((state: RootState) => state.order.orderFailed);
    
     return (
         <div className={`${orderDetailsStyles.order} mt-30  mb-30`}>

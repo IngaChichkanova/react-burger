@@ -2,21 +2,18 @@ import React, { FC, HTMLAttributes, useEffect } from 'react';
 import feedStyles from './feed.module.css';
 import { FormattedDate, CurrencyIcon } from '@ya.praktikum/react-developer-burger-ui-components';
 import { Link, useLocation, useMatch } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { getIngedients } from '../../services/actions/ingredients';
-import { AppDispatch, TIngredient } from '../../utils/types';
-import { TIngredientsState } from '../../services/reducers/ingredients';
-import { TUserState } from '../../services/reducers/user';
+import { AppDispatch, TIngredient, useSelector, RootState } from '../../utils/types';
 import { wsStart, wsClose } from '../../services/actions/ws';
-import { TWSState } from '../../services/reducers/ws';
 
 const Feed: FC<HTMLAttributes<HTMLHtmlElement>> = () => {
     const location = useLocation();
     const dispatch: AppDispatch = useDispatch();
-    const orders = useSelector((state: { [prop in string]: TWSState }) => state.track.orders);
-    const ingredientsListRequest = useSelector((state: { [prop in string]: TIngredientsState }) => state.ingredients.ingredientsListRequest);
-    const ingredientsList = useSelector((state: { [prop in string]: TIngredientsState }) => state.ingredients.ingredientsList);
-    const user = useSelector((state: { [prop in string]: TUserState }) => state.user.user);
+    const orders = useSelector((state: RootState) => state.track.orders);
+    const ingredientsListRequest = useSelector((state: RootState) => state.ingredients.ingredientsListRequest);
+    const ingredientsList = useSelector((state: RootState) => state.ingredients.ingredientsList);
+    const user = useSelector((state: RootState) => state.user.user);
 
     useEffect((): ReturnType<React.EffectCallback> => {
         dispatch(getIngedients());
@@ -58,7 +55,7 @@ const Feed: FC<HTMLAttributes<HTMLHtmlElement>> = () => {
                 return 'Создан'
         }
     }
-
+    console.log(orders)
     return (
 
         <section className={`mr-15 ${isPrivate ? 'mb-10' : ''}`}>

@@ -58,6 +58,7 @@ export const wsReducer = (state = initialState, action: TWSActions) => {
             };
 
         case WS_GET_MESSAGE:
+            console.log('WS_GET_MESSAGE', action)
             return {
                 ...state,
                 error: undefined,

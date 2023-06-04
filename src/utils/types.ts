@@ -1,4 +1,7 @@
-import type { ThunkAction, ThunkDispatch } from 'redux-thunk';
+import {
+    ThunkAction,
+    ThunkDispatch,
+} from 'redux-thunk';
 import { store } from '../index';
 import { TBurgerConstructorActions } from '../services/actions/burder-constructor';
 import { TIngredientModalAction } from '../services/actions/ingredient-modal';
@@ -13,11 +16,19 @@ import {
     WS_GET_MESSAGE,
     WS_CONNECTION_START,
 } from '../services/constants/ws';
+import {
+    TypedUseSelectorHook,
+    useDispatch as dispatchHook,
+    useSelector as selectorHook
+} from 'react-redux';
 
 export type TApplicationActions = | TWSActions | TBurgerConstructorActions | TIngredientModalAction | TIngredientsAction | TOrderAction | TUserAction;
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = ThunkDispatch<RootState, unknown, TApplicationActions>;
 export type AppThunkAction<ReturnType = void> = ThunkAction<ReturnType, RootState, unknown, TApplicationActions>;
+
+export const useDispatch = () => dispatchHook<AppDispatch>();
+export const useSelector: TypedUseSelectorHook<RootState> = selectorHook;
 
 export type TUser = {
     email: string;

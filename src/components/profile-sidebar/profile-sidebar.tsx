@@ -4,13 +4,13 @@ import profileSidebarStyles from './profile-sidebar.module.css';
 import { NavLink } from 'react-router-dom';
 import { useNavigate, useMatch } from "react-router-dom";
 import { signOut } from '../../services/actions/user';
-import { useDispatch, useSelector } from 'react-redux';
-import { TUserState } from '../../services/reducers/user';
+import { useDispatch } from 'react-redux';
+import { useSelector, RootState } from '../../utils/types';
 
 const ProfileSidebar:FC<HTMLAttributes<HTMLHtmlElement>> = () => {
     const dispatch = useDispatch();
-    const logoutStart = useSelector((state: { [prop in string]: TUserState }) => state.user.logoutStart);
-    const logoutError = useSelector((state: { [prop in string]: TUserState }) => state.user.logoutError);
+    const logoutStart = useSelector((state: RootState) => state.user.logoutStart);
+    const logoutError = useSelector((state: RootState) => state.user.logoutError);
     let navigate = useNavigate();
 
     const logOut = async (e: FormEvent): Promise<void> => {

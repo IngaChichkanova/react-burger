@@ -1,20 +1,17 @@
 import { FC, HTMLAttributes, useEffect } from 'react';
 import ingredientDetailsStyles from '././ingredient-details.module.css';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { updateCurrentIngredient } from '../../services/actions/ingredient-modal';
 import { getIngedients } from '../../services/actions/ingredients';
-import { TIngredient } from '../../utils/types';
-import { AppDispatch } from '../../utils/types';
-import { TIngedientModalState } from '../../services/reducers/ingredient-modal';
-import { TIngredientsState } from '../../services/reducers/ingredients';
+import { TIngredient, useSelector, AppDispatch, RootState } from '../../utils/types';
 
 const IngredientDetails: FC<HTMLAttributes<HTMLHtmlElement>> = () => {
     const dispatch: AppDispatch = useDispatch();
-    const currentIngredient = useSelector((state: { [prop in string]: TIngedientModalState }) => state.ingredientModal.currentIngredient);
-    const ingredientsListFailed = useSelector((state: { [prop in string]: TIngredientsState }) => state.ingredients.ingredientsListFailed);
-    const ingredientsListRequest = useSelector((state: { [prop in string]: TIngredientsState }) => state.ingredients.ingredientsListRequest);
-    const ingredientsList = useSelector((state: { [prop in string]: TIngredientsState }) => state.ingredients.ingredientsList);
+    const currentIngredient = useSelector((state: RootState) => state.ingredientModal.currentIngredient);
+    const ingredientsListFailed = useSelector((state: RootState) => state.ingredients.ingredientsListFailed);
+    const ingredientsListRequest = useSelector((state: RootState) => state.ingredients.ingredientsListRequest);
+    const ingredientsList = useSelector((state: RootState) => state.ingredients.ingredientsList);
 
     const location = useLocation();
 

@@ -4,14 +4,14 @@ import registerStyles from './register.module.css';
 import { EmailInput, Input, Button } from '@ya.praktikum/react-developer-burger-ui-components';
 import { register } from '../services/actions/user';
 import { validateEmail } from '../utils/validation';
-import { useDispatch, useSelector } from 'react-redux';
-import { TUserState } from '../services/reducers/user';
+import { useDispatch } from 'react-redux';
+import { useSelector, RootState } from '../utils/types';
 
 export const RegisterPage: FC<HTMLAttributes<HTMLHtmlElement>> = () => {
   const dispatch = useDispatch();
-  const registerStart = useSelector((state: { [prop in string]: TUserState }) => state.user.registerStart);
-  const registerError = useSelector((state: { [prop in string]: TUserState }) => state.user.registerError);
-  const registerErrorText = useSelector((state: { [prop in string]: TUserState }) => state.user.registerErrorText);
+  const registerStart = useSelector((state: RootState) => state.user.registerStart);
+  const registerError = useSelector((state: RootState) => state.user.registerError);
+  const registerErrorText = useSelector((state: RootState) => state.user.registerErrorText);
   let navigate = useNavigate();
 
   const [login, setLogin] = useState<string>('');
