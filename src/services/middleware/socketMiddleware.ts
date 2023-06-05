@@ -41,8 +41,7 @@ export const socketMiddleware = (wsUrl: string, wsActions: TWSStoreActions): Mid
 
                 socket.onmessage = event => {
                     const { data } = event;
-                    const parsedData: { orders: Array<TOrderTrack>, total: number, totalToday: number, success: boolean } = JSON.parse(data);
-
+                    const parsedData: { orders: Array<TOrderTrack>, total: number, totalToday: number, success: boolean, message?: string } = JSON.parse(data);
                     if (parsedData.success) {
                         dispatch({
                             type: onMessage,

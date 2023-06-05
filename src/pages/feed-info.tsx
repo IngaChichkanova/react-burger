@@ -6,7 +6,7 @@ import { useDispatch, TOrderTrack, TIngredient, useSelector, RootState } from '.
 import { useLocation } from 'react-router';
 import { getIngedients } from '../services/actions/ingredients';
 import { updateCurrentOrder } from '../services/actions/order';
-import { wsStart } from '../services/actions/ws';
+import { wsStart, setPrivite } from '../services/actions/ws';
 
 export const FeedInfoPage: FC<HTMLAttributes<HTMLHtmlElement>> = () => {
     const location = useLocation();
@@ -20,6 +20,7 @@ export const FeedInfoPage: FC<HTMLAttributes<HTMLHtmlElement>> = () => {
 
     useEffect((): ReturnType<React.EffectCallback> => {
         if (!location.state) {
+            setPriviteAsync();
             dispatch(getIngedients());
         } else {
             getCurrent();
@@ -28,6 +29,10 @@ export const FeedInfoPage: FC<HTMLAttributes<HTMLHtmlElement>> = () => {
         return (): any => dispatch(updateCurrentOrder(null));
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
+
+    const setPriviteAsync = async () => {
+        await dispatch(setPrivite(location.pathname.match(/\/profile/) ? true : false));
+    }
 
     useEffect((): ReturnType<React.EffectCallback> => {
         if (!location.state && orders.length > 0) {
@@ -47,15 +52,15 @@ export const FeedInfoPage: FC<HTMLAttributes<HTMLHtmlElement>> = () => {
     }, [ordersUser])
 
     useEffect(() => {
-        if (!location.state && !ingredientsListRequest && ingredientsList.length > 0) {
+        if (!location.state) {
             if (location.pathname.match(/\/profile/)) {
-                if (user) dispatch(wsStart(true));
+                if (user) dispatch(wsStart());
             } else {
-                dispatch(wsStart(false));
+                dispatch(wsStart());
             }
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [user, ingredientsListRequest, ingredientsList])
+    }, [user])
 
     const getCurrent = (): void => {
         let currentId = location.pathname.match(/\/profile/) ? location.pathname.split('/profile/orders/')[1] : location.pathname.split('/feed/')[1];

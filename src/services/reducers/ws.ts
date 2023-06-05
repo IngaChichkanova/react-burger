@@ -4,6 +4,7 @@ import {
     WS_CONNECTION_ERROR,
     WS_CONNECTION_CLOSED,
     WS_GET_MESSAGE,
+    PRIVATE
 } from "../constants/ws";
 import { TWSActions } from "../actions/ws";
 import { TOrderTrack } from "../../utils/types";
@@ -11,9 +12,9 @@ import { TOrderTrack } from "../../utils/types";
 export type TWSState = {
     wsConnected: boolean;
     isPrivate: boolean;
-    error?: Event;
-    orders:    Array<TOrderTrack>;
-    ordersUser:    Array<TOrderTrack>;
+    error?: Event ;
+    orders: Array<TOrderTrack>;
+    ordersUser: Array<TOrderTrack>;
     total: number;
     totalToday: number;
 }
@@ -25,14 +26,19 @@ const initialState: TWSState = {
     ordersUser: [],
     total: 0,
     totalToday: 0,
+    error: undefined
 };
 
 export const wsReducer = (state = initialState, action: TWSActions) => {
     switch (action.type) {
+        case PRIVATE:
+            return {
+                ...state,
+                isPrivate: action.payload
+            };
         case WS_CONNECTION_START:
             return {
                 ...state,
-                isPrivate: action.payload,
             };
 
         case WS_CONNECTION_SUCCESS:
@@ -53,7 +59,6 @@ export const wsReducer = (state = initialState, action: TWSActions) => {
             return {
                 ...state,
                 error: undefined,
-                isPrivate: false,
                 wsConnected: false,
                 orders: [],
                 ordersUser: [],

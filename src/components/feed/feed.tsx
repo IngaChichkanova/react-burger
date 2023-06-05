@@ -4,7 +4,7 @@ import { FormattedDate, CurrencyIcon } from '@ya.praktikum/react-developer-burge
 import { Link, useLocation, useMatch } from 'react-router-dom';
 import { getIngedients } from '../../services/actions/ingredients';
 import { useDispatch, TIngredient, useSelector, RootState } from '../../utils/types';
-import { wsStart, wsClose } from '../../services/actions/ws';
+import { wsStart, wsClose, setPrivite } from '../../services/actions/ws';
 
 const Feed: FC<HTMLAttributes<HTMLHtmlElement>> = () => {
     const location = useLocation();
@@ -15,18 +15,23 @@ const Feed: FC<HTMLAttributes<HTMLHtmlElement>> = () => {
     const user = useSelector((state: RootState) => state.user.user);
 
     useEffect((): ReturnType<React.EffectCallback> => {
+        setPriviteAsync();
         dispatch(getIngedients());
         return (): any => dispatch(wsClose())
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
+    const setPriviteAsync = async () => {
+        await dispatch(setPrivite(location.pathname.match(/\/profile/) ? true : false));
+    }
+
     useEffect(() => {
         if (location.pathname.match(/\/profile/)) {
             if (user) {
-                dispatch(wsStart(true));
+                dispatch(wsStart());
             }
         } else {
-            dispatch(wsStart(false));
+            dispatch(wsStart());
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [user])

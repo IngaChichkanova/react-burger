@@ -5,11 +5,11 @@ import {
     WS_CONNECTION_ERROR,
     WS_CONNECTION_CLOSED,
     WS_GET_MESSAGE,
+    PRIVATE
 } from "../constants/ws";
 
 export interface IWSConnectionStart {
     readonly type: typeof WS_CONNECTION_START;
-    readonly payload: boolean;
 }
 
 export interface IWSConnectionSuccessAction {
@@ -23,6 +23,11 @@ export interface IWSConnectionErrorAction {
 
 export interface IWSConnectionClosedAction {
     readonly type: typeof WS_CONNECTION_CLOSED;
+}
+
+export interface IPrivateAction {
+    readonly type: typeof PRIVATE;
+    readonly payload: boolean; 
 }
 
 export interface IWSGetMessageAction {
@@ -39,13 +44,18 @@ export type TWSActions =
     | IWSConnectionErrorAction
     | IWSConnectionClosedAction
     | IWSGetMessageAction
+    | IPrivateAction
     ;
 
-export const wsStart = (isPrivate: boolean): IWSConnectionStart => ({
-    type: WS_CONNECTION_START,
-    payload: isPrivate
+export const wsStart = (): IWSConnectionStart => ({
+    type: WS_CONNECTION_START
 })
 
 export const wsClose = (): IWSConnectionClosedAction => ({
     type: WS_CONNECTION_CLOSED
+})
+
+export const setPrivite = (isPrivate: boolean): IPrivateAction => ({
+    type: PRIVATE,
+    payload: isPrivate
 })
