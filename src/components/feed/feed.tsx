@@ -17,12 +17,16 @@ const Feed: FC<HTMLAttributes<HTMLHtmlElement>> = () => {
     useEffect((): ReturnType<React.EffectCallback> => {
         setPriviteAsync();
         dispatch(getIngedients());
-        return (): any => dispatch(wsClose())
+        return (): any => wsCloseAsync()
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     const setPriviteAsync = async () => {
         await dispatch(setPrivite(location.pathname.match(/\/profile/) ? true : false));
+    }
+
+    const wsCloseAsync = async () => {
+        await dispatch(wsClose());
     }
 
     useEffect(() => {
