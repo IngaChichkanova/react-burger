@@ -28,8 +28,16 @@ export function deleteCookie(name: string): void {
 }
 
 export function getCookie(name: string): string | undefined {
-    const matches = document.cookie.match(
-        new RegExp('(?:^|; )' + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + '=([^;]*)') //eslint-disable-line
+    const matchesAll = document.cookie.match(
+        new RegExp('(?:|; )' + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + '=([^;]*)', 'g') //eslint-disable-line
     );
-    return matches ? decodeURIComponent(matches[1]) : undefined;
+    if (matchesAll && matchesAll.length > 0) {
+        const matches: any = matchesAll[matchesAll.length - 1].match(
+            new RegExp('(?:^|; )' + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + '=([^;]*)') //eslint-disable-line
+        );
+        
+        return matches ? matches[1] : undefined
+    } else {
+        return undefined
+    }
 }

@@ -12,7 +12,6 @@ export const FeedInfoPage: FC<HTMLAttributes<HTMLHtmlElement>> = () => {
     const location = useLocation();
     const dispatch = useDispatch();
     const currentOrder = useSelector((state: RootState) => state.order.currentOrder);
-    const ingredientsListRequest = useSelector((state: RootState) => state.ingredients.ingredientsListRequest);
     const ingredientsList = useSelector((state: RootState) => state.ingredients.ingredientsList);
     const orders = useSelector((state: RootState) => state.track.orders);
     const ordersUser = useSelector((state: RootState) => state.track.ordersUser);
