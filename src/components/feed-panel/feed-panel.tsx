@@ -23,7 +23,7 @@ const FeedPanel: FC<HTMLAttributes<HTMLHtmlElement>> = () => {
                 <div className={`${feedPanelStyles.progress}`}>
                     <h2 className={`text text_type_main-medium mb-6`}>В работе:</h2>
                     <div className={`${feedPanelStyles.wrapper}`}>
-                        {orders.filter(item => item.status !== 'done').map(item => (
+                        {orders.filter(item => item.status === 'pending').map(item => (
                             <div key={item._id} className={` mb-2 text text_type_digits-default mr-2`}>{item.number}</div>
                         ))}
                     </div>

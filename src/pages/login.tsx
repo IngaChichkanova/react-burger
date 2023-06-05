@@ -4,8 +4,7 @@ import loginStyles from './login.module.css';
 import { EmailInput, Input, Button } from '@ya.praktikum/react-developer-burger-ui-components';
 import { validateEmail } from '../utils/validation';
 import { signIn } from '../services/actions/user';
-import { useDispatch } from 'react-redux';
-import { useSelector, RootState } from '../utils/types';
+import { useSelector, RootState, useDispatch } from '../utils/types';
 
 export const LoginPage: FC<HTMLAttributes<HTMLHtmlElement>> = () => {
   const dispatch = useDispatch();

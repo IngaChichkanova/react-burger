@@ -2,8 +2,7 @@ import React, { FC, HTMLAttributes } from 'react';
 import feedInfoStyles from './feed-info.module.css';
 import { useEffect } from 'react';
 import { CurrencyIcon, FormattedDate } from '@ya.praktikum/react-developer-burger-ui-components';
-import { AppDispatch, TOrderTrack, TIngredient , useSelector, RootState} from '../utils/types';
-import { useDispatch } from 'react-redux';
+import { useDispatch, TOrderTrack, TIngredient, useSelector, RootState } from '../utils/types';
 import { useLocation } from 'react-router';
 import { getIngedients } from '../services/actions/ingredients';
 import { updateCurrentOrder } from '../services/actions/order';
@@ -11,11 +10,12 @@ import { wsStart } from '../services/actions/ws';
 
 export const FeedInfoPage: FC<HTMLAttributes<HTMLHtmlElement>> = () => {
     const location = useLocation();
-    const dispatch: AppDispatch = useDispatch();
+    const dispatch = useDispatch();
     const currentOrder = useSelector((state: RootState) => state.order.currentOrder);
     const ingredientsListRequest = useSelector((state: RootState) => state.ingredients.ingredientsListRequest);
     const ingredientsList = useSelector((state: RootState) => state.ingredients.ingredientsList);
     const orders = useSelector((state: RootState) => state.track.orders);
+    const ordersUser = useSelector((state: RootState) => state.track.ordersUser);
     const user = useSelector((state: RootState) => state.user.user);
 
     useEffect((): ReturnType<React.EffectCallback> => {
@@ -30,17 +30,26 @@ export const FeedInfoPage: FC<HTMLAttributes<HTMLHtmlElement>> = () => {
     }, [])
 
     useEffect((): ReturnType<React.EffectCallback> => {
-        if (currentOrder === null)
+        if (!location.state && orders.length > 0) {
             getCurrent();
+        }
+
+        if (currentOrder === null) getCurrent();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [orders])
 
-
+    useEffect((): ReturnType<React.EffectCallback> => {
+        if (!location.state && ordersUser.length > 0) {
+            getCurrent();
+        }
+        if (currentOrder === null) getCurrent();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [ordersUser])
 
     useEffect(() => {
         if (!location.state && !ingredientsListRequest && ingredientsList.length > 0) {
-            if (location.pathname.match(/\/profile/) && user) {
-                dispatch(wsStart(true));
+            if (location.pathname.match(/\/profile/)) {
+                if (user) dispatch(wsStart(true));
             } else {
                 dispatch(wsStart(false));
             }
@@ -48,16 +57,9 @@ export const FeedInfoPage: FC<HTMLAttributes<HTMLHtmlElement>> = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [user, ingredientsListRequest, ingredientsList])
 
-    useEffect(() => {
-        if (!location.state && orders.length > 0) {
-            getCurrent();
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [orders])
-
     const getCurrent = (): void => {
         let currentId = location.pathname.match(/\/profile/) ? location.pathname.split('/profile/orders/')[1] : location.pathname.split('/feed/')[1];
-        let current = orders.filter((item: TOrderTrack) => item._id === currentId);
+        let current = (location.pathname.match(/\/profile/) ? ordersUser : orders).filter((item: TOrderTrack) => item._id === currentId);
         if (current.length > 0) {
             dispatch(updateCurrentOrder(current[0]))
         }

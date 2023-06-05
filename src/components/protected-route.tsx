@@ -2,8 +2,7 @@ import { Navigate, useLocation } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { getCookie } from '../utils/set-cookie';
 import { getUser } from '../services/actions/user';
-import { useDispatch } from 'react-redux';
-import { useSelector, RootState } from '../utils/types';
+import { useSelector, useDispatch, RootState } from '../utils/types';
 
 type TProtectedRouteElementProps = {
     element: JSX.Element;

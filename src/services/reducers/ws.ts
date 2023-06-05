@@ -13,6 +13,7 @@ export type TWSState = {
     isPrivate: boolean;
     error?: Event;
     orders:    Array<TOrderTrack>;
+    ordersUser:    Array<TOrderTrack>;
     total: number;
     totalToday: number;
 }
@@ -21,6 +22,7 @@ const initialState: TWSState = {
     wsConnected: false,
     isPrivate: false,
     orders: [],
+    ordersUser: [],
     total: 0,
     totalToday: 0,
 };
@@ -51,18 +53,20 @@ export const wsReducer = (state = initialState, action: TWSActions) => {
             return {
                 ...state,
                 error: undefined,
+                isPrivate: false,
                 wsConnected: false,
                 orders: [],
+                ordersUser: [],
                 total: 0,
                 totalToday: 0,
             };
 
         case WS_GET_MESSAGE:
-            console.log('WS_GET_MESSAGE', action)
             return {
                 ...state,
                 error: undefined,
                 orders: action.orders,
+                ordersUser: action.ordersUser,
                 total: action.total,
                 totalToday: action.totalToday,
             };

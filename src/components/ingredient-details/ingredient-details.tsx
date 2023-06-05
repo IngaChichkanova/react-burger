@@ -1,13 +1,12 @@
 import { FC, HTMLAttributes, useEffect } from 'react';
 import ingredientDetailsStyles from '././ingredient-details.module.css';
-import { useDispatch } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { updateCurrentIngredient } from '../../services/actions/ingredient-modal';
 import { getIngedients } from '../../services/actions/ingredients';
-import { TIngredient, useSelector, AppDispatch, RootState } from '../../utils/types';
+import { TIngredient, useSelector, RootState, useDispatch } from '../../utils/types';
 
 const IngredientDetails: FC<HTMLAttributes<HTMLHtmlElement>> = () => {
-    const dispatch: AppDispatch = useDispatch();
+    const dispatch = useDispatch();
     const currentIngredient = useSelector((state: RootState) => state.ingredientModal.currentIngredient);
     const ingredientsListFailed = useSelector((state: RootState) => state.ingredients.ingredientsListFailed);
     const ingredientsListRequest = useSelector((state: RootState) => state.ingredients.ingredientsListRequest);

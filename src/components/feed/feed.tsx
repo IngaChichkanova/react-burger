@@ -2,16 +2,15 @@ import React, { FC, HTMLAttributes, useEffect } from 'react';
 import feedStyles from './feed.module.css';
 import { FormattedDate, CurrencyIcon } from '@ya.praktikum/react-developer-burger-ui-components';
 import { Link, useLocation, useMatch } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
 import { getIngedients } from '../../services/actions/ingredients';
-import { AppDispatch, TIngredient, useSelector, RootState } from '../../utils/types';
+import { useDispatch, TIngredient, useSelector, RootState } from '../../utils/types';
 import { wsStart, wsClose } from '../../services/actions/ws';
 
 const Feed: FC<HTMLAttributes<HTMLHtmlElement>> = () => {
     const location = useLocation();
-    const dispatch: AppDispatch = useDispatch();
+    const dispatch = useDispatch();
     const orders = useSelector((state: RootState) => state.track.orders);
-    const ingredientsListRequest = useSelector((state: RootState) => state.ingredients.ingredientsListRequest);
+    const ordersUser = useSelector((state: RootState) => state.track.ordersUser);;
     const ingredientsList = useSelector((state: RootState) => state.ingredients.ingredientsList);
     const user = useSelector((state: RootState) => state.user.user);
 
@@ -22,15 +21,15 @@ const Feed: FC<HTMLAttributes<HTMLHtmlElement>> = () => {
     }, [])
 
     useEffect(() => {
-        if (!ingredientsListRequest && ingredientsList.length > 0) {
-            if (location.pathname.match(/\/profile/) && user) {
+        if (location.pathname.match(/\/profile/)) {
+            if (user) {
                 dispatch(wsStart(true));
-            } else {
-                dispatch(wsStart(false));
             }
+        } else {
+            dispatch(wsStart(false));
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [user, ingredientsListRequest, ingredientsList])
+    }, [user])
 
     const ingredientsInfo = (ids: Array<string>): Array<TIngredient> => {
         let ingredients: Array<TIngredient> = [];
@@ -55,7 +54,7 @@ const Feed: FC<HTMLAttributes<HTMLHtmlElement>> = () => {
                 return 'Создан'
         }
     }
-    console.log(orders)
+
     return (
 
         <section className={`mr-15 ${isPrivate ? 'mb-10' : ''}`}>
@@ -64,7 +63,7 @@ const Feed: FC<HTMLAttributes<HTMLHtmlElement>> = () => {
             </section>
 
             <section className={`${feedStyles.scroll} custom-scroll`} style={{ height: isPrivate ? 'calc(100% - 194px)' : 'calc(100% - 130px)' }}>
-                {orders.map(item => (
+                {(isPrivate ? ordersUser : orders).map(item => (
                     <section key={item._id} className={`${feedStyles.feed} pt-6 pb-6 pl-6 pr-6 mb-6`}>
                         <Link
                             className={`${feedStyles.link}`}

@@ -4,8 +4,7 @@ import registerStyles from './register.module.css';
 import { EmailInput, Input, Button } from '@ya.praktikum/react-developer-burger-ui-components';
 import { register } from '../services/actions/user';
 import { validateEmail } from '../utils/validation';
-import { useDispatch } from 'react-redux';
-import { useSelector, RootState } from '../utils/types';
+import { useSelector, RootState, useDispatch } from '../utils/types';
 
 export const RegisterPage: FC<HTMLAttributes<HTMLHtmlElement>> = () => {
   const dispatch = useDispatch();

@@ -2,11 +2,10 @@ import { FC, HTMLAttributes, useState, useEffect, ChangeEvent, FormEvent } from 
 import profileStyles from './profile.module.css';
 import ProfileSidebar from '../components/profile-sidebar/profile-sidebar';
 import { EmailInput, Input } from '@ya.praktikum/react-developer-burger-ui-components';
-import { useDispatch } from 'react-redux';
 import { editUser, getUser } from '../services/actions/user';
 import { Button } from '@ya.praktikum/react-developer-burger-ui-components';
 import { validateEmail } from '../utils/validation';
-import { useSelector, RootState } from '../utils/types';
+import { useSelector, RootState, useDispatch } from '../utils/types';
 
 export const ProfilePage: FC<HTMLAttributes<HTMLHtmlElement>> = () => {
   const dispatch = useDispatch();

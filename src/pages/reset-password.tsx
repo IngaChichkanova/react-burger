@@ -3,8 +3,7 @@ import { Link, useNavigate, useLocation, Navigate } from 'react-router-dom';
 import resetPasswordStyles from './reset-password.module.css';
 import { Input, Button } from '@ya.praktikum/react-developer-burger-ui-components';
 import { resetPassword } from '../services/actions/user';
-import { useDispatch } from 'react-redux';
-import { useSelector, RootState } from '../utils/types';
+import { useSelector, RootState, useDispatch } from '../utils/types';
 
 export const ResetPasswordPage: FC<HTMLAttributes<HTMLHtmlElement>> = () => {
   const dispatch = useDispatch();

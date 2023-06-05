@@ -4,8 +4,7 @@ import forgotPasswordStyles from './forgot-password.module.css';
 import { EmailInput, Button } from '@ya.praktikum/react-developer-burger-ui-components';
 import { validateEmail } from '../utils/validation';
 import { forgotPassword } from '../services/actions/user';
-import { useDispatch } from 'react-redux';
-import { useSelector, RootState } from '../utils/types';
+import { useSelector, RootState, useDispatch } from '../utils/types';
 
 export const ForgotPasswordPage: FC<HTMLAttributes<HTMLHtmlElement>> = () => {
   const dispatch = useDispatch();

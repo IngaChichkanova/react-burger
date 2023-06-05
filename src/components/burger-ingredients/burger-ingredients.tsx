@@ -2,14 +2,13 @@ import React, { FC, HTMLAttributes, useState, createRef, useMemo, useEffect } fr
 import ingredientsStyles from './burger-ingredients.module.css';
 import { Tab, CurrencyIcon, Counter } from '@ya.praktikum/react-developer-burger-ui-components';
 import { getIngedients } from '../../services/actions/ingredients';
-import { useDispatch } from 'react-redux';
 import DraggableItem from './draggable-items';
 import { Link, useLocation } from 'react-router-dom';
-import { TIngredient, AppDispatch, useSelector, RootState } from '../../utils/types';
+import { TIngredient, useSelector, RootState, useDispatch } from '../../utils/types';
 
 const BurgerIngredients: FC<HTMLAttributes<HTMLElement>> = () => {
     const location = useLocation();
-    const dispatch: AppDispatch = useDispatch();
+    const dispatch = useDispatch();
     const ingredientsList = useSelector((state: RootState) => state.ingredients.ingredientsList);
     const currentIngredientsList = useSelector((state: RootState) => state.burgerConstructor.currentIngredientsList);
     const ingredientsListFailed = useSelector((state: RootState) => state.ingredients.ingredientsListFailed);

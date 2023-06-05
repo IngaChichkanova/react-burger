@@ -28,6 +28,7 @@ export interface IWSConnectionClosedAction {
 export interface IWSGetMessageAction {
     readonly type: typeof WS_GET_MESSAGE;
     orders: Array<TOrderTrack>;
+    ordersUser: Array<TOrderTrack>;
     total: number;
     totalToday: number;
 }

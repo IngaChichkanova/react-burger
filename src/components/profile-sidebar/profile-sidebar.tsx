@@ -4,8 +4,7 @@ import profileSidebarStyles from './profile-sidebar.module.css';
 import { NavLink } from 'react-router-dom';
 import { useNavigate, useMatch } from "react-router-dom";
 import { signOut } from '../../services/actions/user';
-import { useDispatch } from 'react-redux';
-import { useSelector, RootState } from '../../utils/types';
+import { useSelector, RootState, useDispatch } from '../../utils/types';
 
 const ProfileSidebar:FC<HTMLAttributes<HTMLHtmlElement>> = () => {
     const dispatch = useDispatch();
