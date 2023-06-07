@@ -3,7 +3,6 @@ import burgerStyles from './burger-constructor.module.css';
 import { DragIcon, CurrencyIcon, Button, ConstructorElement } from '@ya.praktikum/react-developer-burger-ui-components';
 import Modal from '../modal/modal';
 import OrderDetails from '../order-details/order-details';
-import { useSelector, useDispatch } from 'react-redux';
 import { clearOrder, doOrder } from '../../services/actions/order';
 import { updateCurrentIngredientsList } from '../../services/actions/burder-constructor';
 import { useDrop } from "react-dnd";
@@ -11,13 +10,13 @@ import DraggableItem from './draggable-items';
 import { getCookie } from '../../utils/set-cookie';
 import { useNavigate } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
-import { TIngredient, TCurrentIngredientsRoot } from '../../utils/types';
+import { TIngredient, useSelector, RootState, useDispatch } from '../../utils/types';
 
 const BurgerConstructor: FC<HTMLAttributes<HTMLHtmlElement>> = () => {
     const dispatch = useDispatch();
     let navigate = useNavigate();
 
-    const currentIngredientsList = useSelector((state: { [prop in string]: TCurrentIngredientsRoot }) => state.burgerConstructor.currentIngredientsList);
+    const currentIngredientsList = useSelector((state: RootState) => state.burgerConstructor.currentIngredientsList);
 
     const [openModal, setOpenModal] = useState<boolean>(false);
 

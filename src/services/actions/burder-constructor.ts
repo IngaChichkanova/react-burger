@@ -1,7 +1,16 @@
 import { TIngredient } from "../../utils/types";
-export const CURRENT_INGREDIENTS_LIST = 'CURRENT_INGREDIENTS_LIST';
+import { CURRENT_INGREDIENTS_LIST } from '../constants/burder-constructor';
 
-export const updateCurrentIngredientsList = (items: Array<TIngredient>) => ({
+export interface ICurrentIngredientsAction {
+    readonly type: typeof CURRENT_INGREDIENTS_LIST;
+    readonly payload: ReadonlyArray<TIngredient>;
+  }
+  
+  export type TBurgerConstructorActions =
+    | ICurrentIngredientsAction
+    ;
+
+export const updateCurrentIngredientsList = (items: Array<TIngredient>): ICurrentIngredientsAction => ({
     type: CURRENT_INGREDIENTS_LIST,
     payload: items,
-})
+});

@@ -4,13 +4,12 @@ import forgotPasswordStyles from './forgot-password.module.css';
 import { EmailInput, Button } from '@ya.praktikum/react-developer-burger-ui-components';
 import { validateEmail } from '../utils/validation';
 import { forgotPassword } from '../services/actions/user';
-import { useDispatch, useSelector } from 'react-redux';
-import { TUserRoot } from '../utils/types';
+import { useSelector, RootState, useDispatch } from '../utils/types';
 
 export const ForgotPasswordPage: FC<HTMLAttributes<HTMLHtmlElement>> = () => {
   const dispatch = useDispatch();
-  const forgotPasswordStart = useSelector((state: { [prop in string]: TUserRoot }) => state.user.forgotPasswordStart);
-  const forgotPasswordError = useSelector((state: { [prop in string]: TUserRoot }) => state.user.forgotPasswordError);
+  const forgotPasswordStart = useSelector((state: RootState) => state.user.forgotPasswordStart);
+  const forgotPasswordError = useSelector((state: RootState) => state.user.forgotPasswordError);
   let navigate = useNavigate();
   const location = useLocation();
   const [email, setEmail] = useState<string>('');

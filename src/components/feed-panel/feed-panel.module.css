@@ -1,0 +1,33 @@
+.panel{
+    display: flex;
+    flex-direction: column;
+    overflow: auto;
+}
+
+.info{
+    display: flex;
+    flex-direction: row;
+}
+
+.number{
+    color: #00CCCC;
+
+}
+
+.infoDone{
+    display: flex;
+    flex-direction: column;
+}
+
+.numberDone{
+    text-shadow: 0px 0px 16px rgb(51 51 255 / 25%), 0px 0px 8px rgb(51 51 255 / 25%), 0px 4px 32px rgb(51 51 255 / 50%);
+}
+
+.wrapper{
+    display: grid;
+    grid-template-columns: repeat(5, auto);
+}
+
+.ready{
+
+}

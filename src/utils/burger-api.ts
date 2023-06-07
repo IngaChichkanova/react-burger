@@ -18,7 +18,7 @@ type TAuth = {
     accessToken?: string;
 };
 
-const checkResponse = <T>(res: Response): Promise<T> => res.ok ? res.json() : Promise.reject(res.status);
+const checkResponse = <T>(res: Response): Promise<T> => res.ok ? res.json() : res.json().then((err) => Promise.reject(err));
 
 export const request = (endpoint: string, options: TParams): Promise<{
     success: boolean;
@@ -146,7 +146,7 @@ export const resetPasswordRequest = (email: string, token: string): Promise<Pick
     )}`
 })
 
-export const getUserRequest = (): Promise<Pick<TAuth, 'success' | 'user'>> => checkAuthFetch('auth/user', {
+export const getUserRequestAction = (): Promise<Pick<TAuth, 'success' | 'user'>> => checkAuthFetch('auth/user', {
     method: "GET",
     headers: {
         Authorization: 'Bearer ' + getCookie('token')

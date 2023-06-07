@@ -2,18 +2,17 @@ import React, { FC, HTMLAttributes, useState, createRef, useMemo, useEffect } fr
 import ingredientsStyles from './burger-ingredients.module.css';
 import { Tab, CurrencyIcon, Counter } from '@ya.praktikum/react-developer-burger-ui-components';
 import { getIngedients } from '../../services/actions/ingredients';
-import { useDispatch, useSelector } from 'react-redux';
 import DraggableItem from './draggable-items';
 import { Link, useLocation } from 'react-router-dom';
-import { TCurrentIngredientsRoot, TIngredientsRoot, TIngredient } from '../../utils/types';
+import { TIngredient, useSelector, RootState, useDispatch } from '../../utils/types';
 
 const BurgerIngredients: FC<HTMLAttributes<HTMLElement>> = () => {
     const location = useLocation();
-    const dispatch: Function = useDispatch();
-    const ingredientsList = useSelector((state: { [prop in string]: TIngredientsRoot }) => state.ingredients.ingredientsList);
-    const currentIngredientsList = useSelector((state: { [prop in string]: TCurrentIngredientsRoot }) => state.burgerConstructor.currentIngredientsList);
-    const ingredientsListFailed = useSelector((state: { [prop in string]: TIngredientsRoot }) => state.ingredients.ingredientsListFailed);
-    const ingredientsListRequest = useSelector((state: { [prop in string]: TIngredientsRoot }) => state.ingredients.ingredientsListRequest);
+    const dispatch = useDispatch();
+    const ingredientsList = useSelector((state: RootState) => state.ingredients.ingredientsList);
+    const currentIngredientsList = useSelector((state: RootState) => state.burgerConstructor.currentIngredientsList);
+    const ingredientsListFailed = useSelector((state: RootState) => state.ingredients.ingredientsListFailed);
+    const ingredientsListRequest = useSelector((state: RootState) => state.ingredients.ingredientsListRequest);
 
     const [currentTab, setCurrentTab] = useState<string>("bun");
 
@@ -35,7 +34,6 @@ const BurgerIngredients: FC<HTMLAttributes<HTMLElement>> = () => {
 
     const scrollObserve = (): void => {
         function obCallback(payload: IntersectionObserverEntry[]) {
-            console.log(payload)
             for (let i = 0; payload.length > i; i++) {
                 if ((payload[i].target === bunRef.current) && (payload[i].isIntersecting && payload[i].intersectionRatio > 0.7)) {
                     setCurrentTab("bun");

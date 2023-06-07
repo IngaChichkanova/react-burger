@@ -1,31 +1,157 @@
 import { setCookie, deleteCookie } from '../../utils/set-cookie';
+import {
+    REGISTER_REQUEST,
+    REGISTER_SUCCESS,
+    REGISTER_FAILED,
+    SIGN_IN_REQUEST,
+    SIGN_IN_SUCCESS,
+    SIGN_IN_FAILED,
+    SIGN_OUT_REQUEST,
+    SIGN_OUT_SUCCESS,
+    SIGN_OUT_FAILED,
+    FORGOT_PASSWORD_REQUEST,
+    FORGOT_PASSWORD_SUCCESS,
+    FORGOT_PASSWORD_FAILED,
+    RESET_PASSWORD_REQUEST,
+    RESET_PASSWORD_SUCCESS,
+    RESET_PASSWORD_FAILED,
+    USER_REQUEST,
+    USER_SUCCESS,
+    USER_FAILED,
+    SET_USER,
+    GET_USER_REQUEST,
+    GET_USER_SUCCESS,
+    GET_USER_FAILED
+} from '../constants/user';
 
-import { registerRequest, loginRequest, logoutRequest, forgotPasswordRequest, resetPasswordRequest, getUserRequest, editUserRequest } from '../../utils/burger-api';
+import { registerRequest, loginRequest, logoutRequest, forgotPasswordRequest, resetPasswordRequest, getUserRequestAction, editUserRequest } from '../../utils/burger-api';
 
-export const REGISTER_REQUEST = 'REGISTER_REQUEST';
-export const REGISTER_SUCCESS = 'REGISTER_REQUEST';
-export const REGISTER_FAILED = 'REGISTER_REQUEST';
-export const SIGN_IN_REQUEST = 'SIGN_IN_REQUEST';
-export const SIGN_IN_SUCCESS = 'SIGN_IN_SUCCESS';
-export const SIGN_IN_FAILED = 'SIGN_IN_FAILED';
-export const SIGN_OUT_REQUEST = 'SIGN_OUT_REQUEST';
-export const SIGN_OUT_SUCCESS = 'SIGN_OUT_SUCCESS';
-export const SIGN_OUT_FAILED = 'SIGN_OUT_FAILED';
-export const FORGOT_PASSWORD_REQUEST = 'FORGOT_PASSWORD_REQUEST';
-export const FORGOT_PASSWORD_SUCCESS = 'FORGOT_PASSWORD_SUCCESS';
-export const FORGOT_PASSWORD_FAILED = 'FORGOT_PASSWORD_FAILED';
-export const RESET_PASSWORD_REQUEST = 'RESET_PASSWORD_REQUEST';
-export const RESET_PASSWORD_SUCCESS = 'RESET_PASSWORD_SUCCESS';
-export const RESET_PASSWORD_FAILED = 'RESET_PASSWORD_FAILED';
-export const USER_REQUEST = 'USER_REQUEST';
-export const USER_SUCCESS = 'USER_SUCCESS';
-export const USER_FAILED = 'USER_FAILED';
-export const SET_USER = 'SET_USER';
-export const GET_USER_REQUEST = 'GET_USER_REQUEST';
-export const GET_USER_SUCCESS = 'GET_USER_SUCCESS';
-export const GET_USER_FAILED = 'GET_USER_FAILED';
+import { TUser, AppDispatch, AppThunkAction } from '../../utils/types';
 
-export const register = async (email: string, password: string, name: string, dispatch: Function) => {
+export interface IRegisterRequestAction {
+    readonly type: typeof REGISTER_REQUEST;
+}
+
+export interface IRegisterSuccessAction {
+    readonly type: typeof REGISTER_SUCCESS;
+    readonly payload?: boolean;
+}
+
+export interface IRegisterFailedAction {
+    readonly type: typeof REGISTER_FAILED;
+    readonly payload?: string;
+}
+
+export interface ISignInRequestAction {
+    readonly type: typeof SIGN_IN_REQUEST;
+}
+
+export interface ISignInSuccessAction {
+    readonly type: typeof SIGN_IN_SUCCESS;
+    readonly payload?: boolean;
+}
+
+export interface ISignInFailedAction {
+    readonly type: typeof SIGN_IN_FAILED;
+    readonly payload?: string;
+}
+
+export interface ISignOutRequestAction {
+    readonly type: typeof SIGN_OUT_REQUEST;
+}
+
+export interface ISignOutSuccessAction {
+    readonly type: typeof SIGN_OUT_SUCCESS;
+    readonly payload?: boolean;
+}
+
+export interface ISignOutFailedAction {
+    readonly type: typeof SIGN_OUT_FAILED;
+}
+
+export interface IForgotPasswordRequestAction {
+    readonly type: typeof FORGOT_PASSWORD_REQUEST;
+}
+
+export interface IForgotPasswordSuccessAction {
+    readonly type: typeof FORGOT_PASSWORD_SUCCESS;
+    readonly payload?: boolean;
+}
+
+export interface IResetPasswordAction {
+    readonly type: typeof FORGOT_PASSWORD_FAILED;
+}
+
+export interface IResetPasswordRequestAction {
+    readonly type: typeof RESET_PASSWORD_REQUEST;
+}
+
+export interface IResetPasswordSuccessAction {
+    readonly type: typeof RESET_PASSWORD_SUCCESS;
+    readonly payload?: boolean;
+}
+
+export interface IForgotPasswordAction {
+    readonly type: typeof RESET_PASSWORD_FAILED;
+}
+
+export interface IUserdRequestAction {
+    readonly type: typeof USER_REQUEST;
+}
+
+export interface IUserSuccessAction {
+    readonly type: typeof USER_SUCCESS;
+    readonly payload?: boolean;
+}
+
+export interface IUserFailedAction {
+    readonly type: typeof USER_FAILED;
+}
+
+export interface IGetUserRequestAction {
+    readonly type: typeof GET_USER_REQUEST;
+}
+
+export interface IGetUserSuccessAction {
+    readonly type: typeof GET_USER_SUCCESS;
+    readonly payload?: boolean;
+}
+
+export interface IGetUserFailedAction {
+    readonly type: typeof GET_USER_FAILED;
+}
+
+export interface ISetUserAction {
+    readonly type: typeof SET_USER;
+    readonly payload: null | TUser;
+}
+
+export type TUserAction =
+    | IRegisterRequestAction
+    | IRegisterSuccessAction
+    | IRegisterFailedAction
+    | ISetUserAction
+    | ISignInRequestAction
+    | ISignInSuccessAction
+    | ISignInFailedAction
+    | ISignOutRequestAction
+    | ISignOutSuccessAction
+    | ISignOutFailedAction
+    | IForgotPasswordRequestAction
+    | IForgotPasswordSuccessAction
+    | IForgotPasswordAction
+    | IResetPasswordAction
+    | IResetPasswordRequestAction
+    | IResetPasswordSuccessAction
+    | IUserdRequestAction
+    | IUserSuccessAction
+    | IUserFailedAction
+    | IGetUserRequestAction
+    | IGetUserSuccessAction
+    | IGetUserFailedAction
+    ;
+
+export const register = async (email: string, password: string, name: string, dispatch: AppDispatch): Promise<AppThunkAction | boolean | undefined> => {
     dispatch({ type: REGISTER_REQUEST });
     return await registerRequest(email, password, name)
         .then(response => {
@@ -40,7 +166,9 @@ export const register = async (email: string, password: string, name: string, di
             }
 
             if (response.success) {
-                dispatch({ type: SET_USER, payload: response.user })
+                if (response.user) {
+                    dispatch({ type: SET_USER, payload: response.user });
+                }
             }
 
             dispatch({ type: REGISTER_SUCCESS, payload: response.success });
@@ -54,8 +182,8 @@ export const register = async (email: string, password: string, name: string, di
         });
 }
 
-export const signIn = async (email: string, password: string, dispatch: Function) => {
-    dispatch({ type: REGISTER_REQUEST });
+export const signIn = async (email: string, password: string, dispatch: AppDispatch): Promise<AppThunkAction | boolean | undefined> => {
+    dispatch({ type: SIGN_IN_REQUEST });
     return await loginRequest(email, password).then(response => {
         let accessToken;
         accessToken = response.accessToken ? response.accessToken.split('Bearer ')[1] : undefined;
@@ -65,12 +193,14 @@ export const signIn = async (email: string, password: string, dispatch: Function
             );
         }
 
-        if(response.refreshToken){
+        if (response.refreshToken) {
             localStorage.setItem("refreshToken", response.refreshToken);
         }
 
         if (response.success) {
-            dispatch({ type: SET_USER, payload: response.user })
+            if (response.user) {
+                dispatch({ type: SET_USER, payload: response.user });
+            }
         }
 
         dispatch({ type: SIGN_IN_SUCCESS, payload: response.success });
@@ -83,7 +213,7 @@ export const signIn = async (email: string, password: string, dispatch: Function
         });
 };
 
-export const signOut = async (dispatch: Function) => {
+export const signOut = async (dispatch: AppDispatch): Promise<AppThunkAction | boolean | undefined> => {
     dispatch({ type: SIGN_OUT_REQUEST });
     if (localStorage.getItem("refreshToken")) {
         return await logoutRequest().then(response => {
@@ -108,7 +238,7 @@ export const signOut = async (dispatch: Function) => {
     }
 };
 
-export const forgotPassword = async (email: string, dispatch: Function) => {
+export const forgotPassword = async (email: string, dispatch: AppDispatch): Promise<AppThunkAction | boolean | undefined> => {
     dispatch({ type: FORGOT_PASSWORD_REQUEST });
     return await forgotPasswordRequest(email)
         .then(response => {
@@ -121,7 +251,7 @@ export const forgotPassword = async (email: string, dispatch: Function) => {
         });
 }
 
-export const resetPassword = async (password: string, token: string, dispatch: Function) => {
+export const resetPassword = async (password: string, token: string, dispatch: AppDispatch): Promise<AppThunkAction | boolean | undefined> => {
     dispatch({ type: RESET_PASSWORD_REQUEST });
     return await resetPasswordRequest(password, token)
         .then(response => {
@@ -134,16 +264,18 @@ export const resetPassword = async (password: string, token: string, dispatch: F
         });
 }
 
-export const getUser = async (dispatch: Function) => {
+export const getUser = async (dispatch: AppDispatch): Promise<AppThunkAction | boolean | undefined | void> => {
     dispatch({ type: USER_REQUEST });
 
-    return await getUserRequest()
+    return await getUserRequestAction()
         .then(response => {
             if (response.success) {
-                dispatch({ type: SET_USER, payload: response.user })
+                if (response.user) {
+                    dispatch({ type: SET_USER, payload: response.user });
+                }
             }
-
             dispatch({ type: USER_SUCCESS, payload: response.success });
+            return response.success;
         })
         .catch(() => {
             dispatch({ type: USER_FAILED });
@@ -151,7 +283,7 @@ export const getUser = async (dispatch: Function) => {
         });
 };
 
-export const editUser = async (email: string, password: string, name: string, dispatch: Function) => {
+export const editUser = async (email: string, password: string, name: string, dispatch: AppDispatch): Promise<AppThunkAction | boolean | undefined | void> => {
     dispatch({
         type: GET_USER_REQUEST
     });
@@ -160,7 +292,7 @@ export const editUser = async (email: string, password: string, name: string, di
             if (response.success) {
                 dispatch({
                     type: GET_USER_SUCCESS,
-                    payload: response.user
+                    payload: response.success
                 });
             } else {
                 dispatch({

@@ -1,3 +1,5 @@
+import { TUser } from '../../utils/types';
+import { TUserAction } from '../actions/user';
 import {
     REGISTER_REQUEST,
     REGISTER_SUCCESS,
@@ -21,9 +23,30 @@ import {
     GET_USER_REQUEST,
     GET_USER_SUCCESS,
     GET_USER_FAILED
-} from '../actions/user';
+} from '../constants/user';
 
-const initialState = {
+export type TUserState = {
+    registerStart: boolean;
+    registerError: boolean;
+    loginStart: boolean;
+    loginError: boolean;
+    logoutStart: boolean;
+    logoutError: boolean;
+    forgotPasswordStart: boolean;
+    forgotPasswordError: boolean;
+    resetPasswordStart: boolean;
+    resetPasswordError: boolean;
+    getUserStart: boolean;
+    getUserError: boolean;
+    user: null | TUser;
+    getUserRequest: boolean;
+    registerErrorText?: string;
+    loginErrorText?: string;
+    getUserSuccess?: boolean;
+    getUserFailed?: boolean;
+};
+
+const initialState: TUserState = {
     registerStart: false,
     registerError: false,
     registerErrorText: '',
@@ -44,7 +67,7 @@ const initialState = {
     getUserFailed: false,
 };
 
-export const userReducer = (state = initialState, action) => {
+export const userReducer = (state = initialState, action: TUserAction) => {
     switch (action.type) {
         case REGISTER_REQUEST: {
             return {

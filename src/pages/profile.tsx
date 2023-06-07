@@ -2,17 +2,16 @@ import { FC, HTMLAttributes, useState, useEffect, ChangeEvent, FormEvent } from 
 import profileStyles from './profile.module.css';
 import ProfileSidebar from '../components/profile-sidebar/profile-sidebar';
 import { EmailInput, Input } from '@ya.praktikum/react-developer-burger-ui-components';
-import { useSelector, useDispatch } from 'react-redux';
 import { editUser, getUser } from '../services/actions/user';
 import { Button } from '@ya.praktikum/react-developer-burger-ui-components';
 import { validateEmail } from '../utils/validation';
-import { TUserRoot } from '../utils/types';
+import { useSelector, RootState, useDispatch } from '../utils/types';
 
 export const ProfilePage: FC<HTMLAttributes<HTMLHtmlElement>> = () => {
   const dispatch = useDispatch();
-  const user = useSelector((state: { [prop in string]: TUserRoot }) => state.user.user);
-  const getUserStart = useSelector((state: { [prop in string]: TUserRoot }) => state.user.getUserStart);
-  const getUserError = useSelector((state: { [prop in string]: TUserRoot }) => state.user.getUserError);
+  const user = useSelector((state: RootState) => state.user.user);
+  const getUserStart = useSelector((state: RootState) => state.user.getUserStart);
+  const getUserError = useSelector((state: RootState) => state.user.getUserError);
 
   const [name, setName] = useState<string>(user ? user.name : '');
   const [login, setLogin] = useState<string>(user ? user.email : '');
@@ -59,10 +58,10 @@ export const ProfilePage: FC<HTMLAttributes<HTMLHtmlElement>> = () => {
   if (getUserStart || getUserError) return null
 
   return (
-    <main className={`${profileStyles.wrapper} mt-30`}>
+    <main className={`${profileStyles.wrapper}`}>
       <ProfileSidebar />
 
-      <section className={`${profileStyles.section}`}>
+      <section className={`${profileStyles.section}  mt-30`}>
         <form onSubmit={onSave}>
           <Input
             onChange={onChangeName}
