@@ -1,6 +1,6 @@
 describe('ingredient modal', () => {
     beforeEach(function () {
-        cy.visit('http://localhost:3000');
+        cy.visit('/');
 
         cy.intercept(
             "GET",
@@ -29,7 +29,7 @@ describe('ingredient modal', () => {
         cy.get('[data-testid=order-button]').should('be.not.disabled').click();
 
         cy.location().should(loc => {
-            expect(loc.pathname).to.eq('/login')
+            expect(loc.hash).to.eq('#/login')
         });
 
         cy.get('[data-testid=login]').type(username);
@@ -37,31 +37,37 @@ describe('ingredient modal', () => {
 
         cy.get('[data-testid=submit]').should('be.not.disabled').click();
 
-        cy.get('[data-testid=order-button]').should('be.not.disabled').click();
-
-        cy.intercept(
-            "POST",
-            "https://norma.nomoreparties.space/api/orders",
-            {
-                success: true,
-                name: "Краторный бургер",
-                order: {
-                    ingredients: [{ "_id": "643d69a5c3f7b9001cfa093c", "name": "Краторная булка N-200i", "type": "bun", "proteins": 80, "fat": 24, "carbohydrates": 53, "calories": 420, "price": 1255, "image": "https://code.s3.yandex.net/react/code/bun-02.png", "image_mobile": "https://code.s3.yandex.net/react/code/bun-02-mobile.png", "image_large": "https://code.s3.yandex.net/react/code/bun-02-large.png", "__v": 0 }, { "_id": "643d69a5c3f7b9001cfa093c", "name": "Краторная булка N-200i", "type": "bun", "proteins": 80, "fat": 24, "carbohydrates": 53, "calories": 420, "price": 1255, "image": "https://code.s3.yandex.net/react/code/bun-02.png", "image_mobile": "https://code.s3.yandex.net/react/code/bun-02-mobile.png", "image_large": "https://code.s3.yandex.net/react/code/bun-02-large.png", "__v": 0 }],
-                    _id: "648c77058a4b62001c85df8e",
-                    owner: { "name": "naruto", "email": "naruto@naruto.ru", "createdAt": "2023-04-25T12:55:24.731Z", "updatedAt": "2023-05-30T14:39:49.453Z" },
-                    status: "done",
-                    name: "Краторный бургер",
-                    createdAt: "2023-06-16T14:51:49.946Z",
-                    updatedAt: "2023-06-16T14:51:50.044Z",
-                    number: 9028,
-                    price: 2510
+        cy.intercept('POST', 'https://norma.nomoreparties.space/api/auth/login', (req) => {
+            req.reply(
+                {
+                    "success": true, "accessToken": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0NDdjZGJjNDVjNmYyMDAxYmU2ZDhhZiIsImlhdCI6MTY4NzAxMDQ3MywiZXhwIjoxNjg3MDExNjczfQ.zXgeCSfm2NJScDgDbguyvuErytcdcX9aedHjkl1N644", "refreshToken": "c9b9b83a4db9b5955c8e0b2daaaf245091ce587fe72bd444059dba465c67a689702aae00f7d4b380", "user": { "email": "naruto@naruto.ru", "name": "naruto" }
                 }
-            }
-        ).as('doOrder');
-        cy.wait('@doOrder').then(() => {
-            cy.get('#burger-modals').should('contain', 'идентификатор заказа')
-            cy.get('[data-testid=close-modal] svg').click();
-        })
+            )
+        }).as('doLogin')
+        cy.wait('@doLogin').then(() => {
+            cy.get('[data-testid=order-button]').should('be.not.disabled').click();
 
+            cy.intercept('POST', 'https://norma.nomoreparties.space/api/orders', (req) => {
+                req.reply({
+                    success: true,
+                    name: "Краторный бургер",
+                    order: {
+                        ingredients: [{ "_id": "643d69a5c3f7b9001cfa093c", "name": "Краторная булка N-200i", "type": "bun", "proteins": 80, "fat": 24, "carbohydrates": 53, "calories": 420, "price": 1255, "image": "https://code.s3.yandex.net/react/code/bun-02.png", "image_mobile": "https://code.s3.yandex.net/react/code/bun-02-mobile.png", "image_large": "https://code.s3.yandex.net/react/code/bun-02-large.png", "__v": 0 }, { "_id": "643d69a5c3f7b9001cfa093c", "name": "Краторная булка N-200i", "type": "bun", "proteins": 80, "fat": 24, "carbohydrates": 53, "calories": 420, "price": 1255, "image": "https://code.s3.yandex.net/react/code/bun-02.png", "image_mobile": "https://code.s3.yandex.net/react/code/bun-02-mobile.png", "image_large": "https://code.s3.yandex.net/react/code/bun-02-large.png", "__v": 0 }],
+                        _id: "648c77058a4b62001c85df8e",
+                        owner: { "name": "naruto", "email": "naruto@naruto.ru", "createdAt": "2023-04-25T12:55:24.731Z", "updatedAt": "2023-05-30T14:39:49.453Z" },
+                        status: "done",
+                        name: "Краторный бургер",
+                        createdAt: "2023-06-16T14:51:49.946Z",
+                        updatedAt: "2023-06-16T14:51:50.044Z",
+                        number: 9028,
+                        price: 2510
+                    }
+                })
+            }).as('doOrder')
+            cy.wait('@doOrder').then(() => {
+                cy.get('#burger-modals').should('contain', 'идентификатор заказа')
+                cy.get('[data-testid=close-modal] svg').click();
+            })
+        })
     })
 })

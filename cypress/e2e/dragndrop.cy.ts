@@ -1,6 +1,6 @@
 describe('ingredient modal', () => {
     beforeEach(function () {
-        cy.visit('http://localhost:3000');
+        cy.visit('/');
 
         cy.intercept(
             "GET",

@@ -1,6 +1,9 @@
+
 describe('ingredient modal', () => {
+  const ingredientDetailsAttr = '[data-testid=ingredient-details]';
+  
   beforeEach(function () {
-    cy.visit('http://localhost:3000');
+    cy.visit('/');
 
     cy.intercept(
       "GET",
@@ -19,9 +22,9 @@ describe('ingredient modal', () => {
 
   it('check that the modal has the content inside', () => {
     cy.visit({
-      url: 'http://localhost:3000/ingredients/643d69a5c3f7b9001cfa093c',
+      url: '/ingredients/643d69a5c3f7b9001cfa093c',
     })
-    cy.get('[data-testid=ingredient-details]').should('be.not.empty');
+    cy.get(ingredientDetailsAttr).should('be.not.empty');
   })
 
   it('close moodal', () => {
@@ -33,21 +36,21 @@ describe('ingredient modal', () => {
     cy.get('[data-testid=bun-section] div[draggable]')
       .each(($el) => {
         cy.wrap($el).click();
-        cy.get('[data-testid=ingredient-details]').should('be.not.empty');
+        cy.get(ingredientDetailsAttr).should('be.not.empty');
         cy.get('[data-testid=close-modal] svg').click();
       })
 
     cy.get('[data-testid=souce-section] div[draggable]')
       .each(($el) => {
         cy.wrap($el).click();
-        cy.get('[data-testid=ingredient-details]').should('be.not.empty');
+        cy.get(ingredientDetailsAttr).should('be.not.empty');
         cy.get('[data-testid=close-modal] svg').click();
       })
 
     cy.get('[data-testid=main-section] div[draggable]')
       .each(($el) => {
         cy.wrap($el).click();
-        cy.get('[data-testid=ingredient-details]').should('be.not.empty');
+        cy.get(ingredientDetailsAttr).should('be.not.empty');
         cy.get('[data-testid=close-modal] svg').click();
       })
   })
