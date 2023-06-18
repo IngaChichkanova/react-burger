@@ -85,8 +85,9 @@ const BurgerIngredients: FC<HTMLAttributes<HTMLElement>> = () => {
                         <section
                             onScroll={scrollObserve}
                             className={`${ingredientsStyles.scroll} custom-scroll`}
+                            data-testid="ingredients-section"
                         >
-                            <section ref={bunRef} className={`${ingredientsStyles.ingredientsSection} ml-1 mr-1`}>
+                            <section ref={bunRef} data-testid="bun-section" className={`${ingredientsStyles.ingredientsSection} ml-1 mr-1`}>
                                 <p className="text text_type_main-medium mt-10 mb-6">Булки</p>
 
                                 {buns.map((ingredient: TIngredient) => (
@@ -114,7 +115,7 @@ const BurgerIngredients: FC<HTMLAttributes<HTMLElement>> = () => {
 
                             </section>
 
-                            <section ref={sauceRef} className={`${ingredientsStyles.ingredientsSection} ml-1 mr-1`}>
+                            <section ref={sauceRef} data-testid="souce-section" className={`${ingredientsStyles.ingredientsSection} ml-1 mr-1`}>
                                 <p className="text text_type_main-medium mt-10 mb-6">Соусы</p>
 
                                 {sauces.map((ingredient: TIngredient) => (
@@ -140,7 +141,7 @@ const BurgerIngredients: FC<HTMLAttributes<HTMLElement>> = () => {
 
                             </section>
 
-                            <section ref={mainRef} className={`${ingredientsStyles.ingredientsSection} ml-1 mr-1`}>
+                            <section ref={mainRef} data-testid="main-section" className={`${ingredientsStyles.ingredientsSection} ml-1 mr-1`}>
                                 <p className="text text_type_main-medium mt-10 mb-6">Начинки</p>
 
                                 {mains.map((ingredient: TIngredient) => (

@@ -94,11 +94,11 @@ const BurgerConstructor: FC<HTMLAttributes<HTMLHtmlElement>> = () => {
             <section className={`${burgerStyles.section} mt-25 mb-5 ml-5 pl-4 pr-4`} style={{ border }}
                 ref={dropTargetBun}
             >
-                <section className={`${burgerStyles.sectionIngredients} `}>
+                <section data-testid="drop" className={`${burgerStyles.sectionIngredients} `}>
 
 
 
-                    {bun.length > 0 ? bun.map((ingredient: TIngredient) => (<section key={ingredient.uniqueKey} className={`${burgerStyles.sectionIngredient} mb-4 mr-4`}>
+                    {bun.length > 0 ? bun.map((ingredient: TIngredient) => (<section data-testid="bun-drop" key={ingredient.uniqueKey} className={`${burgerStyles.sectionIngredient} mb-4 mr-4`}>
                         <ConstructorElement
                             type="top"
                             isLocked
@@ -122,7 +122,7 @@ const BurgerConstructor: FC<HTMLAttributes<HTMLHtmlElement>> = () => {
 
 
                     {mainIngredients.length > 0 ?
-                        <section className={`${burgerStyles.scroll} custom-scroll`}>
+                        <section data-testid="main-drop" className={`${burgerStyles.scroll} custom-scroll`}>
                             {mainIngredients.map((ingredient: TIngredient) => (
                                 <DraggableItem
                                     key={ingredient.uniqueKey}
@@ -143,7 +143,7 @@ const BurgerConstructor: FC<HTMLAttributes<HTMLHtmlElement>> = () => {
                                 </DraggableItem>))}
                         </section>
                         :
-                        <section className={`${burgerStyles.sectionIngredient} mb-4 mr-4`}>
+                        <section data-testid="bun-drop" className={`${burgerStyles.sectionIngredient} mb-4 mr-4`}>
                             <ConstructorElement
                                 isLocked
                                 extraClass={burgerStyles.empty}
@@ -183,7 +183,7 @@ const BurgerConstructor: FC<HTMLAttributes<HTMLHtmlElement>> = () => {
                         <span className="mr-2">{totalPrice}</span>
                         <CurrencyIcon type="primary" />
                     </p>
-                    <Button disabled={!(currentIngredientsList.length > 0 && currentIngredientsList.filter((item: TIngredient) => item.type === 'bun').length > 0)} onClick={handleOrder} htmlType="button" type="primary" size="large">
+                    <Button disabled={!(currentIngredientsList.length > 0 && currentIngredientsList.filter((item: TIngredient) => item.type === 'bun').length > 0)} onClick={handleOrder} htmlType="button" type="primary" size="large" data-testid="order-button">
                         Оформить заказ
                     </Button>
                 </section>

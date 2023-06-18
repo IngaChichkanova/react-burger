@@ -40,7 +40,7 @@ const IngredientDetails: FC<HTMLAttributes<HTMLHtmlElement>> = () => {
                 <p className={`${ingredientDetailsStyles.title} ml-10 mt-10 text text_type_main-large`}>Детали ингредиента</p>
             </div>
 
-            {currentIngredient && <div className={`${ingredientDetailsStyles.ingredient} mb-15`}>
+            {currentIngredient && <div data-testid="ingredient-details" className={`${ingredientDetailsStyles.ingredient} mb-15`}>
                 <p className={`mt-1 mb-1`}><img src={currentIngredient.image_large} alt={currentIngredient.name} /></p>
                 <p className={`text text_type_main-medium mt-4 mb-8`}>{currentIngredient.name}</p>
                 <div className={`${ingredientDetailsStyles.property}`}>

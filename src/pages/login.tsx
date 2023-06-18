@@ -50,6 +50,7 @@ export const LoginPage: FC<HTMLAttributes<HTMLHtmlElement>> = () => {
           placeholder="E-mail"
           extraClass="mt-6 mb-6"
           disabled={loginStart}
+          data-testid="login"
         />
         <Input
           onChange={onChangePassword}
@@ -64,6 +65,7 @@ export const LoginPage: FC<HTMLAttributes<HTMLHtmlElement>> = () => {
           errorText={'Ошибка'}
           size={'default'}
           disabled={loginStart}
+          data-testid="password"
         />
         <Button
           disabled={loginStart || (!validateEmail(email) || email.length === 0 || password.length === 0)}
@@ -71,6 +73,7 @@ export const LoginPage: FC<HTMLAttributes<HTMLHtmlElement>> = () => {
           type="primary"
           size="large"
           extraClass="mb-20"
+          data-testid="submit"
         >
           Войти
         </Button>
